@@ -1,0 +1,67 @@
+#duduk{
+  background-image : url('./images/velvet.jpg');
+  grid-column: 1 / span 5; 
+  background-size: cover;
+  border-radius: 20px;
+  border : 5px ridge #5b3737;
+  width : 580px;
+}
+
+#duduk_menu{
+  background: #f2f2f2;
+  display: none;
+  position: absolute;
+  z-index: 100;
+  right: 0;
+}
+
+#duduk_control{
+  background-image : url('./images/simon.png');
+  height:100px;
+  background-size: contain;
+}
+
+#controls{
+   display : flex;
+   justify-content: space-around;
+}
+.control_knob{
+  height: 100px;
+  width : 90px;
+  text-align : center;
+}
+
+.value_container{
+  background: #40404080;
+  height: 23px;
+  display: inline-flex;
+  color: white;
+}
+
+.duduk_hole{
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  top: 50px;
+  left: 117px;
+  border-radius: 10px;
+}
+
+.opened_hole{
+  background: red;
+}
+
+.closed_hole{
+  background: black;
+}
+
+#Gm1{ left : 10%; }
+#A{ left : 21.5%; }
+#B{ left : 27.5%; }
+#C{ left : 34%; }
+#D{ left : 41%; }
+#E{ left : 47%; }
+#F{ left : 54%; }
+#G{ left : 61%; }
+#Ap1{ left : 65%; }
+#Bp1{ left : 69%; }

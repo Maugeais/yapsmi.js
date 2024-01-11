@@ -1,0 +1,180 @@
+body{
+    background-image: url('../css/images/background.jpg');
+    cursor : pointer;
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+    background-size: cover;
+}
+
+main{
+    top: 50px;
+    position: fixed;
+    width: 100%;
+    z-index : 0;
+    position : absolute;
+}
+
+header{
+    top: 50px;
+    position: fixed;
+    width: 100%;
+    z-index : 1;
+    position : absolute;
+}
+
+#tools_message{
+    background: rgb(95, 95, 66);
+    position: fixed;
+    bottom: 0;
+    z-index: 100;
+    width: 75%;
+    height: 50px;
+    margin-left: 12.5%;
+    text-align: center;
+    padding: 10px;
+    display: none;
+}
+
+#tools_menu{
+    width: 100%;
+    height: 20px;
+    background: #303134;
+    position: fixed;
+    top: 0;
+    left: 0;
+    text-align: right;
+    color: #f1f3f4;
+    font-family: "Poppins", sans-serif;;
+    font-weight: normal;
+    padding: 5px;
+}
+
+#audio_start{
+    background-image: url('../css/images/off.png');
+    position: absolute;
+    background-size: cover;
+    width: 54px;
+    height : 30px;
+    top: 0;
+}
+#speed{
+    left: 80px;
+    position: absolute;
+}
+
+.knob{
+    margin : auto;
+}
+.menu_entry{
+    width: 100px;
+    display: inline-flex;
+
+}
+
+.menu_entry_list{
+    background: #303134;
+    text-align: center;
+    display: none;
+    position: absolute;
+    top: 30px;
+
+}
+
+.plugin_menu{
+    margin : 0px;
+    padding: 10px;
+    position:relative;
+}
+
+.plugin_menu:hover{
+    background:gray;
+}
+
+.plugin_menu:disabled{
+    background:red;
+}
+
+.plugin_title{
+    background-color: #787899;;
+    position: absolute;
+    height: 20px;
+    left: 10px;
+    top : -20px;
+    border-radius: 10px 10px 0px 0px;
+    padding: 0px 10px;
+    display: inline;
+}
+
+.plugin_title::after{
+    background: linear-gradient(0deg, rgba(159, 187, 46, 1) 0%, rgba(159, 187, 46, 0) 99%);;
+    content: ' ';
+    height: 4px;
+    width: 100%;
+    display: flex;
+    position: absolute;
+    top: 15px;
+    left: 0;
+}
+
+.plugin_title:hover{
+    cursor:grab;
+}
+
+.wrapper {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(auto-fill, 100px);
+    align-items: center;
+    justify-content: space-between;
+}
+
+.plugin{
+    height:300px;
+    position : relative;
+}
+
+#popup{
+    background: red;
+    width: 90%;
+    position: fixed;
+    z-index: 100;
+    margin: 5%;
+    height: 90vh;
+    top: 0;
+    display : none;
+}
+
+.manifest{
+    background: #303134;
+    width:150px;
+    display: none;
+    position:absolute;
+    left:-150px;
+    top:0;
+}
+
+.plugin_menu:hover .manifest {
+  display: block;
+}
+
+#model{
+    background: red;
+    width: 90%;
+    position: fixed;
+    z-index: 100;
+    margin: 5%;
+    height: 90vh;
+    top: 0;
+    display : none;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.close_button{
+  width: 30px;
+  position: absolute;
+  background: green;
+  height: 30px;
+  right: 0;
+}

@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="../../analysis/colino_2d.plugin/css/colino_2d.css" />
+
+<div class="plugin_title">colino2d</div>
+
+
+<div id="colino2d_display"></div>
+
+<div id="colino2d_controls">
+    <div class = "control_knob colino2d_tail">
+        <div class="value_container">Tail~size=<div class="knob_value" id="colino2d_tail_value">100</div></div>
+        <div class="knob" id="colino2d_tail"></div>
+    </div>
+
+    <br>
+
+    <label for="colino2d_x">x:</label>
+
+    <select name="pets" id="colino2d_x" onchange="colino2d_change_axis('x', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+
+    <br>
+
+    <label for="colino2d_y">y:</label>
+
+    <select name="pets" id="colino2d_y" onchange="colino2d_change_axis('y', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+
+    <br>
+
+</div>

@@ -1,0 +1,31 @@
+#pad_gesture{
+    background-image: url('./images/pad.png');
+    background-size: cover;
+    width: 100%;
+    margin: 0;
+    height: 80%;
+    bottom: 5px;
+    position: absolute;
+    left: 0;
+} 
+
+.pad{
+    grid-column: span 3;
+    border: 5px ridge #998b8b;
+    border-radius: 20px;
+    background: #776e6e;
+    color: white;
+    font-family: Arial;
+    text-align: center;
+    width: 330px;
+}
+
+.pad label, select{
+    font-size:20px;
+    margin-top: 5px;
+}
+
+
+.pad label{
+    margin-left: 5px;
+}

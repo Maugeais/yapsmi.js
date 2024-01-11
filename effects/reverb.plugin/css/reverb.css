@@ -1,0 +1,45 @@
+#reverb_main{
+    background-image: url("./images/reverb.jpeg");
+    width: 100%;
+    position: relative;
+    height: 100%;
+    border-radius : 15px;
+    background-size: cover;
+    border: 3px ridge #776e24;
+}
+
+#reverb_table{
+    background: white;
+    width: 90%;
+    left: 5%;
+    position: absolute;
+    text-align: center;
+    top: 15px;
+    height: calc(100% - 100px);
+    display: block;
+    overflow-y: auto;
+}
+
+#reverb_table tr:nth-child(odd) {
+    background-color: #89c97b;
+}
+
+#reverb_on{
+    background-image: url("./images/off.png");
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    bottom: 15px;
+    position: absolute;
+    left: 85px;
+}
+
+#reverb_force{
+    top: 115px;
+    position: relative;
+    left: 106px;
+}
+
+#reverb{
+    grid-column: span 2;
+}

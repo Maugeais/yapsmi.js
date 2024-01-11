@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="../../css/tools.css" />
+<script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+
+<div id="tools_menu">
+  <div id="audio_start" onclick="audio_start()"> </div>
+  <div id="speed"> CPU usage : 0% </div>
+
+  <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_effects_list").toggle()' id="tools_effects">
+       Effects
+       <div class = "menu_entry_list pop"  id="tools_effects_list"></div>
+  </div>
+  
+   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_analysis_list").toggle()' id="tools_analysis">
+       Analysis
+       <div class = "menu_entry_list pop"  id="tools_analysis_list"></div>
+
+  </div>
+  
+   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_controls_list").toggle()' id="tools_controls">
+       Controls
+       <div class = "menu_entry_list pop"  id="tools_controls_list"></div>
+
+  </div>
+
+  <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_session_list").toggle()' id="tools_session">
+     Session
+     <div class = "menu_entry_list pop"  id="tools_session_list">
+          <div class = "plugin_menu" onclick="$('.pop').hide();new_session()"> New </div>
+          <div class = "plugin_menu" onclick="$('.pop').hide();load_session()"> Load </div>
+          <div class = "plugin_menu" onclick="$('.pop').hide();save_session()"> Save </div>
+     </div>
+
+</div>
+  
+  <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_help_list").toggle()' id="tools_help">
+       Help
+       <div class = "menu_entry_list pop"  id="tools_help_list">
+            <div class = "plugin_menu" onclick="$('.pop').hide();$('#model').show()"> Model </div>
+            <div class = "plugin_menu" onclick="$('.pop').hide();$('#help').show()"> Help </div>
+            <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div>
+       </div>
+
+  </div>
+</div>
+
+<div id="popup">
+     <div onclick="$(this).parent().hide()"  id="close_popup">✕</div>
+     Test
+</div>
+
+
+<div id="tools_message">
+  message
+</div>

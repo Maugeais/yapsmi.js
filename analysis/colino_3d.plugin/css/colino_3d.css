@@ -1,0 +1,32 @@
+.colino_3d{
+    grid-column: span 5;
+    background-size: cover;
+    border-radius: 20px;
+    border: 5px ridge #af7b4f;;
+    width:600px;
+    background :url("./images/bg.jpg");
+}
+
+#colino3d_display{
+    width: 450px;
+    height: 100%;
+}
+
+#colino3d_controls{
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+}
+
+.colino3d_tail{
+    margin: auto;
+}
+
+#colino3d_display .main-svg{
+    border-radius: 18px 0px 0px 17px;
+}

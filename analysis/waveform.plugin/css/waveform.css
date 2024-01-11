@@ -1,0 +1,19 @@
+#waveform{
+  background : #a99e96;
+  background-size: cover;
+  grid-column: span 3; 
+  border: aliceblue double 3px;
+  border-radius : 20px;
+}
+
+.waveform_controls{
+   display : flex;
+}
+
+.waveform_canvas{
+    background : black;
+    width: 100%;
+    height: calc(100% - 85px);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+}

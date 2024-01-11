@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Displays the control of the midi controllers, do not work under firefox <div style='color:red'>Completion : 50%</div>",
+    "developper" : "Sylvain Maugeais"
+}

@@ -1,0 +1,50 @@
+<link rel="stylesheet" href="../../analysis/colino_3d.plugin/css/colino_3d.css" />
+
+<div class="plugin_title">colino3d</div>
+
+
+<div id="colino3d_display"></div>
+
+<div id="colino3d_controls">
+    <div class = "control_knob colino3d_tail">
+        <div class="value_container">Tail size=<div class="knob_value" id="colino3d_tail_value">100</div></div>
+        <div class="knob" id="colino3d_tail"></div>
+        
+    </div>
+
+    <br>
+
+    <label for="colino3d_x">x:</label>
+
+    <select name="pets" id="colino3d_x" onchange="colino3d_change_axis('x', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+
+    <br>
+
+    <label for="colino3d_y">y:</label>
+
+    <select name="pets" id="colino3d_y" onchange="colino3d_change_axis('y', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+
+    <br>
+
+    <label for="colino3d_z">z:</label>
+
+    <select name="pets" id="colino3d_z" onchange="colino3d_change_axis('z', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+</div>

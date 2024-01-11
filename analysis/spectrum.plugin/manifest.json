@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : true,
+    "presentation" : "Displays an instantaneous spectrum computed with length 2048*16 filtered with Hamming window <div style='color:red'>Completion : 95%</div>",
+    "developper" : "Sylvain Maugeais"
+}

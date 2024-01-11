@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : true,
+    "presentation" : "Display the levels of each harmonic of the signal <div style='color:red'>Completed at : 90%</div>",
+    "developper" : "Sylvain Maugeais"
+}

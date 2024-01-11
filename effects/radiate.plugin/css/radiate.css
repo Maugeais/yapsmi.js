@@ -1,0 +1,49 @@
+#radiate_main{
+    background-image: url("./images/radiate.jpeg");
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    border-radius : 15px;
+    background-size: cover;
+    border: 3px ridge #352d91;
+}
+
+#radiate_on{
+    background-image: url("./images/off.png");
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    margin: auto;
+    top: 20px;
+    position: relative;
+}
+
+#radiate_force{
+    top: 115px;
+    position: relative;
+    left: 106px;
+}
+
+#radiate{
+    grid-column: span 1;
+    text-align: center;
+    color: white;
+}
+
+@font-face{
+ font-family:'digital-clock-font';
+ src: url('./fonts/digital-7.ttf');
+}
+
+#radiate_note{
+  width: 50px;
+  height: 35px;
+  background: black;
+  font-family: 'digital-clock-font';
+  margin: auto;
+  font-size: 35px;
+  text-align: center;
+  color: red;
+  border: 1px solid blue;
+  padding: 10px 0px;
+}
