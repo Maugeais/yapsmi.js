@@ -1,17 +1,22 @@
 "use strict";
 
+let controls;
+
 function init(){
+
+        controls = inst.params;
         
-        let keys = Object.keys(inst.params);        
+        let keys = Object.keys(controls);
+
         $.each(keys, function (i, item) {
-            $('#pad_x').append($('<option>', { 
-                value: item,
-                text : item
-            }));
-            $('#pad_y').append($('<option>', { 
-                value: item,
-                text : item
-            }));
+                $('#pad_x').append($('<option>', {
+                    value: item,
+                    text : item
+                }));
+                $('#pad_y').append($('<option>', {
+                    value: item,
+                    text : item
+                }));
         });
 
 }
@@ -83,18 +88,18 @@ function pad_update(pad_x, pad_y){
     let key = $("#pad_x").val();
     if (key != "none"){
         let range = inst.params[key].range;
-        x = range[0]+x*(range[1]-range[0])   
-        params[$("#pad_x").val()] = x;
+        // x = range[0]+x*(range[1]-range[0])
+        params[$("#pad_x").val()] = 100*x;
     }
 
     key = $("#pad_y").val();
     if (key != "none"){
         let range = inst.params[key].range;
-        y = range[0]+y*(range[1]-range[0])    
-        params[$("#pad_y").val()] = y;
+        // y = range[0]+y*(range[1]-range[0])
+        params[$("#pad_y").val()] = 100*y;
     }
 
-    inst.update_parameters(params)
+    inst.set_controls(params)
 }
 
 export { init }

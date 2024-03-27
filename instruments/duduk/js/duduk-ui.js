@@ -1,10 +1,42 @@
-function Fl_change(a){
-    console.log("Fl", a)
-}
+
+let inst_controls = {};
+
+window.addEventListener('load', function () {
+    inst_controls = inst.get_controls();
+
+    for (let i = 0; i < duduk_knobs.length; i++){
+
+        let p = inst.params[duduk_knobs[i].id]
+        duduk_knobs[i].setValue(100*(p.value-p.range[0])/(p.range[1]-p.range[0]))
+    }
+})
 
 function pb_change(a){
-    console.log("pb", a)
+    let c = inst_controls["pb"];
+    inst.set_controls({"pb": a}, false)
 }
+
+function Fl_change(a){
+    let c = inst_controls["Fl"];
+    inst.set_controls({"Fl": a}, false)
+}
+
+function mul_change(a){
+    let c = inst_controls["mul"];
+    inst.set_controls({"mul": a}, false)
+}
+
+function Ql_change(a){
+    let c = inst_controls["Ql"];
+    inst.set_controls({"Ql": a}, false)
+}
+
+function H_change(a){
+    let c = inst_controls["H"];
+    inst.set_controls({"H": a}, false)
+}
+
+
 
 let holes_opened = [false, false, false, false, false, false, false, false, false, false]
 let holes_names = ['Gm1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ap1', 'Bp1', 'Cp1']

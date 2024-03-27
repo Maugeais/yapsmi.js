@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="">
+  <link rel="stylesheet" href="../css/api.css" />
+  <head>
+    <meta charset="utf-8">
+    <title>Psmi.js API</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+    function show(elemnt){
+      $(".entry").hide();
+      const text = $(elemnt).text().trim();
+      $("#"+text).show() 
+    }
+    </script>
+  </head>
+  <body>
+    <header>
+    <div id="title">
+      Psmi.js
+    </div>
+    
+    <div id="links">
+    Logo
+    <div onclick="show(this)">Controls</div>
+    <div onclick="show(this)">Plugins</div>
+    <div onclick="show(this)">Instruments</div>
+
+    </div>
+    </header>
+    <main>
+    
+            
+        <div class="entry" id="Controls">
+            <code>
+                <div class="variable"> controls </div>
+
+                function register_controls(module, objs){
+        
+
+
+                function choose_control(callback, elmnt){
+                  
+                  }
+            </code>
+
+        </div>
+
+        <div class="entry" id="Plugins">
+
+        test
+        </div>
+
+        <div class="entry" id="Instruments">
+
+          class instrument{
+                constructor(name, params, max, gain){
+                    this.name = name;
+                    this.params = params;
+                    this.X0 = [];
+                    this.max = max;
+                    this.gain = gain;
+                    this.vars = {};
+                    this.rms = 0;
+                    this.freq= 0;
+                    this.range = ["C4", "C5"];
+                    this.dim = 0;
+
+                    let controls = {"gain" : [Number, this.set_controls],
+                                    "fingering" :[Array, this.set_controls]}
+
+                    for (const p in params){
+                        controls[p] = [Number, this.set_controls];
+                    }
+                    register_controls("instrument", controls);
+
+                }
+                
+                model(){
+                    console.log("la fonction 'model' doit être redéfinie");
+                }
+
+                next_chunk(t0, t1, dt){
+                    console.log("la fonction 'next_chunk' doit être redéfinie");
+                }
+                
+                get_controls(){
+                    return({})
+                }
+
+                set_controls(control, value){
+
+                }
+                
+                output(){
+                    return(0);
+                }
+
+            }
+        </div>
+
+    </main>
+    <footer></footer>
+  </body>
+</html>

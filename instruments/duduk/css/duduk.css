@@ -21,10 +21,11 @@
   background-size: contain;
 }
 
-#controls{
+#duduk_controls{
    display : flex;
    justify-content: space-around;
 }
+
 .control_knob{
   height: 100px;
   width : 90px;

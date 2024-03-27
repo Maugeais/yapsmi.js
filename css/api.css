@@ -1,0 +1,18 @@
+header{
+    width: 150px;
+    background: red;
+    left: 0;
+    position: fixed;
+    top: 0;
+    padding: 10px;
+    height: 100vh;
+} 
+
+main{
+    left: 180px;
+    position: absolute;
+    top: 0;
+    padding: 0px;
+    height: 100vh;
+    width: calc(100% - 150px);
+}

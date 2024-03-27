@@ -96,7 +96,7 @@ function update_drawing(output, freq){
 }
 
 function init(){
-    knobs = init_knobs("colino2d_controls", "large", "Vintage");
+    init_knobs("colino2d_controls", "large", "Vintage");
 
     let keys = Object.keys(inst.params);
     $.each(keys, function (i, item) {

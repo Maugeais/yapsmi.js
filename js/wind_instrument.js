@@ -4,14 +4,15 @@ import { instrument, parameter } from "./instrument.js";
 
 class wind_instrument extends instrument {
     #fingering_callbacks = [];
-    constructor(name, params, max, gain, fingering){
+    constructor(name, params, max, gain, fingering = 0, fingergings= []){
         super(name, params, max, gain)
         this.impedances = {};
         this.transfer_functions = {};
         this.transfer_function = [];
         this.filters = {};
         this.filter = "./data/A/transfer.wav";
-        this.fingering = fingering;
+        this.fingering = fingering; // Current fingering
+        this.fingerings = []; // Possible fingerings
          // Functions to be calls when the fingering is chhanged
         load_fingerings(this);
     }
@@ -29,8 +30,17 @@ class wind_instrument extends instrument {
         this.#fingering_callbacks.forEach((callback) => (callback(this.fingering)));
         console.log("_change_fingering");
     }
-    
-    
+
+    get_controls(){
+        let controls = {};
+        controls['fingering'] = this.fingerings;
+
+        for (const param in this.params) {
+            controls[param] = this.params[param].range;
+        }
+
+        return(controls)
+    }
 }
 
 function complexify(data){

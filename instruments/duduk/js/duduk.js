@@ -61,13 +61,16 @@ let q = 1;
 
 let duduk = new wind_instrument("Simon", {'pb': new parameter(2000, [1000, 4000], 'Pa'), 
                                         'Fl' : new parameter(330, [200, 800], 'Hz'),
-                                        'Ql' : new parameter(3000, [1500, 5000], ''),
-                                        'mul' : new parameter(2.14e3, [1500, 2500], 'g/m^-2'),
-                                        'H' : new parameter(300, [0, 1000], 'μm')}, 9000, 1/9000, 'A');
+                                        'Ql' : new parameter(3, [1.5, 5], ''),
+                                        'mul' : new parameter(2.14, [1.5, 2.5], 'g/m²'),
+                                        'H' : new parameter(0.3e-3, [0, 1e-2], 'μm')}, 9000, 1/9000, 'A',
+                                        ['G-1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'A+1', 'B+1', 'C+1']);
 
 let pb = 3000;
 
 duduk.dim=2*10+2;
+
+duduk.fingerings=['a', 'b', 'c']
 
 // Le vecteur d'etat est sous la forme complexe : h, h', real(p1), image(p1), ...
 let pnR = new Float32Array(duduk.dim);
@@ -125,59 +128,55 @@ duduk.next_chunk = function(t0, buffer_size, dt, buffer){
     rungeKutta(duduk.model, duduk.X0, t0, buffer_size, dt, buffer);
 }
 
-duduk.update_parameters = function(params){
-    
+duduk.set_controls = function(params, knob = true){
+    // Prend des valeurs entre 0 et 100
+
     let keys = Object.keys(params);        
     $.each(keys, function (val, key) {
-        $("#"+key+"_value").html(Math.round(params[key])+inst.params[key].unit);
+        let display = "";
+        let c = duduk.params[key].range;
+        let value = c[0]+params[key]*(c[1]-c[0])/100;
 
-        duduk.params[key].value = params[key];
+        duduk.params[key].value = value;
+
+        if (knob){
+            let index = duduk_knobs.findIndex(element => element.id == key);
+
+            // duduk_knobs[index].setValue(100*(params[key]-c[0])/(c[1]-c[0]));
+            duduk_knobs[index].setValue(params[key]);
+
+        }
 
         switch (key) {
             case 'pb' : 
-                    pb = params[key];
+                    pb = value;
+                    display = value.toFixed(0);
                     break;
             case 'Fl' :
-                    omegal = 2*math.pi*params[key];
+                    omegal = 2*math.pi*value;
+                    display = value.toFixed(0)
                     break;
             case 'H' :
-                    H = params[key]*1e-6;
+                    H = value;
+                    display = Math.round(value*1e6)
                     break;
             case 'mul' :
-                    mu = params[key]*1e-3;
+                    mu = value;
+                    display = Math.round(value*1e3)
                     break;
             case 'Ql' :
-                    Ql  = params[key]*1e-3;
+                    Ql  = value;
+                    display = value.toFixed(2)
+                    break;
+            case 'fingering' :
                     break;
 
         }
+
+        $("#"+key+"_value").html(display+duduk.params[key].unit);
+
     });
 }
-
-
-// Gestion du midi
-duduk.onMIDIMessage = function ( event ) {
-  switch (event.data[0]) {
-        case 128 : 
-                omegal = 2*math.pi*8.17580963*2**((event.data[1])/12)
-                //console.log('touche enfoncée', 8.17580963*2**((event.data[1])/12));
-                break;
-        case 144 :
-                //console.log('touche relachée', event.data[1]);
-                break;
-        case 176 :
-                pb = 6000*event.data[2]/128
-                //console.log('mod', event.data[2]);
-                // expected output: "Mangoes and papayas are $2.79 a pound."
-                break;
-        case 224 : 
-                Ql = (3.6827047505220456)*(1+(64-event.data[2])/256)
-                //console.log(`pitch`, event.data[2]);
-    }
-
-    //console.log(omegal/(2*math.pi), pb, Ql)
-}
-
 
 duduk.output = function (buffer, outputBuffer){
     let p;
@@ -186,8 +185,18 @@ duduk.output = function (buffer, outputBuffer){
         for (let j = 0; j < N; j++) {
             p += buffer[i][2*j+2];
         }
-        outputBuffer[i] = p * inst.gain;
+        outputBuffer[i] = p * duduk.gain;
     }
 }
+
+// Define the controls of teh duduk
+
+let duduk_controls = {"gain" : [Number, duduk.set_controls],
+                        "fingering" :[Array, duduk.set_controls]}
+
+for (const p in duduk.params){
+    duduk_controls[p] = [Number, duduk.set_controls];
+}
+register_controls("instrument", duduk_controls);
 
 export { duduk };

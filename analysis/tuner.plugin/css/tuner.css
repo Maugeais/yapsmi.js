@@ -1,8 +1,8 @@
-#tuner{
+.tuner{
   grid-column: span 2;
   text-align: center;
   color: white;
-  width: 237.5px;
+  width: 200px;
   border: 5px ridge aliceblue;
   border-radius: 23px;
 }

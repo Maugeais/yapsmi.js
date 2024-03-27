@@ -1,8 +1,9 @@
-#midi{    
+.midi{    
     background-image: url("./images/midi.jpeg");
-    grid-column: span 2;
+    grid-column: span 3;
     border-radius : 15px;
     background-size: cover;
+    border: 2px ridge #9f9165;
 }
 
 #midi_inputs{
@@ -25,11 +26,12 @@
     top: 30px;
     position: absolute;
     left: 5%;
+    overflow-y : auto;
 }
 
 #midi_events_table input{
     background: none;
-    width : 60px;
+    width : 100%;;
     outline : none;
     border: none;
     color:black;
@@ -47,6 +49,7 @@
     position: absolute;
     bottom: 10px;
     left: 40px;
+    display:flex;
 }
 
 #add_midi_events{
@@ -85,7 +88,7 @@
     overflow: visible;
     padding: 4px 15px;
     text-align: center;
-    vertical-align: baseline;
+    /*vertical-align: baseline;*/
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -113,3 +116,26 @@
     box-shadow: rgba(131, 192, 253, 0.5) 0 0 0 3px;
     outline: none;
   }
+
+
+#midi_setting_in_progress{
+    background:#824040;
+    width:10px;
+    height:10px;
+    left: -5px;
+    position: relative;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.blink{
+    animation: blink 1s infinite;
+}
+@keyframes blink{
+    0% {
+        background: #824040;
+    }
+    20% {
+        background: red;
+    }
+}

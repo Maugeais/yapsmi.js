@@ -1,3 +1,5 @@
+"use strict";
+
 let plugins = [];
 let plugins_list = {};
 
@@ -19,7 +21,7 @@ function init_plugins(menu_entry){
             $(data).find("a:contains(plugin)").each(function(){
                 pluginsName.push($(this).attr("href"));
 
-                element = $(this).attr("href").slice(0, -8);
+                let element = $(this).attr("href").slice(0, -8);
 
                 loadPluginManifest(menu_entry,element);
 
@@ -39,6 +41,7 @@ function init_menu(){
     init_plugins("controls");
     init_plugins("effects");
     init_plugins("analysis");
+    register_controls("Audio", {"on/off" : [Boolean, audio_start]});
 }
 
 async function loadJS(filename, uid, state={}){
@@ -56,7 +59,7 @@ async function load_plugin(menu_entry, element, state = {}){
         {},
         function (data) {      
             plugins.push(new plugin(element, menu_entry));
-            let a = $("main").append(`<div class='plugin ${element}' id=\"${element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
+            let a = $("#wrapper").append(`<div class='plugin ${element}' id=\"${element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
 
             a.html(data.replaceAll('{{id}}', '€'+plugins[plugins.length-1].uid));
             loadJS(`../${menu_entry}/${element}.plugin/js/${element}.js`, plugins[plugins.length-1].uid, state);
@@ -104,7 +107,7 @@ function knobChanged(id, val) {
 function init_knobs(name, size, type){
 
         let knobList = document.getElementById(name).getElementsByClassName('knob');
-        knobs = [];
+        let knobs = [];
         for(let i = 0; i < knobList.length; i++) {
           (function(index) {
               let dial1 = new Knob({
@@ -231,3 +234,41 @@ function save_session(){
     link.click();
     URL.revokeObjectURL(link.href);
 }
+
+let controls = {};
+
+let register_controls_origin_callback;
+let register_controls_origin_element;
+
+let elmnt;
+function register_controls_origin(inst, param){
+    $("#controls").hide() 
+    register_controls_origin_callback(inst, param, register_controls_origin_element)
+}
+
+function register_controls(module, objs){
+    if (!(module in controls)) controls[module] = {};
+
+    Object.keys(objs).forEach(function (k) { controls[module][k] = objs[k]; });
+
+    // Rebuild the control element
+    let html = "";
+    for (const m in controls){
+        html += "<div class='module' onclick=\"$('.controls').hide(); $(this).children(':first').show()\">"+m+"<table class='controls'>"
+        let control = controls[m];
+        for (const c in control){
+            html += `<tr><td onclick="register_controls_origin('${m}', '${c}')">${c}</td/></tr>`;
+        }
+        html += "</table></div>";
+    }
+
+    $("#modules").html(html);
+}
+
+function choose_control(callback, elmnt){
+    $("#controls").show();
+    register_controls_origin_callback = callback;
+    register_controls_origin_element = elmnt;
+  }
+
+// import('./controls.js')

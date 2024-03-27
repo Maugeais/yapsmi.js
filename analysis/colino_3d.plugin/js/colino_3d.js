@@ -1,3 +1,5 @@
+"use strict";
+
 var pointCount = 3142;
 var i = 0;
 
@@ -122,6 +124,7 @@ function update_drawing(output, freq){
       Plotly.extendTraces('colino3d_display', update, [0], tail_size)
 }
 
+let knobs;
 function init(){
     knobs = init_knobs("colino3d_controls", "large", "Vintage");
 

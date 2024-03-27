@@ -20,7 +20,7 @@ class instrument{
         this.freq= 0;
         this.range = ["C4", "C5"];
         this.dim = 0;
-
+        this.self = this
     }
     
     model(){
@@ -31,10 +31,15 @@ class instrument{
         console.log("la fonction 'next_chunk' doit être redéfinie");
     }
     
-    onMIDIMessage(event){
-        console.log("la fonction 'onMidiMessage' doit être redéfinie");
+    get_controls(){
+        return({})
     }
-    
+
+    set_controls(params, knob){
+
+    }
+
+
     output(){
         return(0);
     }
