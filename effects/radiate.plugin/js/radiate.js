@@ -14,6 +14,7 @@ var radiate_knobs;
 function init(uid){
 //    radiate_knobs = init_knobs("radiate_main", "medium", "LittlePhatty");
     add_filter(init_radiate, radiate_callback, uid);
+    inst.add_fingerging_callback(change_fingering);
 }
 
 var radiate_on = false;
@@ -36,7 +37,7 @@ let radiate_buffer;
 
 async function init_radiate(audioCtx){
 
-        // console.log(inst.fingering);
+    console.log(inst.filter);
 
     const convolver = audioCtx.createConvolver();
     const response = await fetch(inst.filter);
@@ -49,8 +50,14 @@ async function init_radiate(audioCtx){
 }
 
 
-function radiate_callback(){
-
+function radiate_callback(){       
 }
 
+function change_fingering(fingering){
+    $("#radiate_note").text(inst.fingering);
+    if (radiate_on){
+        // console.log("toto", radiate_on)
+        restart();
+    }
+}
 export { init }

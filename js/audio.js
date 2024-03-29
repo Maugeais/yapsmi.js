@@ -5,6 +5,16 @@ let simu_on = false;
 
 import { yin } from "./yin.js";
 
+import { transform } from "./fft.js";
+
+window.compute_fft = function(data, len){
+    let imag = new Float32Array(len);
+    let real = data.slice(0, len)
+    transform(real, imag)
+    return([real, imag])
+}
+
+
 function audio_start(){
 
     if (~simu_on){
@@ -23,18 +33,18 @@ function audio_stop(){
         simu_on = false;
 }
 
-let post_processors = [];
-
-function add_post_processor(f){
-        post_processors.push(f);
-}
-
-function remove_post_processor(f){
-    const index = post_processors.indexOf(f);
-    if (index > -1) { // only splice array when item is found
-        post_processors.splice(index, 1); // 2nd parameter means remove one item only
-    }
-}
+// let post_processors = [];
+//
+// function add_post_processor(f){
+//         post_processors.push(f);
+// }
+//
+// function remove_post_processor(f){
+//     const index = post_processors.indexOf(f);
+//     if (index > -1) { // only splice array when item is found
+//         post_processors.splice(index, 1); // 2nd parameter means remove one item only
+//     }
+// }
 
 let filters = [];
       
@@ -91,14 +101,23 @@ window.restart = function(){
 
 let audioCtx;
 let buffer_size  = 2048*2;
+let outputData;
+let fs;
 
+window.frequency = -1;
+window.get_frequency = function(){
+    if (frequency == -1) {
+        frequency = yin(outputData, fs, 0.07);
+    }
+    return(frequency)
+}
 
 async function init(inst) {
 
     AudioContext = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContext();
 
-    let fs = audioCtx.sampleRate;
+    fs = audioCtx.sampleRate;
     let dt = 1 / fs;
 
     var p;
@@ -119,8 +138,10 @@ async function init(inst) {
         let data = await filters[k].init(audioCtx, filters[k].uid); 
         filters[k].callback = data[1];
         if (data.length < 3 || data[2] == true) {
-            current.connect(data[0])
-            current = data[0];
+            if (data[0] != ""){
+                current.connect(data[0])
+                current = data[0];
+            }
         }
       }
 
@@ -132,6 +153,7 @@ async function init(inst) {
       // audioProcessingEvent ----------------------------------------------------------------------------------------
       scriptNode.onaudioprocess = function(audioProcessingEvent) {
             let t1 = Date.now();
+            frequency = -1;
 
 
             let outputBuffer = audioProcessingEvent.outputBuffer;
@@ -141,7 +163,7 @@ async function init(inst) {
             // }
 
 
-            let outputData = outputBuffer.getChannelData(0);
+            outputData = outputBuffer.getChannelData(0);
             
             inst.next_chunk(t, buffer_size, dt, buffer)
             inst.output(buffer, outputData)
@@ -156,10 +178,10 @@ async function init(inst) {
 
             } else {
                 inst.X0 = buffer[buffer.length-1];
-                let frequency = yin(outputData, fs, 0.07);
+                //let frequency = yin(outputData, fs, 0.07);
 
-                post_processors.forEach((f) => f(outputData, frequency));
-                filters.forEach(filter => filter.callback(filter.uid, frequency));
+                // post_processors.forEach((f) => f(outputData));
+                filters.forEach(filter => filter.callback(filter.uid));
             }
 
             t += buffer_size * dt;
@@ -171,4 +193,5 @@ async function init(inst) {
 } 
 
 
-export { audio_start, audio_stop, add_filter, remove_filter, add_post_processor, remove_post_processor}
+export { audio_start, audio_stop, add_filter, remove_filter}
+//, add_post_processor, remove_post_processor

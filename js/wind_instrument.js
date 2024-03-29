@@ -19,14 +19,15 @@ class wind_instrument extends instrument {
     
 
     change_fingering = function(name){
-         console.log("la fonction 'change_fingering' doit être redéfinie, it must call _change_fingering at the end !");
+         console.log("Function 'change_fingering' must be redefined. It must call _change_fingering at the end !");
     }
     
     add_fingerging_callback(callback){
-        fingering_callbacks.push(callback);
+        this.#fingering_callbacks.push(callback);
     }
     
-    _change_fingering(){
+    _change_fingering(name){
+        this.fingering = name;
         this.#fingering_callbacks.forEach((callback) => (callback(this.fingering)));
         console.log("_change_fingering");
     }

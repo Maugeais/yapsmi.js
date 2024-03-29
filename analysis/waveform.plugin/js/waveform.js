@@ -5,7 +5,7 @@ let analysers = {};
 const fs = 48000;
 
 function init(uid){
-    add_filter(init_waveform_analyser, waveform_analyser, uid);
+    add_filter(init_waveform_analyser, -1, uid);
     init_knobs("waveform_controls€"+uid, "medium", "LittlePhatty");
     let canvas = document.getElementById("waveform_canvas€"+uid);
     waveform_ctx[uid] = canvas.getContext("2d");
@@ -15,7 +15,6 @@ function init(uid){
     waveform_ctx[uid].dx = 1;
     waveform_ctx[uid].ymin = -1;
     waveform_ctx[uid].dy = 2;
-
 }
 
 function init_waveform_analyser(audioCtx, uid){
@@ -28,7 +27,9 @@ function init_waveform_analyser(audioCtx, uid){
 
 let view_waveform = new Float32Array(600);
 
-function waveform_analyser(uid, freq){
+function waveform_analyser(uid){
+
+    let freq = get_frequency();
     analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
 
     let trigger = 0

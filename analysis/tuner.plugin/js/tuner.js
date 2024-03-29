@@ -2,19 +2,23 @@
 
 const canvas = document.getElementById("tuner_canvas");
 const ctx = canvas.getContext("2d");
-// const ctx = getCTX();
 
 const ratio = canvas.width/canvas.height;
-
 function init(uid){
-    add_post_processor(draw_tuner);
+    add_filter(init_tuner, -1, uid);
+}
+
+function init_tuner(audioCtx, uid){
+    return(["", draw_tuner])
 }
 
 // ctx.translate(canvas.width/2, canvas.height/2);
 
 const notes = ["C", "©#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
-function draw_tuner(wav, freq){
+function draw_tuner(wav){
+
+    let freq = get_frequency();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();

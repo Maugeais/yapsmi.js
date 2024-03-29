@@ -1,9 +1,5 @@
 .midi{    
-    background-image: url("./images/midi.jpeg");
     grid-column: span 3;
-    border-radius : 15px;
-    background-size: cover;
-    border: 2px ridge #9f9165;
 }
 
 #midi_inputs{
@@ -13,10 +9,11 @@
 }
 
 #midi_events_table{
-    background : white;
+    background: #9da46ba3;
     margin: auto;
     color: black;
     width: 100%;
+    border: #b09b67 inset;
 }
 
 #midi_events{
@@ -27,6 +24,7 @@
     position: absolute;
     left: 5%;
     overflow-y : auto;
+    margin-top: 15px;
 }
 
 #midi_events_table input{
@@ -71,8 +69,8 @@
 
 
 .button-15 {
-    background-image: linear-gradient(#42A1EC, #0070C9);
-    border: 1px solid #0077CC;
+    background: linear-gradient(#B09B67, #7B7551);
+    border: 1px solid #837E58;;
     border-radius: 4px;
     box-sizing: border-box;
     color: black;
@@ -101,19 +99,19 @@
   }
   
   .button-15:hover {
-    background-image: linear-gradient(#51A9EE, #147BCD);
-    border-color: #1482D0;
+    background-image: linear-gradient(#7B7551, #B09B67);
+    border-color:#B09B67;
     text-decoration: none;
   }
   
   .button-15:active {
-    background-image: linear-gradient(#3D94D9, #0067B9);
+    background-image: linear-gradient(#7B7551, #B09B67);
     border-color: #006DBC;
     outline: none;
   }
   
   .button-15:focus {
-    box-shadow: rgba(131, 192, 253, 0.5) 0 0 0 3px;
+    box-shadow: #B09B67 0 0 0 3px;
     outline: none;
   }
 

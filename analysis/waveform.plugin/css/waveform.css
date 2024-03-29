@@ -1,9 +1,5 @@
-#waveform{
-  background : #a99e96;
-  background-size: cover;
+.waveform{
   grid-column: span 3; 
-  border: aliceblue double 3px;
-  border-radius : 20px;
 }
 
 .waveform_controls{

@@ -1,9 +1,5 @@
-#levels{
-  background : #a99e96;
-  background-size: cover;
+.levels{
   grid-column: span 3; 
-  border: aliceblue double 3px;
-  border-radius : 20px;
 }
 
 .levels_controls{

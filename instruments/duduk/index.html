@@ -16,69 +16,8 @@
       </div> 
 
       <div id="model"><div class="close_button" onclick="$(this).parent().hide()">x</div>
-        Test de police de caractère
-        <p><span class="math inline">\(a^2 + b^2 = c^2\)</span></p>
-        <p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
-        <p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 -
-        v^2/c^2}}\)</span></p>
-        <p><span class="math inline">\(\exists x \forall y (Rxy \equiv
-        Ryx)\)</span></p>
-        <p><span class="math inline">\(p \wedge q \models p\)</span></p>
-        <p><span class="math inline">\(\Box\diamond p\equiv\diamond
-        p\)</span></p>
-        <p><span class="math inline">\(\int_{0}^{1} x dx = \left[ \frac{1}{2}x^2
-        \right]_{0}^{1} = \frac{1}{2}\)</span></p>
-        <p><span class="math inline">\(e^x = \sum_{n=0}^\infty \frac{x^n}{n!} =
-        \lim_{n\rightarrow\infty} (1+x/n)^n\)</span></p>
-        <p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
-        <p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 -
-        v^2/c^2}}\)</span></p>
-        <p><span class="math inline">\(\exists x \forall y (Rxy \equiv
-        Ryx)\)</span></p>
-        <p><span class="math inline">\(p \wedge q \models p\)</span></p>
-        <p><span class="math inline">\(\Box\diamond p\equiv\diamond
-        p\)</span></p>
-        <p><span class="math inline">\(\int_{0}^{1} x dx = \left[ \frac{1}{2}x^2
-        \right]_{0}^{1} = \frac{1}{2}\)</span></p>
-        <p><span class="math inline">\(e^x = \sum_{n=0}^\infty \frac{x^n}{n!} =
-        \lim_{n\rightarrow\infty} (1+x/n)^n\)</span></p>
-        <p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
-        <p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 -
-        v^2/c^2}}\)</span></p>
-        <p><span class="math inline">\(\exists x \forall y (Rxy \equiv
-        Ryx)\)</span></p>
-        <p><span class="math inline">\(p \wedge q \models p\)</span></p>
-        <p><span class="math inline">\(\Box\diamond p\equiv\diamond
-        p\)</span></p>
-        <p><span class="math inline">\(\int_{0}^{1} x dx = \left[ \frac{1}{2}x^2
-        \right]_{0}^{1} = \frac{1}{2}\)</span></p>
-        <p><span class="math inline">\(e^x = \sum_{n=0}^\infty \frac{x^n}{n!} =
-        \lim_{n\rightarrow\infty} (1+x/n)^n\)</span></p>
-        <p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
-        <p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 -
-        v^2/c^2}}\)</span></p>
-        <p><span class="math inline">\(\exists x \forall y (Rxy \equiv
-        Ryx)\)</span></p>
-        <p><span class="math inline">\(p \wedge q \models p\)</span></p>
-        <p><span class="math inline">\(\Box\diamond p\equiv\diamond
-        p\)</span></p>
-        <p><span class="math inline">\(\int_{0}^{1} x dx = \left[ \frac{1}{2}x^2
-        \right]_{0}^{1} = \frac{1}{2}\)</span></p>
-        <p><span class="math inline">\(e^x = \sum_{n=0}^\infty \frac{x^n}{n!} =
-        \lim_{n\rightarrow\infty} (1+x/n)^n\)</span></p>
-        <p><span class="math inline">\(v(t) = v_0 + \frac{1}{2}at^2\)</span></p>
-        <p><span class="math inline">\(\gamma = \frac{1}{\sqrt{1 -
-        v^2/c^2}}\)</span></p>
-        <p><span class="math inline">\(\exists x \forall y (Rxy \equiv
-        Ryx)\)</span></p>
-        <p><span class="math inline">\(p \wedge q \models p\)</span></p>
-        <p><span class="math inline">\(\Box\diamond p\equiv\diamond
-        p\)</span></p>
-        <p><span class="math inline">\(\int_{0}^{1} x dx = \left[ \frac{1}{2}x^2
-        \right]_{0}^{1} = \frac{1}{2}\)</span></p>
-        <p><span class="math inline">\(e^x = \sum_{n=0}^\infty \frac{x^n}{n!} =
-        \lim_{n\rightarrow\infty} (1+x/n)^n\)</span></p>
-      </div>
+        <div id="model_content"></div>
+      </div>  
     </header>
     <main>
 
@@ -104,33 +43,37 @@
               <div onclick="click_hole(this)" class="duduk_hole" id = "Bp1"></div>
           </div>
 
-          <div id="duduk_controls">
+          <div id="duduk_controls1">
 
-            <div class = "control_knob">
-                <div class="value_container">Pb=<div class="knob_value" id="pb_value">100</div></div>
-                <div class="knob" id="pb"></div>
+              <div class = "control_knob">
+                  <div class="value_container">Pb=<div class="knob_value" id="pb_value">100</div></div>
+                  <div class="knob" id="pb"></div>
 
-            </div>
+              </div>
 
-            <div class = "control_knob">
-                <div class="value_container">Fl=<div class="knob_value" id="Fl_value">100</div></div>
-                <div class="knob" id="Fl"></div>
-            </div>
+              <div class = "control_knob">
+                  <div class="value_container">Fl=<div class="knob_value" id="Fl_value">100</div></div>
+                  <div class="knob" id="Fl"></div>
+              </div>
 
-            <div class = "control_knob">
-              <div class="value_container">mul=<div class="knob_value" id="mul_value">100</div></div>
-              <div class="knob" id="mul"></div>
-            </div>
+              <div class = "control_knob">
+                <div class="value_container">mul=<div class="knob_value" id="mul_value">100</div></div>
+                <div class="knob" id="mul"></div>
+              </div>
+              <div class = "control_knob">
+                <div class="value_container">Ql=<div class="knob_value" id="Ql_value">100</div></div>
+                <div class="knob" id="Ql"></div>
+              </div>
+              <div class = "control_knob">
+                <div class="value_container">H=<div class="knob_value" id="H_value">100</div></div>
+                <div class="knob" id="H"></div>
+              </div>
+          </div>
+          <div id="duduk_controls2">
 
-            <div class = "control_knob">
-              <div class="value_container">Ql=<div class="knob_value" id="Ql_value">100</div></div>
-              <div class="knob" id="Ql"></div>
-            </div>
+              
 
-            <div class = "control_knob">
-              <div class="value_container">H=<div class="knob_value" id="H_value">100</div></div>
-              <div class="knob" id="H"></div>
-            </div>
+              
 
           </div>
         </div>
@@ -147,10 +90,17 @@
   <script src="../../js/knobs.js"></script>
 
   <script src="../../js/tools.js"></script>
+
   <script src="../../js/plugins.js"></script>
 
   <script type="module" src="js/init.js"></script>
   <script src="./js/duduk-ui.js"></script>
+
+  <script> 
+    $(function(){
+      $("#model_content").load("model.html"); 
+    });
+    </script> 
 
 
   <script> 
@@ -159,7 +109,7 @@
       $("#tools").load("../../templates/tools.html", init_menu); 
     });
     
-    duduk_knobs = init_knobs("duduk_controls", "large", "Vintage");
+    duduk_knobs = init_knobs("duduk", "large", "Vintage");
 
   </script> 
   <!-- <script>window.addEventListener('load', function () {

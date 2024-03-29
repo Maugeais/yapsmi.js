@@ -59,10 +59,10 @@ let H = 0.3e-3;
 let w = 0.018;
 let q = 1;
 
-let duduk = new wind_instrument("Simon", {'pb': new parameter(2000, [1000, 4000], 'Pa'), 
-                                        'Fl' : new parameter(330, [200, 800], 'Hz'),
-                                        'Ql' : new parameter(3, [1.5, 5], ''),
-                                        'mul' : new parameter(2.14, [1.5, 2.5], 'g/m²'),
+let duduk = new wind_instrument("Simon", {'pb': new parameter(1000, [100, 2500], 'Pa'), 
+                                        'Fl' : new parameter(480, [200, 800], 'Hz'),
+                                        'Ql' : new parameter(3.3, [1.5, 5], ''),
+                                        'mul' : new parameter(1.52, [0.5, 2.5], 'g/m²'),
                                         'H' : new parameter(0.3e-3, [0, 1e-2], 'μm')}, 9000, 1/9000, 'A',
                                         ['G-1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'A+1', 'B+1', 'C+1']);
 
@@ -83,13 +83,15 @@ duduk.change_fingering = function(name){
     // this.filter = duduk.filters[name];
     
     N = S.length;
+
+    duduk.filter = "./data/"+name+"/transfer.wav";
     
-    duduk._change_fingering();
+    duduk._change_fingering(name);
 }
     
 duduk.X0 = new Array(duduk.dim).fill(0);
 
-let epsilon = 1e-1;
+let epsilon = 1e-6;
 let der = new Float32Array(duduk.dim);
 
 duduk.model = function(t, x){
@@ -110,10 +112,10 @@ duduk.model = function(t, x){
     // Expression exacte du débit
     
     // Expression régularisée du débit
-    u = w*H*(theta(h)/H)**q*(2*rho)**0.5*(pb-p)/((-pb+p)**2+epsilon)**0.25;
+    u = w*theta(h)*(2/rho)**0.5*(pb-p)/((-pb+p)**2+epsilon*pb**2)**0.25;
     
     der[0] = x[1];
-    der[1] = -omegal/Ql*x[1]-omegal*omegal*(x[0]-H) - (pb-p)/mu; // ok
+    der[1] = -omegal/Ql*x[1]-omegal**2*(x[0]-H) - (pb-p)/mu; // ok
             
     for (let i=0; i < N; i++){
         

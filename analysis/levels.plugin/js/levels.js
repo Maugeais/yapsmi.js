@@ -1,13 +1,11 @@
 'use strict';
 
-import { transform } from './fft.js';
+// import { transform } from './fft.js';
 let levels_ctx = {};
 let analysers = {};
 
 function init(uid){
-    // add_filter(init_timbre_analyser, timbre_analyser);
-    // add_post_processor(levels_analyser);
-    add_filter(init_levels_analyser, levels_analyser, uid);
+    add_filter(init_levels_analyser, -1, uid);
     init_knobs("levels_controls€"+uid, "medium", "LittlePhatty");
     let canvas = document.getElementById("levels_canvas€"+uid);
     levels_ctx[uid] = canvas.getContext("2d");
@@ -32,13 +30,12 @@ function init_levels_analyser(audioCtx, uid){
 
 
 
-function levels_analyser(uid, freq){
+function levels_analyser(uid){
     analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
+    let freq = get_frequency();
     let len = parseInt(48000/freq);
-    let imag = new Float32Array(len);
-    let real = analysers[uid].wavArray.slice(0, len)
-    transform(real, imag)
-    levels_draw(real, imag, freq, uid)
+    const val = compute_fft(analysers[uid].wavArray, len)
+    levels_draw(val[0], val[1], freq, uid)
 }
 
 

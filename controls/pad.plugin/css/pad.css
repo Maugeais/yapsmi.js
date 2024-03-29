@@ -11,10 +11,6 @@
 
 .pad{
     grid-column: span 3;
-    border: 5px ridge #998b8b;
-    border-radius: 20px;
-    background: #776e6e;
-    color: white;
     font-family: Arial;
     text-align: center;
     width: 330px;

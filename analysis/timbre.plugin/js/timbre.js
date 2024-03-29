@@ -1,69 +1,115 @@
 'use strict';
 
-import { transform } from './fft.js';
-
-
-let levels_ctx ={};
+let analysers = {};
+let position = 0;
+let drawing_on = true;
+let tail_size = 5;
 
 function init(uid){
-    // add_filter(init_levels_analyser, levels_analyser);
-    add_post_processor(levels_analyser);
-    init_knobs("levels_controls", "medium", "LittlePhatty");
-    let canvas = document.getElementById("spectrum_canvas€"+uid);
-    levels_ctx[uid] = canvas.getContext("2d");
-    levels_ctx[uid].width = canvas.width;
-    levels_ctx[uid].height = canvas.height;
-    levels_ctx[uid].xmin = 0;
-    levels_ctx[uid].dx = 20;
-    levels_ctx[uid].ymin = -200;
-    levels_ctx[uid].dy = 200;
+    add_filter(init_timbre_analyser, -1, uid);
+    init_knobs("timbre_controls", "medium", "LittlePhatty");
+    draw();
 }
 
-function levels_analyser(data, freq, uid){
+function init_timbre_analyser(audioCtx, uid){
+    analysers[uid] = audioCtx.createAnalyser();
+    analysers[uid].fftSize = 2048*16;
+    analysers[uid].smoothingTimeConstant = 0.0;
+    analysers[uid].wavArray = new Float32Array(analysers[uid].frequencyBinCount);
+    return([analysers[uid], timbre_analyser])
+}
+
+function timbre_analyser(uid){
+    analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
+    let freq = get_frequency();
     let len = parseInt(48000/freq);
-    let imag = new Float32Array(len);
-    let real = data.slice(0, len)
-    transform(real, imag)
-    levels_draw(real, imag, freq, uid)
+    const val = compute_fft(analysers[uid].wavArray, len)
+    update_drawing(val[0], val[1], freq, uid)
 }
 
 
 
 let max_harmonics = 100;
-let view_levels = new Array(max_harmonics);
+let view_timbre = new Array(max_harmonics);
 let x = new Array(max_harmonics);
-
-function levels_draw(real, imag,  freq){
-    levels_ctx.clearRect(0, 0, levels_ctx.width, levels_ctx.height);
-    levels_ctx.fillStyle = "red";
-    for (let i = 0; i < levels_ctx[uid].dx; i++) {
-        view_levels[i] = 10*Math.log10(real[i+1]**2+imag[i+1]**2);
-        levels_ctx.fillRect(i*levels_ctx.width/levels_ctx[uid].dx,
-                                levels_ctx.height,
-                                levels_ctx.width/levels_ctx[uid].dx,
-                                -view_levels[i]*levels_ctx[uid].dy-levels_ctx[uid].ymin);
-    }
-}
 
 
 
 window.spectrum_offset_x_change = function(a, uid){
-    levels_ctx[uid].xmin = a;
+    timbre_ctx[uid].xmin = a;
 }
 
 
 window.spectrum_offset_y_change = function(a, uid){
-    levels_ctx[uid].ymin = -5*a;
+    timbre_ctx[uid].ymin = -5*a;
 }
 
 
-window.spectrum_scale_x_change = function(a, uid){
-    levels_ctx[uid].dx = 10*(1+a);
+
+function draw(){
+  var traces = [{
+    x: [],
+    y: [],
+    type: 'scatter'  
+  }, {
+    x: [],
+    y: [],
+    type: 'scatter'
+  }, {
+    x: [],
+    y: [],
+    type: 'scatter'
+  }, {
+    x: [],
+    y: [],
+    type: 'scatter'
+  }];
+  
+  
+    var layout = {
+            //autosize: true,
+            width: 450,
+            height: 200,
+            uirevision :true,
+            margin: {
+              l: 20,
+              r: 0,
+              b: 20,
+              t: 0
+            },
+            xaxis: {
+              title: 'Time (s)',
+              showgrid: true,
+              zeroline: false
+            },
+            yaxis: {
+              showline: false
+            }
+          };
+
+    Plotly.newPlot('timbre_display', traces, layout);
 }
 
+function update_drawing(real, imag, freq, uid){
 
-window.spectrum_scale_y_change = function(a, uid){
-    levels_ctx[uid].dy = (1+a*10);
+    if (!drawing_on){
+      return;
+    }
+
+    position++;
+
+    var values = [];
+    var energy = 0;
+
+    for (let i=0; i < 20; i++){
+      values.push([Math.sqrt(real[i+1]**2+imag[i+1]**2)]);
+      energy += values[i][0];
+    }
+    
+    var update = { x : [[position], [position], [position], [position]],
+      y:[[10*Math.log10(values[0]/energy)], [10*Math.log10(values[1]/energy)], [10*Math.log10(values[2]/energy)], [10*Math.log10(values[3]/energy)]]}
+
+    Plotly.extendTraces('timbre_display', update, [0, 1, 2, 3], tail_size)
 }
 
 export { init }

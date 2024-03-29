@@ -1,3 +1,33 @@
+"use strict";
+
+let analysers = {};
+const fs = 48000;
+
+function init_waveform_analyser(audioCtx, uid){
+    analysers[uid] = audioCtx.createAnalyser();
+    analysers[uid].fftSize = 2048*16;
+    analysers[uid].smoothingTimeConstant = 0.0;
+    analysers[uid].wavArray = new Float32Array(analysers[uid].frequencyBinCount);
+    return([analysers[uid], waveform_analyser])
+}
+
+function waveform_analyser(uid){
+
+    if (!drawing_on){
+        return;
+      }
+    analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
+    let freq = get_frequency();
+    var update = {
+            x: [[compute_value(key_x, analysers[uid].wavArray, freq)]],
+            y: [[compute_value(key_y, analysers[uid].wavArray, freq)]],
+    }
+    ++i;
+
+    Plotly.extendTraces('colino2d_display', update, [0], tail_size)
+}
+
+
 var i = 0;
 
 var tail_size = 100;
@@ -14,18 +44,19 @@ window.colino2d_change_axis = function(axis, container){
       if (axis == "y") key_y = $(container).val();
 }
 
-let canvas = document.getElementById("colino2d_display");
-
+// let canvas = document.getElementById("colino2d_display");
+//
 let drawing_on = true;
-
-canvas.addEventListener("mousedown", function(e) {
-    drawing_on = false;
-});
-
-canvas.addEventListener("mouseup", function(e) {
-    drawing_on = true;
-});
+//
+// canvas.addEventListener("mousedown", function(e) {
+//     drawing_on = false;
+// });
+//
+// canvas.addEventListener("mouseup", function(e) {
+//     drawing_on = true;
+// });
     
+
 function draw(){
     var x = [];
     var y = [];
@@ -62,7 +93,9 @@ function draw(){
     Plotly.newPlot('colino2d_display', data, layout);
 }
 
-function compute_value(key, output, freq){
+function compute_value(key, output){
+
+  let freq = get_frequency();
 
   switch (key){
     case "rms" :
@@ -80,22 +113,22 @@ function compute_value(key, output, freq){
   }  
 }
 
-function update_drawing(output, freq){
+// function update_drawing(output, freq){
+//
+//       if (!drawing_on){
+//         return;
+//       }
+//
+//       var update = {
+//               x: [[compute_value(key_x, output, freq)]],
+//               y: [[compute_value(key_y, output, freq)]],
+//       }
+//       ++i;
+//
+//       Plotly.extendTraces('colino2d_display', update, [0], tail_size)
+// }
 
-      if (!drawing_on){
-        return;
-      }
-      
-      var update = {
-              x: [[compute_value(key_x, output, freq)]],
-              y: [[compute_value(key_y, output, freq)]],
-      }
-      ++i;
-
-      Plotly.extendTraces('colino2d_display', update, [0], tail_size)
-}
-
-function init(){
+function init(uid){
     init_knobs("colino2d_controls", "large", "Vintage");
 
     let keys = Object.keys(inst.params);
@@ -110,9 +143,9 @@ function init(){
         }));
     });
 
-
     draw();
-    add_post_processor(update_drawing)
+    add_filter(init_waveform_analyser, -1, uid);
+
 }
 
 export { init };

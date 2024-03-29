@@ -47,7 +47,9 @@ function init_menu(){
 async function loadJS(filename, uid, state={}){
     let { init } = await import(filename);
     init(uid);
-    plugins[uid].load(state)
+    if (Object.keys(state).length > 0){
+        plugins[uid].load(state)
+    }
     plugins[uid].loaded = true;
 }
 
@@ -227,6 +229,7 @@ function save_session(){
         session.plugins.push(plug);
     }
 
+    console.log(session)
     const link = document.createElement("a");
     const file = new Blob([JSON.stringify(session)], { type: 'text/plain' });
     link.href = URL.createObjectURL(file);
@@ -272,3 +275,16 @@ function choose_control(callback, elmnt){
   }
 
 // import('./controls.js')
+
+$(".plugin").click(function(e){
+    e.stopPropagation();
+});
+
+
+$("#tools").click(function(e){
+    e.stopPropagation();
+});
+
+$("body").click(function(e){
+    $(".pop").hide()
+});

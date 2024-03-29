@@ -1,9 +1,5 @@
 .spectrum{
-  background : #a99e96;
-  background-size: cover;
   grid-column: span 3; 
-  border: aliceblue double 3px;
-  border-radius : 20px;
 }
 
 .spectrum_controls{

@@ -1,5 +1,35 @@
 "use strict";
 
+let analysers = {};
+const fs = 48000;
+
+function init_waveform_analyser(audioCtx, uid){
+    analysers[uid] = audioCtx.createAnalyser();
+    analysers[uid].fftSize = 2048*16;
+    analysers[uid].smoothingTimeConstant = 0.0;
+    analysers[uid].wavArray = new Float32Array(analysers[uid].frequencyBinCount);
+    return([analysers[uid], waveform_analyser])
+}
+
+function waveform_analyser(uid){
+
+    if (!drawing_on){
+        return;
+      }
+    analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
+    let freq = get_frequency();
+    var update = {
+            x: [[compute_value(key_x, analysers[uid].wavArray, freq)]],
+            y: [[compute_value(key_y, analysers[uid].wavArray, freq)]],
+            z: [[compute_value(key_z, analysers[uid].wavArray, freq)]],
+
+    }
+    ++i;
+
+    Plotly.extendTraces('colino3d_display', update, [0], tail_size)
+}
+
+
 var pointCount = 3142;
 var i = 0;
 
@@ -19,17 +49,17 @@ window.colino3d_change_axis = function(axis, container){
   if (axis == "z") key_z = $(container).val();
 }
 
-let canvas = document.getElementById("colino3d_display");
+// let canvas = document.getElementById("colino3d_display");
 
 let drawing_on = true;
 
-canvas.addEventListener("mousedown", function(e) {
-    drawing_on = false;
-});
+// canvas.addEventListener("mousedown", function(e) {
+//     drawing_on = false;
+// });
 
-canvas.addEventListener("mouseup", function(e) {
-    drawing_on = true;
-});
+// canvas.addEventListener("mouseup", function(e) {
+//     drawing_on = true;
+// });
     
 function draw(){
     
@@ -82,7 +112,9 @@ function draw(){
 }
 
 
-function compute_value(key, output, freq){
+function compute_value(key, output){
+
+  let freq = get_frequency();
 
   switch (key){
     case "rms" :
@@ -100,32 +132,8 @@ function compute_value(key, output, freq){
   }  
 }
 
-function update_drawing(output, freq){
-
-      if (!drawing_on){
-        return;
-      }
-
-      let rms = 0;
-      for (let j = 0; j < 48000/freq; j++){
-        rms += output[j]*output[j];
-      }
-
-      rms = Math.sqrt(rms);
-    
-      var update = {
-              x: [[compute_value(key_x, output, freq)]],
-              y: [[compute_value(key_y, output, freq)]],
-              z: [[compute_value(key_z, output, freq)]],
-              'line.color': [[i]]
-      }
-      ++i;
-
-      Plotly.extendTraces('colino3d_display', update, [0], tail_size)
-}
-
 let knobs;
-function init(){
+function init(uid){
     knobs = init_knobs("colino3d_controls", "large", "Vintage");
 
     let keys = Object.keys(inst.params);
@@ -146,7 +154,8 @@ function init(){
 
 
     draw();
-    add_post_processor(update_drawing)
+    add_filter(init_waveform_analyser, waveform_analyser, uid);
+
 }
 
 export { init };
