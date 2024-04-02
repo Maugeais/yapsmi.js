@@ -9,17 +9,17 @@ class parameter{
 }
 
 class instrument{
-    constructor(name, params, max, gain){
+    constructor(name, params, dim, max, gain){
         this.name = name;
         this.params = params;
-        this.X0 = [];
+        this.dim = dim;
+        this.X0 = new Array(this.dim).fill(0);
         this.max = max;
         this.gain = gain;
         this.vars = {};
         this.rms = 0;
         this.freq= 0;
         this.range = ["C4", "C5"];
-        this.dim = 0;
         this.self = this
     }
     
