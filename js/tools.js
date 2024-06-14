@@ -44,51 +44,57 @@ function init_menu(){
     register_controls("Audio", {"on/off" : [Boolean, audio_start]});
 }
 
-async function loadJS(filename, uid, state={}){
-    let { init } = await import(filename);
-    init(uid);
-    if (Object.keys(state).length > 0){
-        plugins[uid].load(state)
-    }
-    plugins[uid].loaded = true;
+// async function loadJS(filename, uid){
+//     let { init } = await import(filename);
+//     init(uid);
+//     // if (Object.keys(state).length > 0){
+//     //     plugins[uid].load(state)
+//     // }
+//     plugins[uid].loaded = true;
+// }
+
+async function loadJS(filename, uid){
+    return new Promise((resolve, reject) => {
+       import(filename).then((obj) => {
+            obj["init"](uid);
+            plugins[uid].loaded = true;
+            resolve("ok")
+        }).catch((err) => {
+            reject("Error")
+        });
+    })
+    // init(uid);
+    // if (Object.keys(state).length > 0){
+    //     plugins[uid].load(state)
+    // }
 }
 
 
-async function load_plugin(menu_entry, element, state = {}){
+async function load_plugin(menu_entry, element){
 
-    $.get(
-        `../../${menu_entry}/${element}.plugin/index.html`,
-        {},
-        function (data) {      
-            plugins.push(new plugin(element, menu_entry));
-            let a = $("#wrapper").append(`<div class='plugin ${element}' id=\"${element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
+    return new Promise((resolve, reject) => {
 
-            a.html(data.replaceAll('{{id}}', '€'+plugins[plugins.length-1].uid));
-            loadJS(`../${menu_entry}/${element}.plugin/js/${element}.js`, plugins[plugins.length-1].uid, state);
+        $.get(
+            `../../${menu_entry}/${element}.plugin/index.html`,
+            {},
+            function (data) {      
+                plugins.push(new plugin(element, menu_entry));
+                let a = $("#wrapper").append(`<div class='plugin ${element}' id=\"${element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
 
-            if (!plugins_list[element].manifest.multi_threaded){
-                console.log('Not multi');
-                $(`.plugin_menu:contains("${element}")`).css({"backgroundColor": "red", "pointer-events": "none"});
-            }    
-            
-            console.log("pop hide")
-            $(".pop").hide();
-        }
-    );         
-    
+                a.html(data.replaceAll('{{id}}', '€'+plugins[plugins.length-1].uid));
+                loadJS(`../${menu_entry}/${element}.plugin/js/${element}.js`, plugins[plugins.length-1].uid);
 
-
-
-//     $(function(){
-//         a.load(`../../${menu_entry}/${element}.plugin/index.html`, function(){
-//             // $.getScript("../../"+menu_entry+"/"+element+".plugin/js/"+element+".js", function(){
-//             //     eval(element+"_init()");
-//             // });
-//             // loadJS("../../"+menu_entry+"/"+element+".plugin/js/"+element+".js")
-//             loadJS(`../../${menu_entry}/${element}.plugin/js/${element}.js`)
-//
-//         });
-//     });
+                if (!plugins_list[element].manifest.multi_threaded){
+                    $(`.plugin_menu:contains("${element}")`).css({"backgroundColor": "red", "pointer-events": "none"});
+                }    
+                
+                $(".pop").hide();
+                resolve("ok");
+            }
+            ).fail(function(){
+                reject("Error")
+        });         
+    })
 
 }
 
@@ -102,7 +108,7 @@ function knobChanged(id, val) {
     id = id.split('€');
     // console.log(id);
     // Il faut d'écouper l'id en 2 et envoyer la seconde partie comme argument
-     eval(`${id[0]}_change(val, ${id[1]})`);
+    eval(`${id[0]}_change(${val}, ${id[1]})`);
 }
 
 
@@ -151,39 +157,6 @@ function init_knobs(name, size, type){
         }*/
 }
 
-function getCTX(Id){
-    var obj = document.getElementById(Id);
-    var ctx = obj.getContext("2d");
-    obj.width = ctx.width = $("#"+Id).width(); //;
-    obj.height = ctx.height = $("#"+Id).height(); //obj.height;
-    //console.log($("#"+Id).width(), obj.width, obj.height)
-    return(ctx);
-}
-
-function drawArray(ctx, x, y){
-    ctx.clearRect(0, 0, ctx.width, ctx.height); // canvas
-
-
-    //ctx.setLineDash([1, 0]);
-    ctx.beginPath();
-    ctx.arc((-ctx.xmin+x[x.length-1])/(ctx.xmax-ctx.xmin)*ctx.width, ctx.height-(-ctx.ymin+y[x.length-1])/(ctx.ymax-ctx.ymin)*ctx.height, 2, 0, 2 * Math.PI, false);
-    ctx.fillStyle = 'green';
-    ctx.fill();
-    ctx.lineWidth = 5;
-    ctx.strokeStyle = '#003300';
-    ctx.stroke();
-
-
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = 'blue';
-    ctx.beginPath();
-    ctx.moveTo((-ctx.xmin+x[0])/(ctx.xmax-ctx.xmin)*ctx.width, ctx.height-(-ctx.ymin+y[0])/(ctx.ymax-ctx.ymin)*ctx.height);
-    for (let i = 1; i < x.length; i++) {
-        ctx.lineTo((-ctx.xmin+x[i])/(ctx.xmax-ctx.xmin)*ctx.width, ctx.height-(-ctx.ymin+y[i])/(ctx.ymax-ctx.ymin)*ctx.height);
-    }
-    ctx.stroke()
-}
-
 function new_session(){
 
 }
@@ -193,22 +166,58 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 async function load_session_elements(session){
     let i = 0;
     while(i < session.plugins.length){
-        if (plugins.length == 0 || (plugins.length == i && plugins[i].loaded == true)) {
-            load_plugin(session.plugins[i].entry, session.plugins[i].name, session.plugins[i].state);
-            i++;
-        } else {
-            await delay(500)
-        }
+
+        // if (plugins.length == 0 || (plugins.length == i && plugins[i-1].loaded == true)) {
+        await load_plugin(session.plugins[i].entry, session.plugins[i].name);
+        await delay(500) 
+        console.log(session.plugins[i].state)
+        plugins[i].load(plugins[i].uid, session.plugins[i].state)
+
+        i++;
+        // } 
+        // else {
+        //     await delay(500)
+        // }
     }
 }
 
-function load_session(){
-    $.getJSON("../../sessions/test2.json", function(session){
+function load_session(file){
+    const reader = new FileReader()
 
-        if (session["program"] != "psmi.js"){
+    let display_file = ( e ) => { // set the contents of the <textarea>
+        try {
+            let session = JSON.parse(e.target.result);
+            if (session["program"] != "yapsmi.js"){
+                message("Invalid configuration file")
+                } else {
+                    $("#load").hide();
+                    load_session_elements(session)
+                    message(`Session saved on ${session.date} loaded`)
+                }
+            console.log(session)
+        } catch(e) {
+            return message("Invalid configuration file") 
+        }
+    };
+
+    let on_reader_load = ( fl ) => {
+        // console.info( '. file reader load', fl );
+        return display_file; // a function
+        };
+
+    reader.onload = on_reader_load(file);
+    reader.readAsText(file)
+
+    
+}
+
+function load_example_session(file){
+    $.getJSON("../../sessions/"+file, function(session){
+
+        if (session["program"] != "yapsmi.js"){
             message("File not compatible")
         } else {
-
+            $("#load").hide()
             load_session_elements(session)
             message(`Session saved on ${session.date} loaded`)
         }
@@ -218,7 +227,7 @@ function load_session(){
 }
 
 function save_session(){
-    let session = {"program" : "psmi.js", "date" : Date()};
+    let session = {"program" : "yapsmi.js", "date" : Date()};
 
     session.plugins = [];
 
@@ -287,4 +296,55 @@ $("#tools").click(function(e){
 
 $("body").click(function(e){
     $(".pop").hide()
+    $(".popup").hide()
 });
+
+/// Handling saving
+function load_dragenter(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    load_dropbox.css({"border":"1px solid red"});
+}
+
+function load_dragleave(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    load_dropbox.css({"border":"none"});
+}
+  
+function load_dragover(e) {
+    e.stopPropagation();
+    e.preventDefault();
+}
+
+
+function load_drop(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const dt = e.originalEvent.dataTransfer;
+    const files = dt.files;
+
+    load_session(dt.files[0])
+
+// handleFiles(files);
+}
+
+
+var currentMenu = {};
+function change_controls(direction, menu=""){
+
+    let controls_windows = $("#"+menu+" .instrument_controls_window");
+
+    $(controls_windows[currentMenu[menu]]).fadeOut(300)
+
+    currentMenu[menu] = (currentMenu[menu] + direction) % controls_windows.length;
+
+    if (currentMenu[menu] < 0) {
+      currentMenu[menu] += controls_windows.length;
+    }
+
+    $(controls_windows[currentMenu[menu]]).delay(300).fadeIn(300)
+
+    // console.log(menu, direction, currentMenu)
+}

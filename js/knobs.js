@@ -1,5 +1,6 @@
 /********************************* 
 JS Audio Knobs by Colin Bone Dodds
+cf. https://colinbd.github.io/JSAudioKnobs/
 *********************************/
 
 let madeGlobalEventHandlers = false; //checked during each Knob class instantiation. Only the first instantiation creates the event handlers.

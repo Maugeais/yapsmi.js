@@ -19,6 +19,7 @@ const notes = ["C", "©#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
 function draw_tuner(wav){
 
     let freq = get_frequency();
+    $("#tuner_frequency").html(freq.toFixed(2)+'Hz')
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.beginPath();

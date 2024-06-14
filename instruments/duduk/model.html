@@ -2,38 +2,50 @@
 Duduk model
 </h1>
 
-For more details, see
+For more details, see the companion article ....
 
-<h2> Impedance model </h2>
+<br>
+Time dependant variable: 
+<ul>
+	<li>reed opening \(h\)</li>
+	<li>downsrteam pressure \(p\)</li>
+	<li>flow through the reed \(u\)</li>
+</ul> 
+  
+ <br>
 
-<h2> Physical model </h2>
+Phyisical constants:
 
-Reed opening \(h\), mouth pressure \(p_m\), downsrteam pressure \(p\) and the flow through the reed \(u\).
+<ul>
+	<li>mouth pressure \(p_m\)</li>
+	<li>reed frequency \(F_r\)</li>
+	<li>reed stifness \(K_r\)</li>
+	<li>reed quality factor \(Q_r\)</li>
+	<li>reed opening at rest \(H\)</li>
+</ul>
 
+The reed is modeled as a one degree of freedom oscillator driven by the pressure differential
 \begin{equation}
-	\label{eq:model}
-	\begin{cases}
-		\ddot{h}+\frac{\omega_r}{Q_r} \dot{h} + \omega^2_r(h-H) = -(p_m-p) \frac{K}{\omega_r^2} \\
+		\ddot{h}+\frac{\omega_r}{Q_r} \dot{h} + \omega^2_r(h-H) = -(p_m-p) \frac{K}{\omega_r^2}
 		\hat{p}(\omega) = Z(\omega) \hat{u}(\omega) \\
 		u = w h^+ \mathrm{sgn}(p_m-p)\sqrt{\frac{2|p_m-p|}{\rho}}
-	\end{cases}
 \end{equation}
 
-First equation: reed as a one degree of freedom oscillator, with \(H\) the reed opening at rest, \(Q_r\) its quality factor, \(K\) its stiffness and \(\omega_r\) its frequency.
-Second equation: definition of the impedance written in the Fourier domain, and \(Z\) has the form
+The resonator is described by its input impedance in the Fourier domain
+\begin{equation}
+	\hat{p}(\omega) = Z(\omega) \hat{u}(\omega) 
+\end{equation}
+where \(Z\) is decomposed as 
 \begin{equation}
 	\label{eq:impedance_cylinder}
 	Z(\omega) = Z_c \sum_n \frac{C_n}{j\omega - s_n}
 \end{equation}
 where \(Z_c\) represents the characteristic impedance \(Z_c = \frac{\rho c_0}{\pi R^2}\).
 
-Last equation is the description of the valve effect obtained through Bernoulli's equation, where \(w\) is the reed width, \(h^+(t)= \max(h(t), 0)\) (so that \(w h^+(t)\) represents the opening section when $h(t) \ge 0$) and $\rho$ is the air density. According to sections \ref{sec:openingAtRest} and \ref{subsec:beatingPressure} we have $H \approx 0.3mm$ and $P_{br} \approx 4500 Pa$.
+<br>
 
-Because of the potential change in the flow direction which happens when $H$ grows, the last equation must be regularised along the lines of \cite{matteoli_minimal_2021}, by replacing the square root:
+Last equation linking the pressure differential to the flow through the reed obtained through Bernoulli's equation, where \(w\) is the reed width,
+\(h^+(t)= \max(h(t), 0)\) (so that \(w h^+(t)\) represents the opening section when \(h(t) \ge 0\)) and \(\rho\) is the air density.
 \begin{equation}
-	\label{eq:regularization}
-	 \mathrm{sgn}(p_m-p)\sqrt{|p_m-p|} \longrightarrow \frac{p_m-p}{\sqrt[4]{(p_m-p)^2+\varepsilon P_{br}^2}}
+	u = w h^+ \mathrm{sgn}(p_m-p)\sqrt{\frac{2|p_m-p|}{\rho}}
 \end{equation}
-where  $\varepsilon$ is a small dimensionless parameter, taken for the simulations to be $10^{-6}$.
-
-<h2> Radiation model </h2>

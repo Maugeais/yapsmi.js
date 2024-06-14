@@ -12,28 +12,38 @@ window.addEventListener('load', function () {
 })
 
 function pb_change(a){
-    let c = inst_controls["pb"];
+    // let c = inst_controls["pb"];
     inst.set_controls({"pb": a}, false)
 }
 
 function Fl_change(a){
-    let c = inst_controls["Fl"];
+    // let c = inst_controls["Fl"];
     inst.set_controls({"Fl": a}, false)
 }
 
 function mul_change(a){
-    let c = inst_controls["mul"];
+    // let c = inst_controls["mul"];
     inst.set_controls({"mul": a}, false)
 }
 
+function K_change(a){
+    // let c = inst_controls["K"];
+    inst.set_controls({"K": a}, false)
+}
+
 function Ql_change(a){
-    let c = inst_controls["Ql"];
+    // let c = inst_controls["Ql"];
     inst.set_controls({"Ql": a}, false)
 }
 
 function H_change(a){
-    let c = inst_controls["H"];
+    // let c = inst_controls["H"];
     inst.set_controls({"H": a}, false)
+}
+
+function Cd_change(a){
+    let c = inst_controls["Cd"];
+    inst.set_controls({"Cd": a}, false)
 }
 
 
@@ -44,7 +54,7 @@ let holes_names = ['Gm1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ap1', 'Bp1', 'Cp1'
 
 let holes  = $("#duduk_control").children();
 
-function click_hole(elmnt){
+function click_hole(elmnt, init=false){
     // $(elmnt).parent().
     let index = $(elmnt).index();
 
@@ -56,7 +66,12 @@ function click_hole(elmnt){
     for (let i = index+1; i < holes_opened.length; i++){
         holes_opened[i] = false;
         $(holes[i]).css("background-color", "red")
+    }
 
+    if (init){
+        //holes_opened[index] = false;
+        $(holes[index]).css("background-color", "red")
+        return
     }
 
     if (holes_opened[index]){
@@ -92,3 +107,8 @@ $(document).on("contextmenu", "#duduk", function(e){
     $("#duduk_menu").toggle();
     return false;
  });
+
+currentMenu["duduk"] = 0;
+
+click_hole($("#A"), true) 
+

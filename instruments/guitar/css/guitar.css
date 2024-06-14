@@ -1,0 +1,312 @@
+#guitar{
+/*   background-image : url('./images/velvet.jpg'); */
+/*  grid-column: 1 / span 7;
+  background-size: cover;
+  width : 780px;*/
+  /* grid-column: 1 / -1;
+  background-size: cover;
+  width: calc(100% - 20px); */
+  grid-column: 1 / span 14;
+  background-size: cover;
+  /* width: 1500; */
+}
+
+#guitar_playing{
+  width: 100%;
+  height: 40%;
+  position : relative;
+  overflow : hidden;
+}
+
+
+#fretboardContainer{
+    height: 100%;
+    position: relative;
+    /* overflow-x: scroll;
+    overflow-y: hidden; */
+/*     max-width : 983px; */
+    width : 60%;
+}
+
+#fiesta{
+  background-image: url("./images/body.svg");
+  width: 55%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  background-size: auto 300px;
+
+}
+
+
+#pickups{
+  width: 38%;
+  min-width: calc(100% - 983px);
+  height: 50%;
+  position: absolute;
+  /*background : ivory;
+  outline: 2px solid black;*/
+  right: 0;
+  /*border-bottom: 5px inset black;
+  border-left: 5px inset black;
+  border-bottom-left-radius: 30px;
+  */top: 0;
+  overflow: hidden;
+  z-index: 1;
+/*  background-size: 500px;
+  background-position-y: center;
+  background-position-x: -100px;
+  background-repeat: no-repeat;
+  background-clip: unset;*/
+}
+
+
+
+#strings{
+  width: 98%;
+  height: 86%;
+  position: absolute;
+  top: 0;
+  display: grid;
+  padding: 12px 0px;
+  left: 18px;
+  z-index : 10;
+  pointer-events : none;
+}
+
+#cordier{
+  background-image: url('./images/cordier.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 65px;
+  height: 140px;
+  position: absolute;
+  right: -35px;
+  top: -14px;
+}
+
+#struming{
+  width: 35%;
+  height: 100%;
+  position: absolute;
+  z-index: 100;
+  right: 0;
+  top: 0;
+}
+
+.stringName{
+  color:lime;
+  position:absolute;
+  margin-top: -3px;
+  margin-left: 2px;
+}
+
+#string_controls{
+  width:500px;
+  height:45%;
+}
+
+#mic_controls{
+  width: 33%;
+  height: 45%;
+  top: 45%;
+  position: absolute;
+  left: 55%;
+}
+
+.string{
+  width: 100%;
+  position: relative;
+  background: linear-gradient(2deg, rgba(0,8,36,1) 0%, rgba(144,123,123,1) 8%, rgba(217,234,237,1) 80%);
+/*   box-shadow: 0px 0px 10px 3px #0000004F; */
+  margin:auto;
+  background-size:6px, 100%;
+  height:6px;
+  pointer-events: none;
+
+}
+
+
+.pickup{
+  width: 25%;
+  text-align: center;
+  background-image: url('images/pickup.svg');
+  background-position: left;
+  background-repeat: no-repeat;
+  height: 92%;
+  top : -10px;
+  background-size: contain;
+  position:absolute;
+}
+
+#pickup1{
+  left:25%;
+}
+#pickup2{
+  background-image: url('images/pickupDouble.svg');
+  left: 50%;
+}
+#pickup3{
+  left:75%;
+}
+
+.pickupHandle{
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  background-image: url('images/pickupHandle.svg');
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: contain;
+  left:0px;
+  bottom:-25px;
+}
+
+#pickup2 .pickupHandle{
+  left : 12px;
+}
+
+.pickup legend{
+  color: #fbdedd;
+  font-weight: bold;
+  white-space: nowrap;
+  width: 10px;
+  z-index: 100;
+  position: absolute;
+  top: 5px;
+  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000;
+}
+
+.leftHandFinger{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: aliceblue;
+  border-radius: 20px;
+  pointer-events : none;
+}
+
+#chords{
+  width: 100px;
+  height: 150px;
+  position: absolute;
+  left: 650px;
+  top: 40%;
+  padding: 0px 10px;
+  text-align: center;
+}
+
+#chord_input{
+  width: 90%;
+  margin-bottom : 10px;
+}
+
+#chords_list_wrapper{
+  height: 75px;
+  background: aliceblue;
+  overflow-y: auto;
+  width: 90%;
+  position: relative;
+  left: 5%;
+  text-align: left;
+  overflow-x: hidden;
+}
+
+#chords_list{
+
+}
+
+#chords_list tr:nth-child(2n+1) {
+  background-color: #89c97b;
+}
+
+#righthand_controls{
+  width: 30%;
+  right: 0;
+  top: 45%;
+  position: absolute;
+  height: 45%;
+}
+
+#attack_controls{
+  width: 100%;
+  position: absolute;
+  left: 0;
+}
+
+#plectrum_shape_signal, #plectrum_time_signal{
+    background-image: url("./images/signal_shapes.svg");
+
+    line-height: 18px;
+    min-width: 70px;
+    margin-top: -20px;
+    height: 100px;
+    background-size: auto calc(100% - 10px);
+    background-repeat: no-repeat;
+/*     border: 1px solid red; */
+    padding: 10px;
+    background-position: 10px 8px;
+    text-align: right;
+    white-space: break-spaces;
+    padding:10px;
+}
+
+#all_strings_at_once{
+  position: absolute;
+  left: 5px;
+  bottom: 8px;
+  width: 60px;
+  text-align: center;
+}
+
+
+polygon.triangle_selector {
+  stroke:purple;
+  stroke-width:1;
+  cursor:pointer;
+  fill:red;
+}
+
+
+#microphone_selector {
+  height: 120px;
+  width: 165px;
+  position: relative;
+  top: -20px;
+}
+
+#microphone_selector_position {
+  height: 10px;
+  width: 10px;
+  background : red;
+  border-radius: 5px;
+  pointer-events: none;
+  position : fixed;
+}
+
+#microphone_selector polygon {
+  stroke: #b09b67;
+  stroke-width: 3;
+  cursor:crosshair;
+  filter: blur(1px);
+}
+
+.label_selector_mic{
+  pointer-events: none;
+}
+
+#nl_microphone{
+  position: absolute;
+  left: 50px;
+  top: 10px;
+  width: 40px;
+  text-align: center;
+  z-index :100;
+}
+
+#general_gain{
+position: absolute;
+  top: 57%;
+  left: 52%;
+}

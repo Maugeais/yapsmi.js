@@ -1,0 +1,45 @@
+<h1>
+Guitar model
+</h1>
+
+For more details, see
+
+<h2> Physical model </h2>
+
+
+\begin{equation}
+	\label{eq:model}
+		\mu \frac{\partial^2 u}{\partial t^2} = EI \Delta^2 u+ T \Delta\left(u + 2\eta\frac{\partial u}{\partial t} \right) - 2\epsilon \frac{\partial u}{\partial t}
+\end{equation}
+
+String length is \(L\).
+
+<h2> Losses </h2>
+
+For \(EI, \eta, \epsilon \ll 1\), and \(u(t, x)=e^{-j \omega t} \sin\left(\frac{n\pi x}{L} \right)\) we get the equation
+\[-\mu \omega^2 = -T \left(\frac{n \pi}{L}\right)^2\left(1-j\eta\omega\right) +j \epsilon \omega\]
+so that 
+\[\omega_n \approx\frac{n\pi}{L} \sqrt{\frac{T}{\mu}} + j \left(\frac{\eta T}{\mu}\left(\frac{n\pi}{L} \right)^2  + \frac{\epsilon}{\mu}\right)\]
+
+The \(\tau_{60}\) is therefore given by
+\[\tau_{60}(\omega_n) = \mu\frac{\ln(10^3)}{\eta \Re(\omega_n)^2 + \epsilon}\]
+
+
+<h2> Numerical scheme </h2>
+Modal decomposition in space
+
+Order 2 implicit scheme in time
+<h2> Radiation model </h2>
+
+<h2> Attack </h2>
+
+cf. https://www.lam.jussieu.fr/Membres/Castellengo/publications/2013a_Le%20Carrou-SMAC_p.155-160.pdf
+
+mieux encore :cf https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=06bf8594c6b9bd0634735a57b453f7a6401da30e
+
+Careful : strength is divided by mass, which is proportional to \(d^2\). But magnetic capability of string is proportional to its section, i.e. \(d^2\)
+
+
+Attack force is then given by 
+\[-2 F_0 \sin\left(\frac{2n\pi x_0}{L} \right\)\mathrm{sinc}\left(\frac{n\pi\delta}{L} \right\)\]
+with \(F_0\) the total force (not divided by length)

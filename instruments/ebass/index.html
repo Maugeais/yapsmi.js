@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>pim-guitar</title>
+    <link rel="stylesheet" href="./css/guitar.css" />
+    <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
+    <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <div id="tools">
+      </div> 
+
+      <div id="model"><div class="close_button" onclick="$(this).parent().hide()">x</div>
+        <div id="model_content"></div>
+      </div>  
+    </header>
+    <main>
+
+      <div  id="wrapper">
+      
+        <div class = "plugin" id="guitar">
+
+          <div id="fiesta"></div>
+
+          <div id="pickups">
+            
+            <div id="pickup1" class="pickup"><div class="pickupHandle"></div><legend>Mic 1</legend></div>
+            <div id="pickup2" class="pickup"><div class="pickupHandle"></div><legend>Mic 2</legend></div>
+            <div id="pickup3" class="pickup"><div class="pickupHandle"></div><legend>Mic 3</legend></div>
+
+          </div>
+
+          <div id="guitar_playing">
+          
+            <div id="fretboardContainer">
+              <img id="fretboard" src="css/images/fretboard.svg"  height="100%"/>
+              
+              <div class="stringName" onclick="toggle_string_callback(event, 6)" style="top:7.14%" > E</div>
+              <div class="stringName" onclick="toggle_string_callback(event, 5)" style="top:21.42%"> B</div> 
+              <div class="stringName" onclick="toggle_string_callback(event, 4)" style="top:35.71%"> G</div> 
+              <div class="stringName" onclick="toggle_string_callback(event, 3)" style="top:50%"> D </div>  
+              <div class="stringName" onclick="toggle_string_callback(event, 2)" style="top:64.28%"> A </div> 
+              <div class="stringName" onclick="toggle_string_callback(event, 1)" style="top:78.57%"> E </div> 
+              
+              <div id="finger6" class="leftHandFinger" style="top:7.14%; left:-100px"> </div>
+              <div id="finger5" class="leftHandFinger" style="top:21.42%; left:-100px"> </div> 
+              <div id="finger4" class="leftHandFinger" style="top:33.71%; left:-100px"> </div> 
+              <div id="finger3" class="leftHandFinger" style="top:47.5%; left:-100px"> </div>  
+              <div id="finger2" class="leftHandFinger" style="top:62.28%; left:-100px"> </div> 
+              <div id="finger1" class="leftHandFinger" style="top:79.57%; left:-100px"> </div> 
+              
+            </div>
+
+           <div id="strings">
+              <div id="cordier"></div>
+              <div id="string6" class="string strummable" style="height:1px"> </div>
+              <div id="string5" class="string strummable" style="height:2px"> </div>
+              <div id="string4" class="string strummable" style="height:3px"> </div>
+              <div id="string3" class="string strummable" style="height:5px"> <div class="spuned"></div></div>
+              <div id="string2" class="string strummable" style="height:6px"> <div class="spuned"></div></div>
+              <div id="string1" class="string strummable" style="height:7px"> <div class="spuned"></div></div>
+            </div>
+
+            <div id="struming" onclick="strum(event)"></div>
+
+          </div>
+    
+          <div id="string_controls" class="instrument_controls">
+          
+            <button id="previous_controls" onclick="change_controls(-1, 'string_controls')"></button>
+        
+            <button id="next_controls" onclick="change_controls(+1, 'string_controls')"></button>
+    
+            <div class ="instrument_controls_window">
+              <legend>1st string</legend>
+
+                <label id="all_strings_at_once">All strings
+                  <input type="checkbox" onclick="all_strings(this)">
+                </label>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€1_value">100</div></div>
+                    <div class="knob" id="density€1"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€1_value">100</div></div>
+                  <div class="knob" id="stiffness€1"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€1_value">100</div></div>
+                    <div class="knob" id="tension€1"></div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€1_value">100</div></div>
+                    <div class="knob" id="losses_tau0€1"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€1_value">100</div></div>
+                  <div class="knob" id="losses_tau1€1"></div>
+              </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>2nd string</legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€2_value">100</div></div>
+                    <div class="knob" id="density€2"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€2_value">100</div></div>
+                  <div class="knob" id="stiffness€2"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€2_value">100</div></div>
+                    <div class="knob" id="tension€2"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€2_value">100</div></div>
+                  <div class="knob" id="losses_tau0€2"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€2_value">100</div></div>
+                <div class="knob" id="losses_tau1€2"></div>
+            </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>3rd string</legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€3_value">100</div></div>
+                    <div class="knob" id="density€3"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€3_value">100</div></div>
+                  <div class="knob" id="stiffness€3"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€3_value">100</div></div>
+                    <div class="knob" id="tension€3"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€3_value">100</div></div>
+                  <div class="knob" id="losses_tau0€3"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€3_value">100</div></div>
+                  <div class="knob" id="losses_tau1€3"></div>
+              </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>4th string</legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€4_value">100</div></div>
+                    <div class="knob" id="density€4"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€4_value">100</div></div>
+                  <div class="knob" id="stiffness€4"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€4_value">100</div></div>
+                    <div class="knob" id="tension€4"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€4_value">100</div></div>
+                  <div class="knob" id="losses_tau0€4"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€4_value">100</div></div>
+                  <div class="knob" id="losses_tau1€4"></div>
+                </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>5th string</legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€5_value">100</div></div>
+                    <div class="knob" id="density€5"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€5_value">100</div></div>
+                  <div class="knob" id="stiffness€5"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€5_value">100</div></div>
+                    <div class="knob" id="tension€5"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€5_value">100</div></div>
+                  <div class="knob" id="losses_tau0€5"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€5_value">100</div></div>
+                  <div class="knob" id="losses_tau1€5"></div>
+                </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>6th string</legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€6_value">100</div></div>
+                    <div class="knob" id="density€6"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€6_value">100</div></div>
+                  <div class="knob" id="stiffness€6"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€6_value">100</div></div>
+                    <div class="knob" id="tension€6"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^0=\)<div class="knob_value" id="losses_tau0€6_value">100</div></div>
+                  <div class="knob" id="losses_tau0€6"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\tau_{60}^1=\)<div class="knob_value" id="losses_tau1€6_value">100</div></div>
+                  <div class="knob" id="losses_tau1€6"></div>
+                </div>
+            </div>
+
+          </div>
+
+          
+          <div id="chords" class="instrument_controls">
+
+            <label for="name">Chord</label>
+
+            <input type="text" id="chord_input" name="chord_input"/> <!-- required minlength="4" maxlength="8" size="10" />-->
+            
+            <div id="chords_list_wrapper">
+              <table id="chords_list"><tbody></tbody></table>
+            </div>
+          </div>
+
+          <div id="righthand_controls" class="instrument_controls">
+          
+            <button id="previous_controls" onclick="change_controls(-1, 'righthand_controls')"></button>
+        
+            <button id="next_controls" onclick="change_controls(+1, 'righthand_controls')"></button>
+            
+            <div class ="instrument_controls_window" >
+              <legend>Microphones</legend>
+
+                <div id="nl_microphone">Non linear
+                  <input type="checkbox"  name="nl_microphone"/>
+                </div>
+                <svg id="microphone_selector">
+                  <defs>
+                    <pattern id="img1" patternUnits="userSpaceOnUse" width="100" height="100">
+                      <image href="../../css/images/background.jpg" x="0" y="0" width="100" height="100" />
+                    </pattern>
+                  </defs>
+                  
+                  <g transform="translate(20 10)">
+                    <polygon class="up" points="50,0 0,100 100,100" onmouseup="change_microphone_selector(event)" fill="url(#img1)"/>
+                    <text x="35" y="0" class="label_selector_mic">Mic 1</text>
+                    <text x="-20" y="110" class="label_selector_mic">Mic 2</text>
+                    <text x="90" y="110" class="label_selector_mic">Mic 3</text>
+                  </g>
+                  
+                </svg>
+                <div id="microphone_selector_position"></div>
+                
+
+                <div class="control_knob">
+                  <div class="value_container">\(w_1^\vphantom{0}\)=<div class="knob_value" id="widthmic€1_value">100</div></div>
+                  <div class="knob" id="widthmic€1"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(w_2^\vphantom{0}\)=<div class="knob_value" id="widthmic€2_value">100</div></div>
+                  <div class="knob" id="widthmic€2"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(w_3^\vphantom{0}\)=<div class="knob_value" id="widthmic€3_value">100</div></div>
+                  <div class="knob" id="widthmic€3"></div>
+                </div>
+
+                <!-- <label id="all_strings_at_once">single/dual
+                  <input type="checkbox" onclick="all_strings(this)">
+                  <input type="checkbox" onclick="all_strings(this)">
+                  <input type="checkbox" onclick="all_strings(this)">
+                </label> -->
+                
+                             
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+                <legend>Attack</legend>
+      
+
+                  <div id="plectrum_shape_signal"><input type="radio" name="plectrum_shape_signal" value="square" checked>
+                      <input type="radio" name="plectrum_shape_signal" value="triangle">
+                      <input type="radio" name="plectrum_shape_signal" value="sine">
+                  </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
+                  <div class="knob" id="width"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
+                  <div class="knob" id="position"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(\delta t^\vphantom{0}\)=<div class="knob_value" id="duration_value">100</div></div>
+                  <div class="knob" id="duration"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
+                  <div class="knob" id="strength"></div>
+                </div>
+                             
+            </div>
+          </div>
+
+          <div class="control_knob" id="general_gain">
+            <div class="value_container">\(Gain\)=<div class="knob_value" id="gain_value">100</div></div>
+            <div class="knob" id="gain"></div>
+          </div>
+
+          <!-- <div id="mic_controls" class="instrument_controls">
+            
+            <div class ="instrument_controls_window">
+              <legend>Microphones</legend>
+              
+              <div class = "control_knob">
+              
+                    <input type="radio" id="html" name="mic_type" value="HTML">
+                    <label for="html">Single</label><br>
+                    <input type="radio" id="css" name="mic_type" value="CSS">
+                    <label for="css">Double</label><br>
+                    <input type="radio" id="javascript" name="mic_type" value="JavaScript">
+                    <label for="javascript">Penché</label>
+      
+                </div>
+                <br>
+                <div class="control_knob">
+                    <div class="knob" id="hauteur"></div>
+                    <div class="caption">Hauteur
+                      <input type="text"  id="hauteur-val" class="value"/>
+                    </div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="knob" id="gain"></div>
+                    <div class="caption"> Gain
+                      <input type="text"  id="gain-val" class="value"/>
+                    </div>
+                </div>
+      
+            </div> -->       
+        </div>   
+
+    </div>
+
+  </main>
+
+
+    <footer></footer>
+  </body>
+
+  <script src="../../js/knobs.js"></script>
+
+  <script src="../../js/tools.js"></script>
+
+  <script src="../../js/plugins.js"></script>
+
+  <script type="module" src="js/init.js"></script>
+  <script src="./js/guitar-ui.js"></script>
+
+  <script> 
+    $(function(){
+      $("#model_content").load("model.html"); 
+    });
+    </script> 
+
+
+  <script> 
+    
+    $(function(){
+      $("#tools").load("../../templates/tools.html", init_menu); 
+    });
+    
+    guitar_knobs = init_knobs("guitar", "large", "Bluesbreaker");
+    currentMenu["string_controls"] = 0;
+    currentMenu["righthand_controls"] = 0;
+
+  </script> 
+  <!-- <script>window.addEventListener('load', function () {
+     init_plugins()
+   })</script> -->
+</html>

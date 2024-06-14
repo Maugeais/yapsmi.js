@@ -15,7 +15,7 @@
       <div id="tools">
       </div> 
 
-      <div id="model"><div class="close_button" onclick="$(this).parent().hide()">x</div>
+      <div id="model" popover><div class="close_button" onclick="$(this).parent().hide()">✕</div>
         <div id="model_content"></div>
       </div>  
     </header>
@@ -43,42 +43,63 @@
               <div onclick="click_hole(this)" class="duduk_hole" id = "Bp1"></div>
           </div>
 
-          <div id="duduk_controls1">
+          <div class="instrument_controls">
 
-              <div class = "control_knob">
-                  <div class="value_container">Pb=<div class="knob_value" id="pb_value">100</div></div>
-                  <div class="knob" id="pb"></div>
+            <button id="previous_controls" onclick="change_controls(-1, 'duduk')"></button>
 
-              </div>
+            <button id="next_controls" onclick="change_controls(+1, 'duduk')"></button>
 
-              <div class = "control_knob">
-                  <div class="value_container">Fl=<div class="knob_value" id="Fl_value">100</div></div>
-                  <div class="knob" id="Fl"></div>
-              </div>
+            <div class ="instrument_controls_window">
 
+                <div class="controls_title">Controls</div>
+
+                <div class = "control_knob">
+                    <div class="value_container">\(P_m^\vphantom{0}\)=<div class="knob_value" id="pb_value">100</div></div>
+                    <div class="knob" id="pb"></div>
+
+                </div>
+
+                <div class = "control_knob">
+                    <div class="value_container">\(F_r^\vphantom{0}\)=<div class="knob_value" id="Fl_value">100</div></div>
+                    <div class="knob" id="Fl"></div>
+                </div>
+<!-- 
+                <div class = "control_knob">
+                  <div class="value_container">\(\mu_\ell^\vphantom{0}\)=<div class="knob_value" id="mul_value">100</div></div>
+                  <div class="knob" id="mul"></div>
+                </div> -->
+                <div class = "control_knob">
+                  <div class="value_container">\(K_r^\vphantom{0}\)=<div class="knob_value" id="K_value">100</div></div>
+                  <div class="knob" id="K"></div>
+                </div>
+                <div class = "control_knob">
+                  <div class="value_container">\(Q_r^\vphantom{0}\)=<div class="knob_value" id="Ql_value">100</div></div>
+                  <div class="knob" id="Ql"></div>
+                </div>
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
               <div class = "control_knob">
-                <div class="value_container">mul=<div class="knob_value" id="mul_value">100</div></div>
-                <div class="knob" id="mul"></div>
-              </div>
-              <div class = "control_knob">
-                <div class="value_container">Ql=<div class="knob_value" id="Ql_value">100</div></div>
-                <div class="knob" id="Ql"></div>
-              </div>
-              <div class = "control_knob">
-                <div class="value_container">H=<div class="knob_value" id="H_value">100</div></div>
+                <div class="value_container">\(H^\vphantom{0}\)=<div class="knob_value" id="H_value">100</div></div>
                 <div class="knob" id="H"></div>
               </div>
-          </div>
-          <div id="duduk_controls2">
+              <div class = "control_knob">
+                <div class="value_container">\(C_d^\vphantom{0}\)=<div class="knob_value" id="Cd_value">100</div></div>
+                <div class="knob" id="Cd"></div>
+              </div>
 
-              
-
-              
-
+            </div>
           </div>
         </div>
 
       </div>
+
+    <!-- <div id="help" popover>
+      <iframe width="420" height="315"
+      src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=0&mute=1">
+      </iframe> 
+
+    </div> -->
+
 
 
     </main>

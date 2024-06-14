@@ -9,7 +9,13 @@
 
 <div id="tools_menu">
   <div id="audio_start" onclick="audio_start()"> </div>
-  <div id="speed"> CPU usage : 0% </div>
+  <div id="speed"> CPU: 0% </div>
+  <div id="nan"> NAN </div>
+
+  <div id="global_gain">
+     <label>Gain</label><input type="range" min="0" max="100" value="50" class="slider" id="gain_slider" oninput="change_global_gain(this.value)">
+  </div>
+
 
   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_effects_list").toggle()' id="tools_effects">
        Effects
@@ -32,7 +38,7 @@
      Session
      <div class = "menu_entry_list pop"  id="tools_session_list">
           <div class = "plugin_menu" onclick="$('.pop').hide();new_session()"> New </div>
-          <div class = "plugin_menu" onclick="$('.pop').hide();load_session()"> Load </div>
+          <div class = "plugin_menu" onclick="$('.pop').hide();$('#load').show()"> Load </div>
           <div class = "plugin_menu" onclick="$('.pop').hide();save_session()"> Save </div>
      </div>
 
@@ -41,12 +47,50 @@
   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_help_list").toggle()' id="tools_help">
        Help
        <div class = "menu_entry_list pop"  id="tools_help_list">
-            <div class = "plugin_menu" onclick="$('.pop').hide();$('#model').show()"> Model </div>
-            <div class = "plugin_menu" onclick="$('.pop').hide();$('#help').show()"> Help </div>
+            <div class = "plugin_menu" onclick="document.getElementById('model').showPopover()"> Model </div>
+            <div class = "plugin_menu" onclick="document.getElementById('help').showPopover()"> Help </div>
             <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div>
        </div>
 
   </div>
+</div>
+
+
+
+<div id="load" class="popup plugin">
+     <div onclick="$(this).parent().hide()"  class="close_button">✕</div>
+
+     <!-- Choose a file
+
+     <form enctype="multipart/form-data">
+          <input id="upload" type="file" accept="text/html" name="files" size=30>
+     </form> -->
+
+     Choose a session among the list
+
+     <div id="choose_session">
+
+          <table>
+               <tr>
+                    <td onclick="load_example_session('guitar.json')">Guitar + midi</td>
+               </tr>
+               <tr>
+                    <td onclick="load_example_session('compressor.json')">Basic session with compressor</td>
+               </tr>
+               <tr>
+                    <td onclick="load_example_session('radiate_pad_compressor.json')">Session with radiated sound, pad and compressor</td> 
+               </tr>
+               <tr>
+                    <td onclick="load_example_session('midi.json')">Midi</td> 
+               </tr>
+          </table>
+
+     </div>
+
+     <div id="load_dropbox">
+          or drop a file in this box
+     </div>
+
 </div>
 
 <div id="logo"></div>
@@ -68,3 +112,31 @@
 
      </div>
 </div>
+
+<div id="disclaimer_window">
+
+     <div id="disclaimer">
+
+          <img src="./css/images/logo.svg">
+     Yapsmi.js is a real time physical simulator of musical instruments written in javascript and built for pedagogical purposes.
+
+     As such, it may sometimes produce non realistic sounds and/or infinite values.
+
+     The sounds produced are not compressed by default and there may be large dynamics depending on the physical parameters. 
+     Upon turning the program on, it is therefore a good idea to reduce the volume of the device.
+
+     This program has been optimised for desktop computers, not for mobile devices.
+
+     It uses no cookies, and stores no personal information.
+
+     <button onclick='$("#disclaimer_window").hide()'> OK</button>
+     </div>
+</div>
+
+<script>
+     let load_dropbox = $("#load_dropbox");
+     load_dropbox.on("dragenter", load_dragenter);
+     load_dropbox.on("dragleave", load_dragleave);
+     load_dropbox.on("dragover", load_dragover);
+     load_dropbox.on("drop", load_drop);
+</script>

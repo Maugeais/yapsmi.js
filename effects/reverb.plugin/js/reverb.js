@@ -24,7 +24,8 @@ function save(){
 }
 
 function load(commands){
-    reverb_file = commands["reverb_file"];
+    // reverb_file = commands["reverb_file"];
+    console.log(commands)
 }
 
 var reverb_on = false;
@@ -44,7 +45,7 @@ window.reverb_click = function(){
 
 
 let reverb_buffer;
-let reverb_file = "../../effects/reverb.plugin/data/Memorial Church_xcg1v2.wav";
+let reverb_file = "../../effects/reverb.plugin/data/Memorial Church.wav";
 
 async function init_reverb(audioCtx){
 
@@ -65,7 +66,7 @@ function reverb_callback(){
  $('#reverb_table td').click(function () {
     $("#reverb_table td").removeClass("selected_reverb");
     $(this).addClass("selected_reverb")
-    reverb_file = "../../effects/reverb.plugin/data/"+$(this).text();
+    reverb_file = "../../effects/reverb.plugin/data/"+$(this).text()+".wav";
     restart();
 });
 

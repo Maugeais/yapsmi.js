@@ -1,1 +1,1 @@
-{"program":"psmi.js","date":"Sun Jan 07 2024 08:45:02 GMT+0100 (heure normale d’Europe centrale)","plugins":[{"name":"pad","entry":"controls","state":{}},{"name":"colinoscope","entry":"analysis","state":{}},{"name":"midi","entry":"controls","state":{}}]}
+{"program":"yapsmi.js","date":"Sun Jan 07 2024 08:45:02 GMT+0100 (heure normale d’Europe centrale)","plugins":[{"name":"pad","entry":"controls","state":{}},{"name":"colinoscope","entry":"analysis","state":{}},{"name":"midi","entry":"controls","state":{}}]}

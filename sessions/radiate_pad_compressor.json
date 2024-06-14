@@ -1,0 +1,1 @@
+{"program":"yapsmi.js","date":"Wed Apr 03 2024 09:47:21 GMT+0200 (heure d’été d’Europe centrale)","plugins":[{"name":"radiate","entry":"effects","loaded":true,"state":{}},{"name":"pad","entry":"controls","loaded":true,"state":{}},{"name":"compressor","entry":"effects","loaded":true,"state":{"threshold":-50,"knee":10,"ratio":12,"attack":0,"release":0.25}}]}

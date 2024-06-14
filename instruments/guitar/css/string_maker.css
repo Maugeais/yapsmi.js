@@ -1,0 +1,24 @@
+#string_maker_content{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    background:black;
+}
+
+#string_maker_window{
+    background:red;
+    width:400px;
+    height:500px;
+    text-align: center;
+    background-image: url('../../../css/images/background.jpg');
+    border: #b09b67 inset;
+    left: calc(50% - 200px);
+    position: relative;
+    top: calc(50% - 250px);
+    padding: 20px;
+    font-weight: bolder;
+} 
+
+#string_maker_window input[type="text"]{
+    width: 100px;
+}

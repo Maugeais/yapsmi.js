@@ -1,0 +1,26 @@
+<link rel="stylesheet" href="./css/string_maker.css" />
+
+<div id="string_maker_window">
+	<label for="fundamental_string_maker">Frequency (Hz):</label>
+	<input type="text" id="fundamental_string_maker" name="fundamental_string_maker" value="82"><br><br>
+	<label for="tension_string_maker">Tension (kg):</label>
+	<input type="text" id="tension_string_maker" name="tension_string_maker" value="87"><br><br>
+	<label for="outer_diameter_string_maker">Outer diameter (mm):</label>
+	<input type="text" id="outer_diameter_string_maker" name="outer_diameter_string_maker" value="1,1938"><br><br>
+	<label for="length_string_maker">Length (m):</label>
+	<input type="text" id="length_string_maker" name="length_string_maker" value="0.65"><br><br>
+	<label for="core_material_string_maker">Core material:</label><select name="core_material_string_maker" id="core_material_string_maker">
+	</select><br><br>
+	<label for="winding_material_string_maker">Winding material:</label><select name="winding_material_string_maker" id="winding_material_string_maker">
+	</select><br><br>
+	<button onclick="string_maker_compute()">Compute</button><br><br>
+
+	<label for="inner_diameter_string_maker">Inner diameter (m):</label>
+	<input type="text" id="inner_diameter_string_maker" name="inner_diameter_string_maker"><br><br>
+
+	<label for="inharmonicity_string_maker">Inharmonicity:</label>
+	<input type="text" id="inharmonicity_string_maker" name="inharmonicity_string_maker"><br><br>
+</div>
+
+
+<script src="./js/string_maker.js"></script>

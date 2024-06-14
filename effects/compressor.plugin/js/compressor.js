@@ -6,7 +6,7 @@ let ratio = 12; //setValueAtTime(12, audioCtx.currentTime);
 let attack = 0; //setValueAtTime(0, audioCtx.currentTime);
 let release = 0.25; //setValueAtTime(0.25, audioCtx.currentTime);
 
-let varTest = "toto";
+let compressor_knobs;
 
 window.compressor_threshold_change = function(a, uid){
     threshold = -100+a;
@@ -87,8 +87,8 @@ function draw(){
 
 
 function init(uid){
-    init_knobs("compressor_controls1", "medium", "LittlePhatty");
-    init_knobs("compressor_controls2", "medium", "LittlePhatty");
+    compressor_knobs = init_knobs("compressor_main", "medium", "LittlePhatty");
+    // init_knobs("compressor_controls2", "medium", "LittlePhatty");
     add_filter(init_compressor, compressor_callback, uid);
     draw()
     plugins[uid].save = save;
@@ -100,12 +100,18 @@ function save(){
     return(commands)
 }
 
-function load(commands){
-    threshold = commands["threshold"];
-    knee = commands["knee"];
-    ratio = commands["ratio"];
-    attack = commands["attack"];
-    release = commands["release"];
+function load(uid, commands){
+    // threshold = commands["threshold"];
+    // knee = commands["knee"];
+    // ratio = commands["ratio"];
+    // attack = commands["attack"];
+    // release = commands["release"];
+    let index = compressor_knobs.findIndex(element => element.id == "compressor_threshold");
+    compressor_knobs[index].setValue(commands["threshold"]+100);
+    index = compressor_knobs.findIndex(element => element.id == "compressor_knee");
+    compressor_knobs[index].setValue(commands["knee"]*2);
+    index = compressor_knobs.findIndex(element => element.id == "compressor_ratio");
+    compressor_knobs[index].setValue((commands["ratio"]-1)*4);
 }
 
 var compressor_on = false;

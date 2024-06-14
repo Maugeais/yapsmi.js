@@ -1,0 +1,41 @@
+.waveshaper{
+    grid-column: span 3;
+    width:350px;
+}
+
+#waveshaper_display{
+    width: 250px;
+    height: 100%;
+}
+
+#waveshaper_controls{
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+}
+
+.waveshaper_normalisation{
+    margin: auto;
+}
+
+.waveshaper_curve{
+    margin: auto;
+}
+
+#waveshaper_on{
+    background-image: url("./images/off.png");
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    position: absolute;
+    left: 50px;
+}
+
+#waveshaper_display .main-svg{
+    border-radius: 18px 0px 0px 17px;
+}

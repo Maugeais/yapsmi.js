@@ -1,0 +1,43 @@
+#equaliser_main{
+/*     background-image: url("./images/equaliser.jpeg"); */
+    width: 100%;
+    position: relative;
+    height: 100%;
+    border-radius : 15px;
+    background-size: cover;
+}
+
+#equaliser_on{
+    background-image: url("./images/off.png");
+    width: 70px;
+    height: 50px;
+    background-size: contain;
+    position: relative;
+    background-repeat: no-repeat;
+}
+
+#equaliser_display{
+    width: 250px;
+    height: 140px;
+    top: 5px;
+    position: relative;
+}
+
+#equaliser_display .main-svg{
+    border-radius: 10px 10px 0px 0px;
+}
+
+
+#equaliser_controls1{
+    display : flex;
+    height : 80px;
+}
+
+#equaliser_controls2{
+    display : flex;
+    height : 80px;
+}
+
+.equaliser{
+    grid-column: span 2;
+}

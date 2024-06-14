@@ -1,20 +1,15 @@
 "use strict";
 
-function radiate_force_change(a){
-    // console.log(a)
-}
-
-function force2_change(a){
-    // console.log('-', a)
-}
-
-
-
-var radiate_knobs;
 function init(uid){
-//    radiate_knobs = init_knobs("radiate_main", "medium", "LittlePhatty");
     add_filter(init_radiate, radiate_callback, uid);
-    inst.add_fingerging_callback(change_fingering);
+    inst.add_radiation_callback(change_radiation);
+
+    let html = ''
+    Object.keys(inst.radiation_filters).forEach(element => {
+        html += "<tr><td>"+element+"</td></tr>"
+    });
+    $("#radiate_files").html(html);
+    $("#radiate_files td").click(function(){ inst.radiation_filter = inst.radiation_filters[this.innerText]; change_radiation(this.innerText) })
 }
 
 var radiate_on = false;
@@ -32,15 +27,12 @@ window.radiate_click = function(){
     restart()
 }
 
-let radiate_filter;
-let radiate_buffer;
-
 async function init_radiate(audioCtx){
 
-    console.log(inst.filter);
+    // console.log(inst.radiation_filter);
 
     const convolver = audioCtx.createConvolver();
-    const response = await fetch(inst.filter);
+    const response = await fetch(inst.radiation_filter);
     const arrayBuffer = await response.arrayBuffer();
     const decodedAudio = await audioCtx.decodeAudioData(arrayBuffer);
     convolver.normalize = true; // must be set before the buffer, to take effect
@@ -53,10 +45,14 @@ async function init_radiate(audioCtx){
 function radiate_callback(){       
 }
 
-function change_fingering(fingering){
-    $("#radiate_note").text(inst.fingering);
+function change_radiation(id){
+
+    $("#radiate_files tr").removeClass("selected_tr");
+    $("#radiate_files td").filter(function() {
+        return $(this).text() == id;
+    }).closest("tr").addClass("selected_tr");
+        
     if (radiate_on){
-        // console.log("toto", radiate_on)
         restart();
     }
 }

@@ -8,13 +8,13 @@ class plugin {
     this.loaded = false;
   }
 
-  save(){
+  save(uid){
         // Saves all the data
       return({});
     }
 
-  load(file){
-      console.log(this.name, "done");
+  load(uid, state){
+      console.log(this.name, "done", state);
       // loads the data from the json file filemame and add all the keys
     }
 }

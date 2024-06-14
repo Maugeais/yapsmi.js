@@ -8,14 +8,6 @@
     position: absolute;
 }
 
-#midi_events_table{
-    background: #9da46ba3;
-    margin: auto;
-    color: black;
-    width: 100%;
-    border: #b09b67 inset;
-}
-
 #midi_events{
     height: 200px;
     background: white;
@@ -25,6 +17,8 @@
     left: 5%;
     overflow-y : auto;
     margin-top: 15px;
+    border: #b09b67 inset;
+
 }
 
 #midi_events_table input{
@@ -33,14 +27,6 @@
     outline : none;
     border: none;
     color:black;
-}
-
-#midi_events_table td {
-    padding: 5px;
-}
-  
-#midi_events_table tr:nth-child(odd) {
-    background-color: #89c97b;
 }
 
 #set_midi_events{

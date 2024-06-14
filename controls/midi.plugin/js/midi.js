@@ -10,12 +10,23 @@ function init(uid){
   navigator.requestMIDIAccess({name: "midi"}).then( onMIDISuccess, onMIDIFailure );
   
   plugins[uid].save = save;
-  
+  plugins[uid].load = load;
 }
 
-function save(){
-  
+function save(uid){
   return(commands)
+}
+
+function load(uid, a){
+  commands = a;
+  $("#midi_events_table > tbody").empty();
+  $('#midi_events_table').append($('<tr>'));
+  for (var controler in commands) {
+    for (var key in commands[controler]) {
+      $('#midi_events_table tr:last').after(`<tr><td><input onclick="record_midi_events()" value="${key}, ${controler}"></td><td onclick="choose_control(set_midi_control_events, this)">${commands[controler][key]} </td></tr>`);
+    }
+  }
+
 }
 
 
@@ -86,6 +97,15 @@ function logMIDIInput(message){
   // var velocity = (message.data.length > 2) ? message.data[2] : 0; // a velocity value might not be included with a noteOff command
   
   if (state == "Play"){
+
+    // If 128 then play_note, otherwise see commands
+    if (command == 144){
+      inst.play_note(note, velocity)
+    } else if (command == 128){
+      inst.stop_note(note, velocity)
+    } else {
+
+
       let a = commands[name][`${command}, ${note}`];
 
       let params = {};
@@ -94,6 +114,7 @@ function logMIDIInput(message){
       myVar(params)
 
       // console.log(myVar, params)
+    }
 
 
   // switch (command){
@@ -155,7 +176,6 @@ window.record_midi_events = function(){
 
 
 window.add_midi_events = function(){
-  console.log('add');
   $('#midi_events_table tr:last').after('<tr><td><input onclick="record_midi_events()" value="124"></td><td onclick="choose_control(set_midi_control_events, this)">??? </td></tr>');
 }
 

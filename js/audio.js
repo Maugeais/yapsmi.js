@@ -33,18 +33,6 @@ function audio_stop(){
         simu_on = false;
 }
 
-// let post_processors = [];
-//
-// function add_post_processor(f){
-//         post_processors.push(f);
-// }
-//
-// function remove_post_processor(f){
-//     const index = post_processors.indexOf(f);
-//     if (index > -1) { // only splice array when item is found
-//         post_processors.splice(index, 1); // 2nd parameter means remove one item only
-//     }
-// }
 
 let filters = [];
       
@@ -100,7 +88,7 @@ window.restart = function(){
 }
 
 let audioCtx;
-let buffer_size  = 2048*2;
+let buffer_size  = 2*2048; //16384;
 let outputData;
 let fs;
 
@@ -112,6 +100,11 @@ window.get_frequency = function(){
     return(frequency)
 }
 
+window.change_global_gain = function(value){
+    // window.vol.gain.value = value/100;
+    window.vol.gain.value = 10**(3*(-1+value/100));
+}
+
 async function init(inst) {
 
     AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -120,22 +113,17 @@ async function init(inst) {
     fs = audioCtx.sampleRate;
     let dt = 1 / fs;
 
-    var p;
-    let buffer = new Array((buffer_size+1));   // Tableau contenant les les données en chaque temps
-    for (let k=0; k < buffer.length; k++){
-        buffer[k] = new Float64Array(inst.dim) // Pour chaque temps, on a les composantes
-        for (let i = 0; i < inst.dim; i++){
-            buffer[k][i] = 0;
-        }
-    }
-      
-   
+    inst.init_audio(buffer_size+1, dt)
+
     let scriptNode = audioCtx.createScriptProcessor(buffer_size, 1, 1); //(bufferSize, numberOfInputChannels, numberOfOutputChannels);
 
       let current = scriptNode;
       // Initialise the filters
       for (let k=0; k < filters.length; k++){
         let data = await filters[k].init(audioCtx, filters[k].uid); 
+        if (Array.isArray(data)){
+            let test = {'input': data[0], 'output': data[0], 'is_on': data[2], 'callback': data[1]};
+        }
         filters[k].callback = data[1];
         if (data.length < 3 || data[2] == true) {
             if (data[0] != ""){
@@ -144,6 +132,12 @@ async function init(inst) {
             }
         }
       }
+
+      window.vol = audioCtx.createGain();
+      window.change_global_gain($("#gain_slider").val() )
+
+      current.connect(window.vol)
+      current = window.vol
 
       current.connect(audioCtx.destination);
 
@@ -165,29 +159,34 @@ async function init(inst) {
 
             outputData = outputBuffer.getChannelData(0);
             
-            inst.next_chunk(t, buffer_size, dt, buffer)
-            inst.output(buffer, outputData)
+            inst.next_chunk(t, buffer_size, dt)
+            inst.output(outputData)
 
-            if (isNaN(Math.max.apply(null, outputData))){
+            let max = Math.max.apply(null, outputData);
 
-                console.log("Error nan in simulation !");
+            // console.log(inst.buffer[0].length, inst.buffer[4096][0], inst.buffer[0][0])
 
-                for (let i=0; i < inst.X0.length; i++){
-                    inst.X0[i] = 0;
-                }
+
+            if (isNaN(max)){
+
+                $("#nan").css({"color":"red"})
+                inst.reset_chunk();
+                max = 0;
 
             } else {
-                inst.X0 = buffer[buffer.length-1];
-                //let frequency = yin(outputData, fs, 0.07);
-
-                // post_processors.forEach((f) => f(outputData));
+                $("#nan").css({"color":"darkgray"})
+                inst.loop_chunk();
                 filters.forEach(filter => filter.callback(filter.uid));
             }
+
+            // if (max > 1){
+            //     console.log("test")
+            // }
 
             t += buffer_size * dt;
 
             let deltaT = Date.now() - t1;
-            $("#speed").html("CPU usage : "+(deltaT/(10*buffer_size*dt)).toFixed(2)+'%');
+            $("#speed").html("CPU: "+(deltaT/(10*buffer_size*dt)).toFixed(2)+'%');
 
         }
 } 

@@ -18,11 +18,11 @@ function init(uid){
     spectrums_ctx[uid].dy = 200;
 }
 
-let analyser;
+// let analyser;
 
 function init_spectrum_analyser(audioCtx, uid){
     analysers[uid] = audioCtx.createAnalyser();
-    analysers[uid].fftSize = 2048*16;
+    analysers[uid].fftSize = 32768; //2048*16*4;
     analysers[uid].smoothingTimeConstant = 0.0;
     analysers[uid].freqArray = new Float32Array(analysers[uid].frequencyBinCount);
     analysers[uid].channelInterpretation = "discrete";
@@ -38,15 +38,15 @@ function spectrum_analyser(uid){
 
 
 
-let x = new Array(600);
+let x = new Array(2048);
 
 
 
 function spectrum_draw(fft, uid){
     let max = Math.max.apply(null, fft);
     for (let i = 0; i < x.length; i++){
-        x[i] = i*48000/(16*2048);
-        fft[i] -= max;
+        x[i] = i*48000/analysers[uid].fftSize;
+        // fft[i] -= max;
     }
     drawCurve(spectrums_ctx[uid], x, fft);
 }
@@ -107,7 +107,7 @@ function drawCurve(ctx, x, y){
 
 
 window.spectrum_offset_x_change = function(a, uid){
-    spectrums_ctx[uid].xmin = a;
+    spectrums_ctx[uid].xmin = 5*a;
 }
 
 
@@ -117,7 +117,7 @@ window.spectrum_offset_y_change = function(a, uid){
 
 
 window.spectrum_scale_x_change = function(a, uid){
-    spectrums_ctx[uid].dx = 10*(1+a);
+    spectrums_ctx[uid].dx = 20*(1+a);
 }
 
 

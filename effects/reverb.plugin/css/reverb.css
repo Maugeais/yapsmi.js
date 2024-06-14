@@ -1,25 +1,18 @@
 #reverb_main{
-/*     background-image: url("./images/reverb.jpeg"); */
     position: relative;
     height: 100%;
-    /*border-radius : 15px;
-    background-size: cover;
-    border: 3px ridge #776e24;*/
+    width:100%;
 }
 
-#reverb_table{
-    background: #9da46ba3;
+
+
+#reverb_table_wrapper{
+    overflow: hidden auto;
+    height: 65%;
+    top: 20px;
+    position: relative;
     width: 90%;
     left: 5%;
-    position: absolute;
-    text-align: center;
-    top: 15px;
-    height: calc(100% - 100px);
-    display: block;
-    overflow-y: auto;
-    border: #b09b67 inset;
-    white-space: nowrap;
-    text-align: left;
 }
 
 .selected_reverb{
@@ -27,9 +20,6 @@
 }
 
 
-#reverb_table tr:nth-child(odd) {
-    background-color: #89c97b;
-}
 
 #reverb_on{
     background-image: url("./images/off.png");

@@ -50,25 +50,29 @@ function draw(){
   var traces = [{
     x: [],
     y: [],
-    type: 'scatter'  
+    type: 'scatter',
+    "name" : "H0"
   }, {
     x: [],
     y: [],
-    type: 'scatter'
+    type: 'scatter',
+    "name" : "H1"
   }, {
     x: [],
     y: [],
-    type: 'scatter'
+    type: 'scatter',
+    "name" : "H2"
   }, {
     x: [],
     y: [],
-    type: 'scatter'
+    type: 'scatter',
+    "name" : "H3"
   }];
   
   
     var layout = {
-            //autosize: true,
-            width: 450,
+            autosize: true,
+            width: 350,
             height: 200,
             uirevision :true,
             margin: {
