@@ -1,7 +1,7 @@
 'use strict';
 
-import { instrument, parameter } from "./instrument.js";
-import { rungeKutta } from "./rk4.js";
+import { instrument, parameter } from "./instrument.js?version=1.02";
+import { rungeKutta } from "./rk4.js?version=1";
 
 
 class wind_instrument extends instrument {
@@ -15,7 +15,7 @@ class wind_instrument extends instrument {
         this.transitioning_impedance = false;
         this.S = []
         this.C = [];
-        this.transition_time = 200;
+        this.transition_time = 10000;
         this._transition_impedance_counter = 0;
         this.X0 = new Array(this.dim).fill(0);
 
@@ -63,14 +63,16 @@ class wind_instrument extends instrument {
 
     change_fingering(name){
 
-        this.S0 = this.impedances[this.fingering]['S'];
-        this.C0 = this.impedances[this.fingering]['C'];
+        // this.S0 = this.impedances[this.fingering]['S'];
+        // this.C0 = this.impedances[this.fingering]['C'];
         
         for (let i=0; i < this.impedances_dim; i++ ){
-            this.dS[i].re = (this.impedances[name]['S'][i].re-this.impedances[this.fingering]['S'][i].re)/this.transition_time;
-            this.dC[i].re = (this.impedances[name]['C'][i].re-this.impedances[this.fingering]['C'][i].re)/this.transition_time;
-            this.dS[i].im = (this.impedances[name]['S'][i].im-this.impedances[this.fingering]['S'][i].im)/this.transition_time;
-            this.dC[i].im = (this.impedances[name]['C'][i].im-this.impedances[this.fingering]['C'][i].im)/this.transition_time;
+            this.S0[i] = this.impedances[this.fingering]['S'][i];
+            this.C0[i] = this.impedances[this.fingering]['C'][i];
+            this.dS[i].re = (this.impedances[name]['S'][i].re-this.impedances[this.fingering]['S'][i].re);
+            this.dC[i].re = (this.impedances[name]['C'][i].re-this.impedances[this.fingering]['C'][i].re);
+            this.dS[i].im = (this.impedances[name]['S'][i].im-this.impedances[this.fingering]['S'][i].im);
+            this.dC[i].im = (this.impedances[name]['C'][i].im-this.impedances[this.fingering]['C'][i].im);
         }
         
         this.radiation_filter = "./data/"+name+"/transfer.wav";
@@ -100,19 +102,70 @@ class wind_instrument extends instrument {
     transition_impedance(){
         if (this._transition_impedance_counter <= this.transition_time){
             this._transition_impedance_counter++;
+            let t = this._transition_impedance_counter/this.transition_time;
+            let transition_coeff = 1/(1+10**(12*(1/2-t)));   
+
+            
+           
             for (let i=0; i < this.impedances_dim; i++){
-                this.S[i].re = this.S0[i].re+this.dS[i].re*this._transition_impedance_counter;
-                this.C[i].re = this.C0[i].re+this.dC[i].re*this._transition_impedance_counter;
-                this.S[i].im = this.S0[i].im+this.dS[i].im*this._transition_impedance_counter;
-                this.C[i].im = this.C0[i].im+this.dC[i].im*this._transition_impedance_counter;
-                return(this._transition_impedance_counter/this.transition_time)
-            }
+                this.S[i].re = this.S0[i].re+this.dS[i].re*transition_coeff;
+                this.C[i].re = this.C0[i].re+this.dC[i].re*transition_coeff;
+                this.S[i].im = this.S0[i].im+this.dS[i].im*transition_coeff;
+                this.C[i].im = this.C0[i].im+this.dC[i].im*transition_coeff;
+                // 
+            } 
+            return(t)
+
         } else {
             this.transitioning_impedance = false;
             this._transition_impedance_counter = 0;
 
             return(0)
         }
+    }
+
+    pressure_output(outputBuffer){
+        let p;
+        for (let i = 0; i < outputBuffer.length; i++) {
+            p = 0;
+            for (let j = 2; j < this.dim; j+=2) {
+                p += this.buffer[i][j];
+            }
+            outputBuffer[i] = p * this.gain.value;
+        }
+    }
+    
+    pressure_derivative_output(outputBuffer){
+    
+        let signalnp1, signaln;
+    
+        signalnp1 = 0;
+        for (let j = 2; j < this.dim; j+=2) {
+            signalnp1 += this.buffer[0][j];
+        }
+        
+    
+        for (let i = 0; i < outputBuffer.length; i++) {
+            signaln = signalnp1;
+            signalnp1 = 0;
+            for (let j = 2; j < this.dim; j+=2) {
+                signalnp1 += this.buffer[i+1][j];
+            }
+            outputBuffer[i] = fs*(signalnp1-signaln) * this.gain.value;
+        }
+    
+    
+    }
+
+    save_session(){
+
+        let session = this.save_parameters();
+
+        return(session)
+    }
+
+    load_session(session){
+        this.load_parameters(session)
     }
 }
 

@@ -1,0 +1,25 @@
+.spectrum{
+  grid-column: span 4; 
+  width:450px;
+}
+
+.spectrum_controls{
+   display : flex;
+}
+
+.spectrum_canvas{
+    background : white;
+    width: 100%;
+    height: calc(100% - 85px);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+}
+
+#spectrum_display{
+  width: 450px;
+  height: 100%;
+}
+
+.spectrum_display .main-svg{
+  border-radius: 18px 18px 18px 18px;
+}

@@ -209,7 +209,7 @@ class microphone{
 
     set_width(w){
 
-        this.width.set_from_precentage(w);
+        this.width.set_from_percentage(w);
         let display = this.width.to_string();
         this.compute_filter();
         return(display)
@@ -393,7 +393,7 @@ class string extends instrument{
         let s = this;         
 
         let key = Object.keys(params)[0];        
-        this.params[key].set_from_precentage(params[key]);
+        this.params[key].set_from_percentage(params[key]);
        
 
         switch (key) {

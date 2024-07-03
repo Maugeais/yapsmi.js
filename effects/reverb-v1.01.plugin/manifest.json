@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "GUI for the convolution filter of the Web Audio API, with a selection of reverbaration impulse response files.",
+    "developper" : "Sylvain Maugeais"
+}

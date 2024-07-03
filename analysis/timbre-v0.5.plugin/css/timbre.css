@@ -1,0 +1,12 @@
+.timbre{
+  grid-column: span 3; 
+  width:350px;
+}
+
+#timbre_controls{
+   display : flex;
+}
+
+#timbre_display .main-svg{
+  border-radius: 18px 18px 0px 0px;
+}

@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="../../effects/waveshaper-v1.01.plugin/css/waveshaper.css" />
+
+<div class="plugin_title">waveshaper</div>
+
+<div id="waveshaper_main">
+
+    <div id="waveshaper_display"></div>
+
+    <div id="waveshaper_controls">
+        <div class = "control_knob waveshaper_normalisation">
+            <div class="value_container">norm= <br/><div class="knob_value" id="waveshaper_normalisation_value">100</div></div>
+            <div class="knob" id="waveshaper_normalisation"></div>
+        </div>
+
+        <br>
+        <div class="waveshaper_curve">
+            <label for="waveshaper_type">Type:<br></label>
+
+            <select name="pets" class="select" id="waveshaper_type" onchange="waveshaper_change_type(this)">
+                <option value="pol" selected>pol</option>
+                <option value="lin">lin</option>
+                <option value="tanh">tanh</option>
+                <option value="frac">frac</option>
+            </select>
+        </div>
+
+        <br>
+        <div onclick = "waveshaper_click()" id="waveshaper_on"></div>
+
+    </div>
+
+</div> 
+ 

@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : true,
+    "presentation" : "Record the sound filtered by the plugins placed before. It can also save to a wave file.",
+    "developper" : "Sylvain Maugeais"
+}

@@ -1,0 +1,44 @@
+<link rel="stylesheet" href="../../controls/midi-v1.0.plugin/css/midi.css" />
+<div class="plugin_title">Midi</div>
+
+
+    <select id="midi_inputs" class="button-15">
+
+    </select>
+
+    <div id="midi_events">
+        <table id="midi_events_table">
+            <tr>
+                <th style="width:60%">Midi code</th>
+                <th>Parameter</th>
+            </tr>
+            <tr>
+                <td ><input onclick="record_midi_events()" value="124"></td>
+                <td onclick="choose_control(set_midi_control_events, this)">??? </td>
+            </tr>
+            <tr>
+                <td><input onclick="record_midi_events()" value="124"></td>
+                <td onclick="choose_control(set_midi_control_events, this)">??? </td>
+            </tr>
+            <tr>
+                <td><input onclick="record_midi_events()" value="124"></td>
+                <td onclick="choose_control(set_midi_control_events, this)">??? </td>
+            </tr>
+            <tr>
+                <td><input onclick="record_midi_events()" value="124"></td>
+                <td onclick="choose_control(set_midi_control_events, this)">??? </td>
+            </tr>
+            <tr>
+                <td><input onclick="record_midi_events()" value="124"></td>
+                <td onclick="choose_control(set_midi_control_events, this)">??? </td>
+            </tr>
+           
+        </table> 
+    </div>     
+
+    <div id="midi_available_controls"></div>
+    <button class="button-15" onclick="set_midi_events()" id="set_midi_events"><div id="midi_setting_in_progress"></div>Set</button>
+    <button class="button-15" onclick="add_midi_events()" id="add_midi_events">Add</button>
+    
+
+ 

@@ -103,14 +103,12 @@ header{
 #global_gain label{
     font-size: large;
     top: 2px;
-    position: absolute;
     left: 0px;
 }
 
 #global_gain input{
-    width:75%;
+    width:150px;
     top: 8px;
-    position: absolute;
     right: 0;
 }
 
@@ -245,15 +243,17 @@ input[type=range]::-moz-range-thumb {
     width:150px;
     display: none;
     position:absolute;
-    left:-150px;
+    left:-160px;
     top:0;
+    color: white;
+    padding: 5px;
 }
 
 .plugin_menu:hover .manifest {
   display: block;
 }
 
-#model{
+#model, #help{
     width: 90%;
     position: fixed;
     z-index: 100;
@@ -320,7 +320,9 @@ input[type=range]::-moz-range-thumb {
 }
 
 #disclaimer button{
-    background : wheat;
+    background : #97876b;
+    width: 70px;
+    /* border: 2px inset #97876b; */
 }
 
 #modules{
@@ -357,13 +359,18 @@ select{
     color: #fff;
     background-color: #554829;
     border-radius: 5px;
+    font-size: medium;
 }
 
-#model_content{
+#model_content, #help_content{
     text-align : justify;
     padding: 30px;
     background-image : url('../css/images/background.jpg');
     border: #acabab outset;
+}
+
+#help_content{
+    text-align : center;
 }
 
 #model_content h1{
@@ -563,7 +570,7 @@ input[type="radio"]:checked {
 }
 
 input[type="radio"]:focus {
-    box-shadow: 0px 0px 3px 3px aliceblue;
+    box-shadow: 0px 0px 1px 1px aliceblue;
 }
   
 .selected_tr{
@@ -578,7 +585,7 @@ input[type="checkbox"] {
     color: blue;
     width: 1.15em;
     height: 1.15em;
-    border: 0.15em solid #b09b67;;
+    border: 0.15em solid #d7b563;
     border-radius: 50%;
   }
 
@@ -598,12 +605,12 @@ input[type="checkbox"]:checked {
 }
 
 input[type="checkbox"]:focus {
-    box-shadow: 0px 0px 3px 3px aliceblue;
+    box-shadow: 0px 0px 1px 1px aliceblue;
 }
 
 button{
   background-color: transparent;
-  border: inset 3px #b09b67;;
+  border: inset 2px #b09b67;;
   border-radius: 16px;
   color: black;
   cursor: pointer;
@@ -622,7 +629,7 @@ button:focus {
 }
 
 button:hover {
-  background-color:#e0e0e822;
+  border : inset 2px #e0e0e822;
 }
 
 button:disabled {
@@ -630,5 +637,102 @@ button:disabled {
 }
 
 button:active {
-    border: inset 3px #ff0000;
+    border: inset 2px #ff0000;
+}
+
+.disabled{
+    pointer-events: none;
+    filter: grayscale(1) blur(2px);
+}
+
+#parameters_range, #smoothening_controls{
+    display : none;
+    position : fixed;
+    z-index: 100;
+    padding: 20px;
+    border-radius: 20px;
+    border: #b09b67 inset;
+    background-image: url('../css/images/plugin.jpg');
+    margin:300px;
+    text-align: center;
+}
+  
+#parameters_range button{
+    width:75px;
+}
+  
+#parameters_table{
+    margin-bottom:15px;
+}
+  
+#smoothening_controls > div{
+    width: 400px;
+    margin : 20px;
+}
+  
+#smoothening_onoff{
+    bottom: 25px;
+    left: 25px;
+    z-index: 100;
+}
+  
+#smoothening_onoff input{
+    left: 20px;
+    position: relative;
+}
+  
+.pulsating-circle {
+    position: relative;
+    transform: translateX(-50%) translateY(-50%);
+    width: 30px;
+    height: 30px;
+    
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 300%;
+      height: 300%;
+      box-sizing: border-box;
+      margin-left: -100%;
+      margin-top: -100%;
+      border-radius: 45px;
+      background-color: #e90101;
+      animation: pulse-ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0; 
+      top: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 0 8px rgba(0,0,0,.3);
+      animation: pulse-dot 1.25s cubic-bezier(0.455, 0.03, 0.515, 0.955) -.4s infinite;
+    }
+}
+  
+@keyframes pulse-ring {
+    0% {
+      transform: scale(.33);
+    }
+    80%, 100% {
+      opacity: 0;
+    }
+}
+  
+@keyframes pulse-dot {
+    0% {
+      transform: scale(.8);
+    }
+    50% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(.8);
+    }
 }

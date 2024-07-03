@@ -1,0 +1,38 @@
+#radiate_main{
+/*     background-image: url("./images/radiate.jpeg"); */
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    text-align : center;
+}
+
+#radiate_on{
+    background-image: url("../../../css/images/plugin_off.png");
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    margin: auto;
+    top: 30px;
+    position: relative;
+}
+
+#radiate_force{
+    top: 115px;
+    position: relative;
+    left: 106px;
+}
+
+.radiate{
+    grid-column: span 2;
+    text-align: center;
+/*     color: white; */
+}
+
+#radiate_files_wrapper{
+    overflow: hidden auto;
+    height: 65%;
+    top: 20px;
+    position: relative;
+    width: 90%;
+    left: 5%;
+}

@@ -1,49 +1,40 @@
 
 let inst_controls = {};
 
-window.addEventListener('load', function () {
+window.addEventListener('load', async function () {
     inst_controls = inst.get_controls();
-
-    for (let i = 0; i < duduk_knobs.length; i++){
-
-        let p = inst.params[duduk_knobs[i].id]
-        duduk_knobs[i].setValue(100*(p.value-p.range[0])/(p.range[1]-p.range[0]))
+    for (let i = 0; i < inst.knobs.length; i++){
+        let p = inst.params[inst.knobs[i].id]
+        inst.knobs[i].setValue(p.to_percentage()) //100*(p.value-p.range[0])/(p.range[1]-p.range[0]))
     }
 })
 
-function pb_change(a){
-    // let c = inst_controls["pb"];
-    inst.set_controls({"pb": a}, false)
+function pm_change(a){
+    inst.set_controls({"pm": a}, false, is_shiftkey_pressed)
 }
 
-function Fl_change(a){
-    // let c = inst_controls["Fl"];
-    inst.set_controls({"Fl": a}, false)
+function Fr_change(a){
+    inst.set_controls({"Fr": a}, false, is_shiftkey_pressed)
 }
 
-function mul_change(a){
-    // let c = inst_controls["mul"];
-    inst.set_controls({"mul": a}, false)
+function mur_change(a){
+    inst.set_controls({"mur": a}, false, is_shiftkey_pressed)
 }
 
-function K_change(a){
-    // let c = inst_controls["K"];
-    inst.set_controls({"K": a}, false)
+function Kr_change(a){
+    inst.set_controls({"Kr": a}, false, is_shiftkey_pressed)
 }
 
-function Ql_change(a){
-    // let c = inst_controls["Ql"];
-    inst.set_controls({"Ql": a}, false)
+function Qr_change(a){
+    inst.set_controls({"Qr": a}, false, is_shiftkey_pressed)
 }
 
 function H_change(a){
-    // let c = inst_controls["H"];
-    inst.set_controls({"H": a}, false)
+    inst.set_controls({"H": a}, false, is_shiftkey_pressed)
 }
 
 function Cd_change(a){
-    let c = inst_controls["Cd"];
-    inst.set_controls({"Cd": a}, false)
+    inst.set_controls({"Cd": a}, false, is_shiftkey_pressed)
 }
 
 
@@ -85,30 +76,13 @@ function click_hole(elmnt, init=false){
     }
 }
 
-// $('#duduk').mousedown(function(event) {
-//     switch (event.which) {
-//         case 1:
-//             alert('Left Mouse button pressed.');
-//             break;
-//         case 2:
-//             alert('Middle Mouse button pressed.');
-//             break;
-//         case 3:
-//             alert('Right Mouse button pressed.');
-//             break;
-//         default:
-//             alert('You have a strange Mouse!');
-//     }
-// });
-
-
 $(document).on("contextmenu", "#duduk", function(e){
-    $(".pop").hide()
-    $("#duduk_menu").toggle();
+    // $(".pop").hide()
+    $("#duduk_menu").toggle().css('top', e.pageY).css('left', e.pageX);
     return false;
  });
 
 currentMenu["duduk"] = 0;
 
-click_hole($("#A"), true) 
+click_hole($("#C"), true) 
 

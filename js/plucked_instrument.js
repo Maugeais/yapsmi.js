@@ -46,7 +46,7 @@ class plucked_instrument extends string_instrument{
             } 
             inst.compute_attack_coefs()
         } else {
-            inst.plectrum[key].set_from_precentage(params[key]);
+            inst.plectrum[key].set_from_percentage(params[key]);
             inst.compute_attack_coefs()
             return(inst.plectrum[key].to_string())    
         }

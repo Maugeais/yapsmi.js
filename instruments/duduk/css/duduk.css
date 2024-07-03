@@ -8,9 +8,9 @@
 #duduk_menu{
   background: #f2f2f2;
   display: none;
-  position: absolute;
+  position: fixed;
   z-index: 100;
-  right: 0;
+  width:200px;
 }
 
 #duduk_control{
@@ -47,3 +47,4 @@
 #G{ left : 61%; }
 #Ap1{ left : 65%; top:30px}
 #Bp1{ left : 69%; }
+

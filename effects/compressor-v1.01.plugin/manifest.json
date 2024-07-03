@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "GUI for the dynamic compressor of the Web Audio API",
+    "developper" : "Sylvain Maugeais"
+}

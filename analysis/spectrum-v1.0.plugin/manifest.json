@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : true,
+    "presentation" : "Displays an instantaneous spectrum computed with length 2048*16 filtered with Hamming window. The sound used has gone through all the filters that are before this window",
+    "developper" : "Sylvain Maugeais"
+}

@@ -3,9 +3,11 @@
 // let simu_on = 0;
 let simu_on = false;
 
-import { yin } from "./yin.js";
+import { yin } from "./yin.js?version=1";
 
-import { transform } from "./fft.js";
+import { transform } from "./fft.js?version=1";
+
+import { parameter } from "./parameters.js?version=1.02";
 
 window.compute_fft = function(data, len){
     let imag = new Float32Array(len);
@@ -13,6 +15,8 @@ window.compute_fft = function(data, len){
     transform(real, imag)
     return([real, imag])
 }
+
+window.radiate_on = false;
 
 
 function audio_start(){
@@ -38,7 +42,7 @@ let filters = [];
       
 function add_filter(f, position = -1, uid){
 
-    if (simu_on) audioCtx.close();
+    // if (simu_on) audioCtx.close();
 
     let filter = { "init" : f, "uid" : uid, "callback" : function(){} };
 
@@ -53,7 +57,7 @@ function add_filter(f, position = -1, uid){
     // Sorting necessary for asynchronous reasons when loading the plugins from a session
     sort_filters()
 
-    if (simu_on) init(inst);
+    restart(); //init(inst);
 }
 
 function order_filter(filter1, filter2){
@@ -80,17 +84,17 @@ function remove_filter(uid){
     console.log("remove", filters)
 }
 
-window.restart = function(){
+window.restart = async function(){
     if (simu_on) {
         audioCtx.close();
         init(inst);
     }
 }
 
-let audioCtx;
+window.audioCtx = 0;
 let buffer_size  = 2*2048; //16384;
 let outputData;
-let fs;
+window.fs = 0;
 
 window.frequency = -1;
 window.get_frequency = function(){
@@ -100,9 +104,9 @@ window.get_frequency = function(){
     return(frequency)
 }
 
+
 window.change_global_gain = function(value){
-    // window.vol.gain.value = value/100;
-    window.vol.gain.value = 10**(3*(-1+value/100));
+    vol.gain.value = 10**(3*(-1+value/100));
 }
 
 async function init(inst) {
@@ -134,7 +138,7 @@ async function init(inst) {
       }
 
       window.vol = audioCtx.createGain();
-      window.change_global_gain($("#gain_slider").val() )
+      window.change_global_gain($("#gain_slider").val())
 
       current.connect(window.vol)
       current = window.vol
@@ -148,7 +152,6 @@ async function init(inst) {
       scriptNode.onaudioprocess = function(audioProcessingEvent) {
             let t1 = Date.now();
             frequency = -1;
-
 
             let outputBuffer = audioProcessingEvent.outputBuffer;
             // si 2 voies imbriquer la boucle ci-dessous dans une autre

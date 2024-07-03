@@ -1,0 +1,59 @@
+.record{
+  grid-column: span 5; 
+  width : 580px;
+}
+
+.record_controls{
+   display : flex;
+   gap: 30px;
+}
+
+
+.record_display .main-svg{
+  border-radius: 17px 17px 0px 0px;
+}
+
+.record_max{
+  padding: 15px;
+  text-align: center;
+}
+
+.record_recording{
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 1px solid black;
+  border-radius: 5px;
+  margin: auto;
+}
+
+.record_controls label{
+  text-align: center;
+  margin: 5px;
+}
+.record_controls button{
+  width: 100px;
+  height: 30px;
+  margin: 10px;
+}
+
+#toggle_recording{
+  padding-right : 20px;
+}
+
+#record_trigger_value{
+  width : 100px;
+  margin-top: 0px;
+}
+
+#record_trigger_value input{
+  width: 100%;
+}
+
+#recording_proof{
+  width:10px;
+  height:10px;
+  left: 80px;
+  position: absolute;
+  bottom: 15px;
+}

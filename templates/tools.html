@@ -1,4 +1,8 @@
-<link rel="stylesheet" href="../../css/tools.css" />
+<link rel="stylesheet" href="../../css/tools.css?version=1.02" />
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+
 <script
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
   type="text/javascript"></script>
@@ -8,12 +12,12 @@
   <![endif]-->
 
 <div id="tools_menu">
-  <div id="audio_start" onclick="audio_start()"> </div>
-  <div id="speed"> CPU: 0% </div>
-  <div id="nan"> NAN </div>
+  <div id="audio_start" onclick="audio_start()" title="Simulation starting point"> </div>
+  <div id="speed" title="Estimation of CPU used&#013;by model and filters"> CPU: 0% </div>
+  <div id="nan" title="Divergence indicator&#013;of the numerical scheme"> NAN </div>
 
-  <div id="global_gain">
-     <label>Gain</label><input type="range" min="0" max="100" value="50" class="slider" id="gain_slider" oninput="change_global_gain(this.value)">
+  <div id="global_gain" title="Device gain&#013;Not part of the model">
+     <label>Gain</label><input type="range" min="0" max="100" value="50" class="slider" id="gain_slider" oninput="gain_output.value=parseInt(-60+3*gain_slider.value/5); change_global_gain(this.value)">(<output id="gain_output">-30</output>dB) 
   </div>
 
 
@@ -37,19 +41,17 @@
   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_session_list").toggle()' id="tools_session">
      Session
      <div class = "menu_entry_list pop"  id="tools_session_list">
-          <div class = "plugin_menu" onclick="$('.pop').hide();new_session()"> New </div>
           <div class = "plugin_menu" onclick="$('.pop').hide();$('#load').show()"> Load </div>
           <div class = "plugin_menu" onclick="$('.pop').hide();save_session()"> Save </div>
      </div>
-
-</div>
+  </div>
   
   <div class = "menu_entry" onclick='$(".pop").hide();$("#tools_help_list").toggle()' id="tools_help">
        Help
        <div class = "menu_entry_list pop"  id="tools_help_list">
-            <div class = "plugin_menu" onclick="document.getElementById('model').showPopover()"> Model </div>
-            <div class = "plugin_menu" onclick="document.getElementById('help').showPopover()"> Help </div>
-            <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div>
+            <div class = "plugin_menu" onclick="$('#model').show()"> Model </div>
+            <div class = "plugin_menu" onclick="$('#help').show()"> Help </div>
+            <!-- <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div> -->
        </div>
 
   </div>
@@ -99,6 +101,46 @@
      <div onclick="$(this).parent().hide()"  id="close_popup">✕</div>
      Test
 </div>
+
+<div id="parameters_range" class = "pop">
+     <table id="parameters_table">
+      <thead>
+          <tr>
+               <th style="width:60%">control</th>
+               <th> Default </th>
+               <th> Min </th>
+               <th> Max </th>
+           </tr>
+      </thead>
+
+      <tbody>
+
+      </tbody>
+       
+      
+     </table> 
+
+     <button onclick="parameters_from_range();">Apply</button>
+
+</div>
+
+<div id="smoothening_controls" class = "pop">
+     Smoothening parameters
+     <div id="smoothening_accuracy" title="Percentage of change relative to maximal range between two time steps">
+          <label>Accuracy </label>
+          <input type="range" min="0" max="100" value="50" class="slider" id="smoothening_accuracy_slider" oninput="smoothening_accuracy_slider_output.value=change_smoothening_accuracy(this.value) ">
+          (<output id="smoothening_accuracy_slider_output">0.012%</output>)
+     </div>
+
+     <div id="smoothening_delay" title="Delay between two time steps">
+          <label>Delay </label>
+          <input type="range" min="0" max="100" value="50" class="slider" id="smoothening_delay_slider" oninput="smoothening_delay_slider_output.value=change_smoothening_delay(this.value)">
+          (<output id="smoothening_delay_slider_output">34ms</output>)
+     </div>
+
+     <label id="smoothen_parameters" title="Smoothen the change in parameters">On/off<input onclick="toggle_smoothening(this)" type="checkbox"></label>
+
+ </div> 
 
 
 <div id="tools_message">

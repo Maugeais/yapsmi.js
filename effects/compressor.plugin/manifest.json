@@ -1,5 +1,0 @@
-{
-    "multi_threaded" : false,
-    "presentation" : "Dynamic compressor<div style='color:red'>Completion 90%, only attack and release have to be implemented</div>",
-    "developper" : "Sylvain Maugeais"
-}

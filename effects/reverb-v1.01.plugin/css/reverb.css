@@ -1,0 +1,42 @@
+#reverb_main{
+    position: relative;
+    height: 100%;
+    width:100%;
+}
+
+
+
+#reverb_table_wrapper{
+    overflow: hidden auto;
+    height: 65%;
+    top: 20px;
+    position: relative;
+    width: 90%;
+    left: 5%;
+}
+
+.selected_reverb{
+    background:red;
+}
+
+
+
+#reverb_on{
+    background-image: url("../../../css/images/plugin_off.png");
+    width: 60px;
+    height: 60px;
+    background-size: cover;
+    bottom: 15px;
+    position: absolute;
+    left: 85px;
+}
+
+#reverb_force{
+    top: 115px;
+    position: relative;
+    left: 106px;
+}
+
+.reverb{
+    grid-column: span 2;
+}

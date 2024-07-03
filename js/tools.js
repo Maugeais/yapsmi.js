@@ -7,7 +7,7 @@ function loadPluginManifest(menu_entry,element){
     let pre_manifest = {"multi_threaded": false, "presentation":""};
     $.getJSON(`../../${menu_entry}/${element}.plugin/manifest.json`, function(manifest){
         plugins_list[element] = {"manifest" : Object.assign({}, pre_manifest, manifest)};
-        $(`.plugin_menu:contains("${element}")`).find('.manifest').html(manifest.presentation)
+        $(`.plugin_menu:contains("${element.split('-')[0]}")`).find('.manifest').html(manifest.presentation)
     }).fail(function(){
         plugins_list[element] = {"manifest" : pre_manifest};
     });
@@ -26,7 +26,7 @@ function init_plugins(menu_entry){
                 loadPluginManifest(menu_entry,element);
 
                 if (element[0] != '/'){
-                    let newDiv = `<div class="plugin_menu" onclick="load_plugin('${menu_entry}','${element}');">${element}<div class="manifest"></div></div>`;
+                    let newDiv = `<div class="plugin_menu" onclick="load_plugin('${menu_entry}','${element}');">${element.split('-')[0]}<div class="manifest"></div></div>`;
                     $(`#tools_${menu_entry}_list`).append(newDiv);
                 }
             })
@@ -78,14 +78,15 @@ async function load_plugin(menu_entry, element){
             `../../${menu_entry}/${element}.plugin/index.html`,
             {},
             function (data) {      
-                plugins.push(new plugin(element, menu_entry));
-                let a = $("#wrapper").append(`<div class='plugin ${element}' id=\"${element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
+                let reduced_element = element.split('-')[0];
+                plugins.push(new plugin(reduced_element, menu_entry));
+                let a = $("#wrapper").append(`<div class='plugin ${reduced_element}' id=\"${reduced_element}€${plugins[plugins.length-1].uid}\"></div>`).children().last();
 
                 a.html(data.replaceAll('{{id}}', '€'+plugins[plugins.length-1].uid));
-                loadJS(`../${menu_entry}/${element}.plugin/js/${element}.js`, plugins[plugins.length-1].uid);
+                loadJS(`../${menu_entry}/${element}.plugin/js/${reduced_element}.js`, plugins[plugins.length-1].uid);
 
                 if (!plugins_list[element].manifest.multi_threaded){
-                    $(`.plugin_menu:contains("${element}")`).css({"backgroundColor": "red", "pointer-events": "none"});
+                    $(`.plugin_menu:contains("${reduced_element}")`).css({"backgroundColor": "red", "pointer-events": "none"});
                 }    
                 
                 $(".pop").hide();
@@ -133,28 +134,10 @@ function init_knobs(name, size, type){
 
               knobs.push(dial1);
 
-           // userValues[index].addEventListener("change", function() {
-           //   window.inst.chgParameters(userValues[index].id.split("-")[0], userValues[index].value);
             })(i);
         }
 
         return(knobs)
-
-        //dial1.getValue(); //get dial 1's value
-        //dial2.setValue(20); //set dial 2's value to 20
-
-        //the main event
-/*
-
-        let userValues = document.getElementsByClassName('value');
-        for(let i = 0; i < userValues.length; i++) {
-          (function(index) {
-            userValues[index].addEventListener("change", function() {
-
-              call_function(userValues[index].id.split("-")[0], userValues[index].value);
-            })
-          })(i);
-        }*/
 }
 
 function new_session(){
@@ -165,21 +148,24 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function load_session_elements(session){
     let i = 0;
+
+    inst.load_session(session['main'])
+    let plugin_keys = Object.keys(plugins_list)
     while(i < session.plugins.length){
 
-        // if (plugins.length == 0 || (plugins.length == i && plugins[i-1].loaded == true)) {
-        await load_plugin(session.plugins[i].entry, session.plugins[i].name);
-        await delay(500) 
-        console.log(session.plugins[i].state)
+        // Look for a suitable version
+        let j = plugin_keys.findIndex(el => el.includes(session.plugins[i].name));
+
+        await load_plugin(session.plugins[i].entry, plugin_keys[j], );
+        await delay(500)         
+
         plugins[i].load(plugins[i].uid, session.plugins[i].state)
 
         i++;
-        // } 
-        // else {
-        //     await delay(500)
-        // }
+    
     }
 }
+
 
 function load_session(file){
     const reader = new FileReader()
@@ -194,7 +180,6 @@ function load_session(file){
                     load_session_elements(session)
                     message(`Session saved on ${session.date} loaded`)
                 }
-            console.log(session)
         } catch(e) {
             return message("Invalid configuration file") 
         }
@@ -229,6 +214,8 @@ function load_example_session(file){
 function save_session(){
     let session = {"program" : "yapsmi.js", "date" : Date()};
 
+    session.main = inst.save_session()
+
     session.plugins = [];
 
     for (let i=0; i < plugins.length; i++){
@@ -238,7 +225,6 @@ function save_session(){
         session.plugins.push(plug);
     }
 
-    console.log(session)
     const link = document.createElement("a");
     const file = new Blob([JSON.stringify(session)], { type: 'text/plain' });
     link.href = URL.createObjectURL(file);
@@ -291,6 +277,14 @@ $(".plugin").click(function(e){
 
 
 $("#tools").click(function(e){
+    e.stopPropagation();
+});
+
+$("#model").click(function(e){
+    e.stopPropagation();
+});
+
+$("#help").click(function(e){
     e.stopPropagation();
 });
 
@@ -348,3 +342,72 @@ function change_controls(direction, menu=""){
 
     // console.log(menu, direction, currentMenu)
 }
+
+
+function parameters_to_range(){
+
+    $("#parameters_table tbody").empty(); 
+
+    let content = "";
+
+    for (let i = 0; i < inst.knobs.length; i++){
+        let control = inst.knobs[i].id;
+
+        content += '<tr><td>'+control+'</td>';
+        content += '<td><input value="'+inst.params[control].value+'"></td>';
+        content += '<td><input value="'+inst.params[control].range[0]+'"></td>';
+        content += '<td><input value="'+inst.params[control].range[1]+'"></td>';
+
+        content += '</tr>'
+
+    }
+
+    $("#parameters_table tbody").html(content) 
+    $('#parameters_range').show()
+}
+
+function parameters_from_range(){
+
+    let trs = $("#parameters_table").find("tr")
+
+    for (let i = 0; i < inst.knobs.length; i++){
+
+        let control = inst.knobs[i].id;
+
+        let tds = $(trs[i+1]).find('td');
+
+        inst.params[control].goal_value = parseFloat($($(tds[1]).find('input')[0]).val())
+        inst.params[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
+        inst.params[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
+
+        inst.knobs[i].setValue(inst.params[control].to_percentage()) 
+
+      }
+}
+
+function smoothening(){
+    $('#smoothening_controls').show()
+
+}
+
+function change_smoothening_accuracy(value){
+    inst.smoothening_accuracy.set_from_percentage(value);
+    return(inst.smoothening_accuracy.to_string())
+}
+
+function change_smoothening_delay(value){
+    inst.smoothening_delay.set_from_percentage(value);
+    return(inst.smoothening_delay.to_string())
+}
+
+function toggle_smoothening(elmnt){
+    for (var key in inst.params) {
+        inst.params[key].smoothened = elmnt.checked;
+    }
+}
+
+
+let is_shiftkey_pressed = false;
+
+document.addEventListener("keydown", function(evt){if (evt.key == "Shift"){is_shiftkey_pressed = true}}, true); 
+document.addEventListener("keyup", function(evt){if (evt.key == "Shift"){is_shiftkey_pressed = false}}, true); 

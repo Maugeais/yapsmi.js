@@ -1,9 +1,14 @@
 <!DOCTYPE html>
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+
 <html lang="">
   <head>
     <meta charset="utf-8">
-    <title>pim-Duduk</title>
-    <link rel="stylesheet" href="./css/duduk.css" />
+    <title>Yapsmi-Duduk</title>
+    <link rel="stylesheet" href="./css/duduk.css?version=1.02" />
     <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
     <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -15,8 +20,12 @@
       <div id="tools">
       </div> 
 
-      <div id="model" popover><div class="close_button" onclick="$(this).parent().hide()">✕</div>
+      <div id="model" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()">✕</div>
         <div id="model_content"></div>
+      </div>  
+
+      <div id="help" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()">✕</div>
+        <div id="help_content"></div>
       </div>  
     </header>
     <main>
@@ -25,9 +34,10 @@
       
         <div class = "plugin" id="duduk">
           <div id="duduk_menu" class="pop">
-            <div class="plugin_menu">Parameters range</div>
-            <div class="plugin_menu">Test</div>
-            <div class="plugin_menu">Test</div>
+            <div class="plugin_menu" onclick="$('#duduk_menu').hide(); parameters_to_range()">Parameters range</div>
+            <div class="plugin_menu" onclick="$('#duduk_menu').hide(); smoothening()">Smoothening</div>
+            <!-- <div class="plugin_menu">Test</div>
+            <div class="plugin_menu">Test</div> -->
           </div>
 
           <div id = "duduk_control">
@@ -54,27 +64,27 @@
                 <div class="controls_title">Controls</div>
 
                 <div class = "control_knob">
-                    <div class="value_container">\(P_m^\vphantom{0}\)=<div class="knob_value" id="pb_value">100</div></div>
-                    <div class="knob" id="pb"></div>
+                    <div class="value_container">\(P_m^\vphantom{0}\)=<div class="knob_value" id="pm_value">100</div></div>
+                    <div class="knob" id="pm"></div>
 
                 </div>
 
                 <div class = "control_knob">
-                    <div class="value_container">\(F_r^\vphantom{0}\)=<div class="knob_value" id="Fl_value">100</div></div>
-                    <div class="knob" id="Fl"></div>
+                    <div class="value_container">\(F_r^\vphantom{0}\)=<div class="knob_value" id="Fr_value">100</div></div>
+                    <div class="knob" id="Fr"></div>
                 </div>
 <!-- 
                 <div class = "control_knob">
-                  <div class="value_container">\(\mu_\ell^\vphantom{0}\)=<div class="knob_value" id="mul_value">100</div></div>
-                  <div class="knob" id="mul"></div>
+                  <div class="value_container">\(\mu_\ell^\vphantom{0}\)=<div class="knob_value" id="mur_value">100</div></div>
+                  <div class="knob" id="mur"></div>
                 </div> -->
                 <div class = "control_knob">
-                  <div class="value_container">\(K_r^\vphantom{0}\)=<div class="knob_value" id="K_value">100</div></div>
-                  <div class="knob" id="K"></div>
+                  <div class="value_container">\(K_r^\vphantom{0}\)=<div class="knob_value" id="Kr_value">100</div></div>
+                  <div class="knob" id="Kr"></div>
                 </div>
                 <div class = "control_knob">
-                  <div class="value_container">\(Q_r^\vphantom{0}\)=<div class="knob_value" id="Ql_value">100</div></div>
-                  <div class="knob" id="Ql"></div>
+                  <div class="value_container">\(Q_r^\vphantom{0}\)=<div class="knob_value" id="Qr_value">100</div></div>
+                  <div class="knob" id="Qr"></div>
                 </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
@@ -93,33 +103,26 @@
 
       </div>
 
-    <!-- <div id="help" popover>
-      <iframe width="420" height="315"
-      src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=0&mute=1">
-      </iframe> 
-
-    </div> -->
-
-
-
     </main>
 
 
     <footer></footer>
   </body>
 
-  <script src="../../js/knobs.js"></script>
+  <script src="../../js/knobs.js?version=1"></script>
 
-  <script src="../../js/tools.js"></script>
+  <script src="../../js/tools.js?version=1.02"></script>
 
-  <script src="../../js/plugins.js"></script>
+  <script src="../../js/plugins.js?version=1"> 
+  </script>
 
-  <script type="module" src="js/init.js"></script>
-  <script src="./js/duduk-ui.js"></script>
+  <script type="module" src="js/init.js?version=1.02"></script>
+  <script src="./js/duduk-ui.js?version=1.02"></script>
 
   <script> 
     $(function(){
       $("#model_content").load("model.html"); 
+      $("#help_content").load("help.html"); 
     });
     </script> 
 
@@ -127,13 +130,20 @@
   <script> 
     
     $(function(){
-      $("#tools").load("../../templates/tools.html", init_menu); 
+      $("#tools").load("../../templates/tools.html?version=1.02", init_menu); 
     });
     
-    duduk_knobs = init_knobs("duduk", "large", "Vintage");
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+      inst.knobs = init_knobs("duduk", "large", "Vintage");
+
+    }, false);
 
   </script> 
-  <!-- <script>window.addEventListener('load', function () {
-     init_plugins()
+  <!-- <script>window.addEventListener('load', async function () {
+     //init_plugins()
+     await delay(1000)
+     load_plugin('effects','radiate-v1.0');
    })</script> -->
 </html>

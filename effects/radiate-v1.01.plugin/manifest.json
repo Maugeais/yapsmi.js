@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Adds the radiation sound filter of the Web Audio API. Depending on the instrument, the transfer functions may driven directly by the model.",
+    "developper" : "Sylvain Maugeais"
+}
