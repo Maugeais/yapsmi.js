@@ -5,10 +5,16 @@
     <title>Yapsmi-guitar</title>
     <link rel="stylesheet" href="./css/guitar.css" />
     <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
-    <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
+    <!-- <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    <script src="../../js/external/jquery.js"></script>
+    <script src="../../js/knobs.js?version=1.01"></script>
+    <script src="../../js/external/jquery-ui.js"></script>
+    <script src="../../js/plugins.js?version=1.01"></script>
   </head>
   <body>
     <header>
@@ -19,7 +25,6 @@
         <div id="model_content"></div>
       </div>  
 
-      <div id="string_maker_content" style="display:none"></div>
     </header>
     <main>
 
@@ -73,12 +78,12 @@
     
           <div id="string_controls" class="instrument_controls">
           
-            <button id="previous_controls" onclick="change_controls(-1, 'string_controls')"></button>
+            <div class="previous_controls" onclick="change_controls(-1, 'string_controls')"></div>
         
-            <button id="next_controls" onclick="change_controls(+1, 'string_controls')"></button>
+            <div class="next_controls" onclick="change_controls(+1, 'string_controls')"></div>
     
             <div class ="instrument_controls_window">
-              <legend>1st string</legend>
+              <legend>Low E string</legend>
 
                 <label id="all_strings_at_once">All strings
                   <input type="checkbox" onclick="all_strings(this)">
@@ -107,10 +112,16 @@
                 <div class="control_knob">
                   <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€1_value">100</div></div>
                   <div class="knob" id="losses_R€1"></div>
-              </div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€1_value">100</div></div>
+                  <div class="knob" id="nonlinearity€1"></div>
+                </div>
+                
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>2nd string</legend>
+              <legend>A string</legend>
       
                 <div class="control_knob">
                     <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€2_value">100</div></div>
@@ -130,15 +141,20 @@
                 <div class="control_knob">
                   <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€2_value">100</div></div>
                   <div class="knob" id="losses_eta€2"></div>
-              </div>
+                </div>
 
-              <div class="control_knob">
-                <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€2_value">100</div></div>
-                <div class="knob" id="losses_R€2"></div>
-            </div>
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€2_value">100</div></div>
+                  <div class="knob" id="losses_R€2"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€2_value">100</div></div>
+                  <div class="knob" id="nonlinearity€2"></div>
+                </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>3rd string</legend>
+              <legend>D string</legend>
       
                 <div class="control_knob">
                     <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€3_value">100</div></div>
@@ -163,10 +179,15 @@
                 <div class="control_knob">
                   <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€3_value">100</div></div>
                   <div class="knob" id="losses_R€3"></div>
-              </div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€3_value">100</div></div>
+                  <div class="knob" id="nonlinearity€3"></div>
+                </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>4th string</legend>
+              <legend>G string</legend>
       
                 <div class="control_knob">
                     <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€4_value">100</div></div>
@@ -192,9 +213,14 @@
                   <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€4_value">100</div></div>
                   <div class="knob" id="losses_R€4"></div>
                 </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€4_value">100</div></div>
+                  <div class="knob" id="nonlinearity€4"></div>
+                </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>5th string</legend>
+              <legend>B string</legend>
       
                 <div class="control_knob">
                     <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€5_value">100</div></div>
@@ -220,9 +246,14 @@
                   <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€5_value">100</div></div>
                   <div class="knob" id="losses_R€5"></div>
                 </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€5_value">100</div></div>
+                  <div class="knob" id="nonlinearity€5"></div>
+                </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>6th string</legend>
+              <legend>High E string</legend>
       
                 <div class="control_knob">
                     <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€6_value">100</div></div>
@@ -248,6 +279,11 @@
                   <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€6_value">100</div></div>
                   <div class="knob" id="losses_R€6"></div>
                 </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€6_value">100</div></div>
+                  <div class="knob" id="nonlinearity€6"></div>
+                </div>
             </div>
 
           </div>
@@ -266,54 +302,33 @@
 
           <div id="righthand_controls" class="instrument_controls">
           
-            <!-- <button id="previous_controls" onclick="change_controls(-1, 'righthand_controls')"></button>
+            <div class="previous_controls" onclick="change_controls(-1, 'righthand_controls')"></div>
         
-            <button id="next_controls" onclick="change_controls(+1, 'righthand_controls')"></button>
+            <div class="next_controls" onclick="change_controls(+1, 'righthand_controls')"></div>
             
             <div class ="instrument_controls_window" >
-              <legend>Microphones</legend>
+              <legend>Plectrum</legend>
+              <div class="control_knob">
+                <div class="value_container">\(reg^\vphantom{0}\)=<div class="knob_value" id="regularity_value">100</div></div>
+                <div class="knob" id="regularity"></div>
+              </div>
 
-                <div id="nl_microphone">Non linear
-                  <input type="checkbox"  name="nl_microphone"/>
-                </div>
-                <svg id="microphone_selector">
-                  <defs>
-                    <pattern id="img1" patternUnits="userSpaceOnUse" width="100" height="100">
-                      <image href="../../css/images/background.jpg" x="0" y="0" width="100" height="100" />
-                    </pattern>
-                  </defs>
-                  
-                  <g transform="translate(20 10)">
-                    <polygon class="up" points="50,0 0,100 100,100" onmouseup="change_microphone_selector(event)" fill="url(#img1)"/>
-                    <text x="35" y="0" class="label_selector_mic">Mic 1</text>
-                    <text x="-20" y="110" class="label_selector_mic">Mic 2</text>
-                    <text x="90" y="110" class="label_selector_mic">Mic 3</text>
-                  </g>
-                  
-                </svg>
-                <div id="microphone_selector_position"></div>
+              <div class="control_knob">
+                <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
+                <div class="knob" id="width"></div>
+              </div>
+              
+              <div class="control_knob">
+                <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
+                <div class="knob" id="position"></div>
+              </div>
+
                 
-
-                <div class="control_knob">
-                  <div class="value_container">\(w_1^\vphantom{0}\)=<div class="knob_value" id="widthmic€1_value">100</div></div>
-                  <div class="knob" id="widthmic€1"></div>
-                </div>
-                
-                <div class="control_knob">
-                  <div class="value_container">\(w_2^\vphantom{0}\)=<div class="knob_value" id="widthmic€2_value">100</div></div>
-                  <div class="knob" id="widthmic€2"></div>
-                </div>
-
-                <div class="control_knob">
-                  <div class="value_container">\(w_3^\vphantom{0}\)=<div class="knob_value" id="widthmic€3_value">100</div></div>
-                  <div class="knob" id="widthmic€3"></div>
-                </div>
-
                 
                 
                              
-            </div> -->
-            <div id="attack_controls" class ="instrument_controls_window">
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
                 <legend>Attack</legend>
       
 
@@ -330,42 +345,25 @@
                 <div class="control_knob">
                   <div class="value_container">\(\delta\delta t^\vphantom{0}\)=<div class="knob_value" id="increase_duration_value">100</div></div>
                   <div class="knob" id="increase_duration"></div>
-                </div>
-
-                <div class="control_knob">
-                  <div class="value_container">\(reg^\vphantom{0}\)=<div class="knob_value" id="regularity_value">100</div></div>
-                  <div class="knob" id="regularity"></div>
-                </div>
-
-                <div class="control_knob">
-                  <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
-                  <div class="knob" id="width"></div>
-                </div>
-                
-                <div class="control_knob">
-                  <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
-                  <div class="knob" id="position"></div>
-                </div>
-
-                
+                </div>               
                 
                 <div class="control_knob">
                   <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
                   <div class="knob" id="strength"></div>
                 </div>
 
-                <div class="control_knob">
+                <!-- <div class="control_knob">
                   <div class="value_container">\(\epsilon^\vphantom{0}\)=<div class="knob_value" id="attack_losses_value">100</div></div>
                   <div class="knob" id="attack_losses"></div>
-                </div>
+                </div> -->
                              
             </div>
           </div>
 
-          <div class="control_knob" id="general_gain">
+          <!-- <div class="control_knob" id="general_gain">
             <div class="value_container">\(Gain\)=<div class="knob_value" id="gain_value">100</div></div>
             <div class="knob" id="gain"></div>
-          </div>
+          </div> -->
 
           <!-- <div id="mic_controls" class="instrument_controls">
             
@@ -408,25 +406,19 @@
     <footer></footer>
   </body>
 
-  <script src="../../js/knobs.js"></script>
+  <!-- <script src="../../js/knobs.js"></script>
 
-  <script src="../../js/tools.js"></script>
-
-  <script src="../../js/plugins.js"></script>
+  <script src="../../js/plugins.js"></script> -->
 
   <script type="module" src="js/init.js"></script>
+  <script src="../../js/tools.js"></script>
   <script src="./js/guitar-ui.js"></script>
 
   <script> 
     $(function(){
       $("#model_content").load("model.html"); 
     });
-
-    $(function(){
-      $("#string_maker_content").load("string_maker.html"); 
-    });
-    </script> 
-
+  </script>
 
   <script> 
     
@@ -434,9 +426,9 @@
       $("#tools").load("../../templates/tools.html", init_menu); 
     });
     
-    guitar_knobs = init_knobs("guitar", "large", "Bluesbreaker");
-    currentMenu["string_controls"] = 0;
-    currentMenu["righthand_controls"] = 0;
+    document.addEventListener('DOMContentLoaded', async function() {
+      load_inst_knobs("guitar")
+    }, false);
 
   </script> 
   <!-- <script>window.addEventListener('load', function () {

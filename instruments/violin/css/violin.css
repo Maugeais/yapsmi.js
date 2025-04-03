@@ -1,0 +1,136 @@
+#violin{
+  grid-column: 1 / span 11;
+  background-size: cover;
+  width: 1300px;
+}
+
+#violin_playing{
+  width: 100%;
+  height: 45%;
+  position : relative;
+  overflow : hidden;
+}
+
+
+#fretboardContainer{
+    height: 100%;
+    position: relative;
+    width: 700px;
+    left: 5px;
+}
+
+#fretboard{
+  left: 30px;
+  position: absolute;
+  right: 0px;
+  height: 100%;
+}
+
+#strad{
+  background-image: url("./images/violin.png");
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  background-size: auto 640px;
+  background-repeat: no-repeat;
+  background-position: -300px -250px;
+}
+
+#bowing_area{
+  position:absolute;
+  width: 360px;
+  height: 140px;
+  left: 710px;
+}
+
+#bow{
+  background-image: url("./images/bow.png");
+  height: 100%;
+  width: 34px;
+  padding: 0.5em;
+  z-index: 100;
+  background-size: cover;
+  background-position-y: 438px;
+}
+
+#strings{
+  width: 98%;
+  height: 86%;
+  position: absolute;
+  top: 0;
+  display: grid;
+  padding: 12px 0px;
+  left: 18px;
+  z-index : 10;
+  pointer-events : none;
+}
+
+
+
+.stringName{
+  color:#2bc62b;
+  position:absolute;
+  margin-top: -3px;
+  margin-left: 5px;
+}
+
+#string_controls{
+  width:500px;
+  height:45%;
+}
+
+
+.leftHandFinger{
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: aliceblue;
+  border-radius: 20px;
+  pointer-events : none;
+}
+
+
+#righthand_controls{
+  width: 30%;
+  right: 0;
+  top: 45%;
+  position: absolute;
+  height: 45%;
+}
+
+#attack_controls{
+  width: 100%;
+  position: absolute;
+  left: 0;
+}
+
+
+#all_strings_at_once{
+  position: absolute;
+  left: 5px;
+  bottom: 8px;
+  width: 60px;
+  text-align: center;
+  display: none;
+}
+
+#general_output_impedance{
+  position: absolute;
+  bottom: 30px;
+  left: 640px;
+}
+
+
+#model_choice{
+  border: 1px black solid;
+  border-radius: 5px;
+  color: white;
+}
+
+#model_choice legend{
+  position: relative;
+  border: none;
+  margin-left: 1em;
+  padding: 0.2em 0.8em 
+}

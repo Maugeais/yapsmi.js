@@ -1,17 +1,13 @@
 'use strict';
 
-import { duduk } from "./duduk.js?version=1.02";
+import { init_instrument } from "../../../js/wind_instrument.js?version=1.1";
 
-import { audio_start, audio_stop, add_filter, remove_filter } from "../../../js/audio.js?version=1.01";
+window.init_instrument = init_instrument;
 
-window.audio_start = audio_start;
-window.audio_stop = audio_stop;
+import { initialise_audio } from "../../../js/audio.js?version=1.1";
 
-window.add_filter = add_filter;
-window.remove_filter = remove_filter;
+window.instrument_name = "duduk"
 
-window.inst=duduk;
-
-console.log(window.inst)
+initialise_audio()
 
 

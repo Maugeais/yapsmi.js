@@ -1,0 +1,28 @@
+.continuation_3d{
+    grid-column: span 5;
+    width: 580px;
+}
+
+#continuation_3d_display{
+    width: 450px;
+    height: 100%;
+}
+
+#continuation_3d_controls{
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 150px;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+}
+
+.continuation_3d_tail{
+    margin: auto;
+}
+
+#continuation_3d_display .main-svg{
+    border-radius: 18px 0px 0px 17px;
+}

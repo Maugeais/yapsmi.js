@@ -1,146 +1,162 @@
 'use strict';
 
-import { FFTJS } from './fft-min.js'
-//import { rungeKutta } from "./rk4.js";
+// let simu_on = 0;
+window.simu_on = false;
 
+import { yin } from "./yin.js?version=1";
 
-let simu_on = 0;
-var audioCtx; 
+import { transform } from "./fft.js?version=1";
 
-console.log("Loading audio...");
+import { parameter } from "./parameters.js?version=1.02";
+
+window.radiate_on = false;
+
 
 function audio_start(){
-    if (simu_on == 0){
+
+    if (~simu_on){
         init(inst)
-        // ctxW = getCTX("wavForm");../css/images/off.png
-        simu_on = 1;
         $('#audio_start').css('background-image','url(../../css/images/on.png)');
-        //startLoggingMIDIInput(window.inst)
-
-
-        //drawingUpdate(true);
-    } else if (simu_on == 1){
-        simu_on = 2;
-        audioCtx.suspend();
-        $('#audio_start').css('background-image','url(../../css/images/off.png)');
-        //drawingUpdate(false);
     } else {
-        simu_on = 1;
-        audioCtx.resume();
-        $('#audio_start').css('background-image','url(../../css/images/on.png)');
-        //drawingUpdate(true);
+        audioCtx.close();
+        $('#audio_start').css('background-image','url(../../css/images/off.png)');
     }
+    simu_on = ~simu_on;
 }
 
 function audio_stop(){
    
         audioCtx.close();
-        $('#audio_start').html('Play')
-        //drawingUpdate(false);
-        simu_on = 0;
-  
+        simu_on = false;
+        $('#audio_start').css('background-image','url(../../css/images/off.png)');
 }
 
 
+let filters = [];
+      
+function add_filter(f, position = -1, uid){
 
-let buffer_size  = 2048*2;
+    // if (simu_on) audioCtx.close();
 
-let hanning = new Array(buffer_size);
-for (let i = 0; i < buffer_size; i++){
-    hanning[i] = (1-math.cos(2*math.PI*i/(buffer_size-1)))/2;
-}
+    let filter = { "init" : f, "uid" : uid, "callback" : function(){} };
 
-function apply_window(data){
-    for (let i=0; i < buffer_size; i++){
-        data[i] = data[i] * hanning[i];
+
+    if (position == -1 || filters.length >= position){
+        filters.push(filter);
+
+    } else {
+        filters.splice(position, 0, filter);
     }
+
+    // Sorting necessary for asynchronous reasons when loading the plugins from a session
+    sort_filters()
+
+    restart(); //init(inst);
 }
 
-async function createFilter(audioCtx) {
-    let convolver = audioCtx.createConvolver();
-
-    // load impulse response from file
-    let response     = await fetch(inst.transfer_function);
-    let arraybuffer  = await response.arrayBuffer();
-    convolver.buffer = await audioCtx.decodeAudioData(arraybuffer);
-
-    console.log("test");
-    return convolver;
+function order_filter(filter1, filter2){
+        if (filter1.uid < filter2.uid) return -1;
+        if (filter1.uid > filter2.uid) return 1;
+        return(0)
+    }
+          
+window.sort_filters = function(){
+        filters.sort(order_filter);
 }
 
-let post_processors = [];
+function remove_filter(uid){
+    if (simu_on) audioCtx.close();
 
-function add_post_processor(f){
-        post_processors.push(f);
-}
-
-function remove_post_processor(f){
-    const index = post_processors.indexOf(f);
+    let index = 0;
+    while(index < filters.index & filters[index].uid != uid){index++};
+    // const index = filters.indexOf(f);
     if (index > -1) { // only splice array when item is found
-        post_processors.splice(index, 1); // 2nd parameter means remove one item only
+        filters.splice(index, 1); // 2nd parameter means remove one item only
+    }
+    if (simu_on) init(inst);
+
+    console.log("remove", filters)
+}
+
+window.restart = async function(){
+    if (simu_on) {
+        audioCtx.close();
+        init(inst);
     }
 }
 
-const f = new FFTJS(buffer_size);
-const fft = f.createComplexArray();
-const convolution = f.createComplexArray();
-const complex_signal = f.createComplexArray();
+window.audioCtx = 0;
+let buffer_size  = 2*2048; //16384;
+let outputData;
+window.fs = 0;
 
+let frequency_computed = false;
+let frequency;
+window.get_frequency = function(){
+    if (frequency_computed == false) {
+        frequency = yin(outputData, fs, 0.07);
+        if (isNaN(frequency)){
+            frequency = 100000.0;
+        }
+        frequency_computed = true;
+    }
+    return(frequency)
+}
 
-function convolveFR(fft, output){
-    
-    let transfer = inst.transfer_function;
-    
-    for (let i = 0; i < fft.length/2; i++){
-        convolution[2*i] = (fft[2*i]*transfer[2*i]-fft[2*i+1]*transfer[2*i+1]);
-        convolution[2*i+1] = (fft[2*i]*transfer[2*i+1]+fft[2*i+1]*transfer[2*i]);
-    }
-    
-    f.inverseTransform(complex_signal, convolution);
-    
-    for (let i = 0; i < fft.length/2; i++){
-        output[i] = complex_signal[2*i+1];
-    }
-    fft= [...convolution];
+let fft_computed = false;
+let imag, real;
+
+window.compute_fft = function(data, len){
+    if (fft_computed == false) {
+        imag = new Float32Array(len);
+        real = data.slice(0, len)
+        transform(real, imag)
+        fft_computed = true;
+    } 
+    return([real, imag])
+}
+
+let overclock = 0;
+
+window.change_global_gain = function(value){
+    vol.gain.value = 10**(3*(-1+value/100));
 }
 
 async function init(inst) {
 
-      audioCtx = new window.AudioContext();
-           
-      // Il faut mettre ici le filtre
-      let filter = await createFilter(audioCtx);
+    AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
 
-      let fs = audioCtx.sampleRate;
-      let dt = 1 / fs;
+    fs = audioCtx.sampleRate;
+    let dt = 1 / fs;
 
-      var p;
-      
-      let buffer = new Array((buffer_size+1));   // Tableau contenant les les données en chaque temps
-      for (let k=0; k < buffer.length; k++){
-        buffer[k] = new Float64Array(inst.dim) // Pour chaque temps, on a les composantes
-        for (let i = 0; i < inst.dim; i++){
-            buffer[k][i] = 0;
+    inst.init_audio(buffer_size+1, dt)
+
+    let scriptNode = audioCtx.createScriptProcessor(buffer_size, 1, 1); //(bufferSize, numberOfInputChannels, numberOfOutputChannels);
+
+      let current = scriptNode;
+      // Initialise the filters
+      for (let k=0; k < filters.length; k++){
+        let data = await filters[k].init(audioCtx, filters[k].uid); 
+        if (Array.isArray(data)){
+            let test = {'input': data[0], 'output': data[0], 'is_on': data[2], 'callback': data[1]};
+        }
+        filters[k].callback = data[1];
+        if (data.length < 3 || data[2] == true) {
+            if (data[0] != ""){
+                current.connect(data[0])
+                current = data[0];
+            }
         }
       }
-   
-      let scriptNode = audioCtx.createScriptProcessor(buffer_size, 1, 1); //(bufferSize, numberOfInputChannels, numberOfOutputChannels);
-      
-      scriptNode.connect(filter);
-      filter.connect(audioCtx.destination);
-      if ( $('#isFilterOn').is(":checked") ){
-        scriptNode.connect(filter);
-      
-        filter.connect(audioCtx.destination);
-      } else {
-        scriptNode.connect(audioCtx.destination);
-      }
 
+      window.vol = audioCtx.createGain();
+      window.change_global_gain($("#gain_slider").val())
 
-      
-      // inst.mics[0].addEffect(audioCtx, scriptNode)
+      current.connect(window.vol)
+      current = window.vol
 
-      scriptNode.connect(audioCtx.destination);
+      current.connect(audioCtx.destination);
 
       let t = 0;
 
@@ -148,7 +164,8 @@ async function init(inst) {
       // audioProcessingEvent ----------------------------------------------------------------------------------------
       scriptNode.onaudioprocess = function(audioProcessingEvent) {
             let t1 = Date.now();
-
+            frequency_computed = false;
+            fft_computed = false;
 
             let outputBuffer = audioProcessingEvent.outputBuffer;
             // si 2 voies imbriquer la boucle ci-dessous dans une autre
@@ -157,36 +174,48 @@ async function init(inst) {
             // }
 
 
-            let outputData = outputBuffer.getChannelData(0);
+            outputData = outputBuffer.getChannelData(0);
             
-            inst.next_chunk(t, buffer_size, dt, buffer)
-            inst.output(buffer, outputData)
+            inst.next_chunk(t, buffer_size, dt)
+            inst.output(outputData)
 
-            console.log(outputData)
-            // apply_window(outputData);
-            
-            // f.realTransform(fft, outputData);
-            
-            
-            
-            // if ( $('#isFilterOn').is(":checked") ){
-            //     convolveFR(fft, outputData);
+            let max = Math.max.apply(null, outputData);
+
+            // console.log(inst.buffer[0].length, inst.buffer[4096][0], inst.buffer[0][0])
+
+
+            if (isNaN(max)){
+
+                $("#nan").css({"color":"red"})
+                inst.reset_chunk();
+                max = 0;
+
+            } else {
+                $("#nan").css({"color":"darkgray"})
+                inst.loop_chunk();
+                filters.forEach(filter => filter.callback(filter.uid));
+            }
+
+            // if (max > 1){
+            //     console.log("test")
             // }
-            
-                                    
+
             t += buffer_size * dt;
-  
-            // post_processors.forEach((f) => f(outputData, fft));
-            
+
             let deltaT = Date.now() - t1;
-            $("#speed").html("CPU usage : "+(deltaT/(10*buffer_size*dt)).toFixed(2)+'%');
+            let speed = deltaT/(10*buffer_size*dt);
+            if (speed > 100){
+                overclock += 1;
+                if (overclock == 10){
+                    audio_stop()   
+                    message("The system is overloaded and the simulation has been stoped. Please remove some plugins.")
+                }
+            }
+            $("#speed").html("CPU: "+speed.toFixed(2)+'%');
 
-            inst.X0 = buffer[buffer.length-1]
-            //console.log("CPU usage : "+(deltaT/(10*buffer_size*dt)).toFixed(2)+'%');
-            
         }
-
 } 
 
 
-export { audio_start, audio_stop, audioCtx, add_post_processor, remove_post_processor}
+export { audio_start, audio_stop, add_filter, remove_filter}
+//, add_post_processor, remove_post_processor

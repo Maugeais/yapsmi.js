@@ -44,6 +44,14 @@ header{
     background-repeat: no-repeat;
 }
 
+#tools{
+    height: 95vh;
+    z-index: -1;
+    position: fixed;
+    width: 0px
+}
+
+
 #tools_message{
     background: rgb(95, 95, 66);
     position: fixed;
@@ -70,6 +78,7 @@ header{
     font-weight: normal;
     padding: 5px;
     background-image : url('../css/images/background.jpg');
+    user-select: none;
 }
 
 #audio_start{
@@ -151,6 +160,10 @@ input[type=range]::-moz-range-thumb {
 
 .knob{
     margin : auto;
+}
+
+.knob_value{
+    user-select: none;
 }
 .menu_entry{
     width: 100px;
@@ -270,24 +283,42 @@ input[type=range]::-moz-range-thumb {
 .close_button{
     width: 20px;
     position: absolute;
-    /* background: #ff06065e; */
-    height: 25px;
+    height: 20px;
     left: 5px;
-    font-size: 20px;
-    /* box-shadow: 0px 0px 5px 5px #ff06065e; */
+    font-size: 15px;
+    font-weight: bold;
     top: 5px;
+    /* border: 1px solid black; */
+    border-radius: 10px;
+}
+
+.close_button:hover{
+    box-shadow: #ff0000 0px 0px 3px 3px inset;
+    background: #aa5252;
+}
+
+.close_button:after{
+    content:"✕";
+    position:absolute;
+    left: 4px;
+    top: -2px;
 }
 
 #controls{
-    background: #f6f6f6;
     width: 50%;
     height: 50%;
-    position: fixed;
+   
     left: 25%;
     top: 25%;
-    display : none;
+
+}
+
+.option_window{
+    border-radius: 20px;
+    border: #b09b67 inset;
+    background-image: url(../css/images/plugin.jpg); 
+    position: fixed; 
     display: none;
-    border-radius: 5px;
     box-shadow: 5px 5px 5px 0px #55524C;
 }
 
@@ -312,7 +343,7 @@ input[type=range]::-moz-range-thumb {
     top: 10%;
     position: relative;
     font-size: larger;
-    background: black;
+    background: rgb(68, 68, 68);
     padding: 10px;
     border-radius: 10px;
     white-space: preserve-breaks;
@@ -325,29 +356,28 @@ input[type=range]::-moz-range-thumb {
     /* border: 2px inset #97876b; */
 }
 
-#modules{
-    background: #f6f6f6;
+#plugins_controls{
     width: 80%;
-    margin: auto;
     overflow-y: auto;
     padding: 10px;
+    position: absolute;
+    left: 9%;
+    height:90%;
 }
 
-.module{
-    background: #cacaca;
+
+.plugin_controls{
+    background: #cacaca1c;
     margin-bottom: 10px;
     padding: 10px;
+    border: 1px inset black;
 }
 
-.module:hover{
-    box-shadow: 3px 3px 1px 1px #73716e78;
+.plugin_controls:hover{
+    box-shadow: 3px 3px 1px 1px #1c1c1c78;
 }
 
 
-.module tr:nth-child(odd) {
-    background-color: #4C8BF5;
-    color: #fff;
-  }
 
 .controls{
     margin-left: 15px;
@@ -445,32 +475,29 @@ select{
     border-radius: 20px;
     position:relative;
     height : 160px;
+    backdrop-filter: blur(3px);
 }
 
-#next_controls{
-  justify-content: center;
-  padding: 0rem;
-  border-color: transparent transparent transparent black;
-  border-width: 1.5rem 0 1.5rem 2.0rem;
-  height : 2rem;
-  background: transparent;
-  position: absolute;
-  right : 5px;
-  top : 5px;
-  border-radius: 0px;
+.next_controls{
+    height: 50px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    background-image: url("./images/right.svg");
+    width: 29px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
-#previous_controls{
-    justify-content: center;
-    padding: 0rem;
-    border-color: transparent black transparent transparent;
-    border-width: 1.5rem 2.0rem 1.5rem 0;
-    height : 2rem;
-    background: transparent;
+.previous_controls{
+    height : 50px;
+    width: 29px;
     position: absolute;
     left: 5px;
     top: 5px;
-    border-radius: 0px;
+    background-image: url("./images/left.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 
@@ -522,9 +549,11 @@ table td {
     padding: 5px;
 }
   
-table tr:nth-child(odd) {
+table tbody tr:nth-child(odd) {
     background-color: #89c97b;
 }
+
+
 
 
 input[type="text"] {
@@ -610,11 +639,10 @@ input[type="checkbox"]:focus {
 
 button{
   background-color: transparent;
-  border: inset 2px #b09b67;;
+  border: 1px solid #463c22;
   border-radius: 16px;
   color: black;
   cursor: pointer;
-  display: inline-block; 
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
@@ -629,7 +657,8 @@ button:focus {
 }
 
 button:hover {
-  border : inset 2px #e0e0e822;
+  border: 1px solid #1a160d;
+
 }
 
 button:disabled {
@@ -637,7 +666,7 @@ button:disabled {
 }
 
 button:active {
-    border: inset 2px #ff0000;
+    border: inset 2px #b09b67;
 }
 
 .disabled{
@@ -645,16 +674,14 @@ button:active {
     filter: grayscale(1) blur(2px);
 }
 
-#parameters_range, #smoothening_controls{
-    display : none;
-    position : fixed;
+#parameters_range{
     z-index: 100;
     padding: 20px;
-    border-radius: 20px;
-    border: #b09b67 inset;
-    background-image: url('../css/images/plugin.jpg');
-    margin:300px;
+    width: 705px;
+    left: 10px;
     text-align: center;
+    bottom: 10px;
+    height: 300px;
 }
   
 #parameters_range button{
@@ -664,22 +691,57 @@ button:active {
 #parameters_table{
     margin-bottom:15px;
 }
-  
-#smoothening_controls > div{
-    width: 400px;
-    margin : 20px;
+
+#parameters_table tbody {
+    display: block;
+    height: 230px;
+    overflow: auto;
+}
+
+#parameters_table thead, #parameters_table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;/* even columns width , fix width of table too*/
 }
   
-#smoothening_onoff{
-    bottom: 25px;
-    left: 25px;
-    z-index: 100;
+#parameters_table input[type="text"]{
+    width:150px;
 }
-  
-#smoothening_onoff input{
-    left: 20px;
-    position: relative;
+
+.expand_controls{
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    color: black;
+    font-weight: bold;
+    font-size: 26px;
+    border: 1px solid black;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 23px;
 }
+
+.expanded_controls{
+    position:fixed;
+    display:none;
+    border-radius : 20px;
+    border: #b09b67 inset;
+    background-image : url('../css/images/plugin.jpg');
+}
+
+.expanded_controls p{
+    background: linear-gradient(135deg, rgb(81, 77, 49) 0%, rgb(137, 132, 94) 50%);
+  position: absolute;
+  height: 20px;
+  left: 10px;
+  top: -40px;
+  border-radius: 10px 10px 0px 0px;
+  padding: 0px 10px;
+  display: inline;
+  overflow: hidden;
+  cursor: all-scroll;
+}
+
   
 .pulsating-circle {
     position: relative;
@@ -736,3 +798,22 @@ button:active {
       transform: scale(.8);
     }
 }
+
+.pulsating {
+    &:after {
+        content: '';
+        position: absolute;
+        top:0px;
+        left:0px; 
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        border-radius: 15px;
+        background-color: #ff0000;
+        animation: pulse_ring 1.25s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+}
+
+  
+  

@@ -1,0 +1,12 @@
+{
+    "brand": "Schoonderwaldt",
+    "fundamental": "A4",
+    "young": 1e-8,
+    "density": 1300,
+    "r": 3.8e-4,
+    "T": 50,
+    "L": 0.33,
+    "R": 3,
+    "eta": 1e-6,
+    "r_core": 3.8e-4
+}

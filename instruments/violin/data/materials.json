@@ -1,0 +1,130 @@
+{
+    "Acetals": {
+        "density": 1.42,
+        "Young modulus": 2.8
+    },
+    "Acrylic": {
+        "density": 1.19,
+        "Young modulus": 3.2
+    },
+    "Aluminum": {
+        "density": 2.7,
+        "Young modulus": 69
+    },
+    "Aluminum Bronze": {
+        "density": 7.7,
+        "Young modulus": 120
+    },
+    "Bismuth": {
+        "density": 9.8,
+        "Young modulus": 32
+    },
+    "Brass": {
+        "density": 8.61,
+        "Young modulus": 113.5
+    },
+    "Bronze": {
+        "density": 8.815000000000001,
+        "Young modulus": 108.0
+    },
+    "Cadmium": {
+        "density": 8.64,
+        "Young modulus": 32
+    },
+    "Chlorinated polyether": {
+        "density": 1.4,
+        "Young modulus": 1.1
+    },
+    "Chromium": {
+        "density": 7.1,
+        "Young modulus": 248
+    },
+    "Cobalt": {
+        "density": 8.8,
+        "Young modulus": 207
+    },
+    "Copper": {
+        "density": 8.79,
+        "Young modulus": 117
+    },
+    "Gold": {
+        "density": 19.29,
+        "Young modulus": 74
+    },
+    "Granite": {
+        "density": 2.7,
+        "Young modulus": 52
+    },
+    "Iridium": {
+        "density": 22.5,
+        "Young modulus": 517
+    },
+    "Lead": {
+        "density": 11.35,
+        "Young modulus": 13.8
+    },
+    "Manganese": {
+        "density": 7.43,
+        "Young modulus": 159
+    },
+    "Nickel": {
+        "density": 8.9,
+        "Young modulus": 170
+    },
+    "Nylon 6": {
+        "density": 1.145,
+        "Young modulus": 3.0
+    },
+    "Platinum": {
+        "density": 21.5,
+        "Young modulus": 147
+    },
+    "Rhodium": {
+        "density": 12.3,
+        "Young modulus": 290
+    },
+    "Sapphire": {
+        "density": 3.98,
+        "Young modulus": 435
+    },
+    "Selenium": {
+        "density": 4.4,
+        "Young modulus": 58
+    },
+    "Silicon": {
+        "density": 2.33,
+        "Young modulus": 157.5
+    },
+    "Silver": {
+        "density": 10.5,
+        "Young modulus": 72
+    },
+    "Steel": {
+        "density": 7.82,
+        "Young modulus": 180
+    },
+    "Tantalum": {
+        "density": 16.6,
+        "Young modulus": 186
+    },
+    "Thorium": {
+        "density": 11.7,
+        "Young modulus": 59
+    },
+    "Tin": {
+        "density": 7.28,
+        "Young modulus": 47
+    },
+    "Uranium": {
+        "density": 19.1,
+        "Young modulus": 170
+    },
+    "Vanadium": {
+        "density": 6.1,
+        "Young modulus": 131
+    },
+    "Zinc": {
+        "density": 7.12,
+        "Young modulus": 83
+    }
+}

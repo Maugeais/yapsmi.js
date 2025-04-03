@@ -19,6 +19,11 @@
   background-size: contain;
 }
 
+#controls2{
+  width:400px;
+  height:200px;
+}
+
 
 .duduk_hole{
   height: 15px;
@@ -48,3 +53,8 @@
 #Ap1{ left : 65%; top:30px}
 #Bp1{ left : 69%; }
 
+#constant_mass_container{
+  bottom: 2px;
+  position: absolute;
+  margin-left: 60px;
+}

@@ -1,0 +1,147 @@
+body, input, select, textarea {
+    font-family: "Poppins", sans-serif;
+    font-weight: 300;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+body{
+  background-image: url('./images/background.jpg');
+  right: 0px;
+  position: fixed;
+  width: 100%;
+  z-index: 0;
+  overflow-y: auto;
+  height: 100vh;
+  padding-top: 50px;
+  background-size: cover;
+}
+
+#title{
+  background-image:url("./images/logo.svg");
+  width: 150px;
+  height: 80px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  top: calc(50% - 40px);
+  position:relative;
+}
+
+#logo {
+  background-image: url('./images/logo_LMU.svg');
+  width: 166px;
+  height: 40px;
+  z-index: 0;
+  position: fixed;
+  right: 0;
+  top: calc(100vh - 50px);
+  background-position: 0, 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#families{
+    position: relative;
+    margin: 5px;
+    width: 50%;
+    aspect-ratio: 1/1;
+    margin:auto;
+}
+
+.family{
+  /* animation: zoomIn 3.4s infinite; */
+  transition: 0.5s;
+  width:30%;
+  height:30%;
+  background-size:contain;
+  background-repeat: no-repeat;
+}
+
+
+.family .hidden_child{
+  opacity:0;
+  transition: 1s;
+}
+
+
+.family:hover{
+  width:40%;
+  height:40%;
+}
+
+.family:hover .hidden_child{
+  opacity:1;
+}
+
+#brass{
+  position:absolute;
+  left: 50%;
+  bottom: 50%;
+  background-image:url("./images/camembert4.svg");
+  background-position: bottom left;
+  border : 1px 2px 3px 4px solid black;
+}
+
+#woodwind{
+  position:absolute;
+  right: 50%;
+  bottom: 50%;
+  background-image: url("./images/camembert3.svg");
+  background-position: bottom right;
+}
+
+#plucked{
+  position:absolute;
+  left: 50%;
+  top: 50%;
+  background-image: url("./images/camembert1.svg");
+  background-position: top left;
+}
+
+#bowed{
+  position:absolute;
+  right: 50%;
+  top: 50%;
+  background-image: url("./images/camembert2.svg");
+  background-position: top right;
+}
+
+.instrument{
+  position: absolute;
+  height: 30%;
+  width:60%;
+  cursor: pointer;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#duduk{
+  bottom : 5%;
+  left : 5%;
+  background-image:url('./images/duduk.png');
+}
+
+#guitar{
+  top : 5%;
+  right : 5%;
+  background-image:url('./images/guitar.png');
+}
+
+#e-guitar{
+  bottom : 5%;
+  left : 5%;
+  background-image:url('./images/e-guitar.png');
+}
+
+#violin{
+  top : 5%;
+  left : 5%;
+  background-image:url('./images/violin.png');
+}
+
+#trumpet{
+  bottom : 5%;
+  right : 5%;
+  background-image:url('./images/trumpet.png');
+}

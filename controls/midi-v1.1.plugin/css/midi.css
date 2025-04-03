@@ -1,0 +1,144 @@
+.midi{    
+    grid-column: span 3;
+}
+
+#midi_inputs{
+    width: 75%;
+    left: 12.5%;
+    top:10px;
+    position: absolute;
+}
+
+#midi_events{
+    height: 150px;
+    background: white;
+    width: 90%;
+    top: 30px;
+    position: absolute;
+    left: 5%;
+    overflow-y : auto;
+    margin-top: 15px;
+    border: #b09b67 inset;
+
+}
+
+#midi_events_table{
+    display:block;
+    width:100%
+}
+
+#midi_events_table input{
+    background: none;
+    width : 100%;;
+    outline : none;
+    border: none;
+    color:black;
+}
+
+#midi_events_table td{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+max-width:37px;
+}
+
+#set_midi_events{
+    position: absolute;
+    bottom: 10px;
+    left: 40px;
+    display:flex;
+}
+
+#setting_midi{
+    width: 10px;
+    height: 10px;
+    background: none;
+    position: absolute;
+    top: 9px;
+    left: 1px;
+    border-radius: 5px;
+}
+
+#midi_controls{
+    display: flex;
+    position: absolute;
+    bottom: 8px;
+    left: 20px;
+    width: 100%;
+    gap: 10px;
+}
+
+#midi_controls button{
+    width:90px;
+    height: 30px;
+}
+
+#recording_midi{
+    background:#824040;
+    width:10px;
+    height:10px;
+    position: absolute;
+    top: 5px;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+#record_text{
+    right: -7px;
+    position: relative;
+}
+
+.blink{
+    animation: blink 1s infinite;
+}
+@keyframes blink{
+    0% {
+        background: #824040;
+    }
+    20% {
+        background: red;
+    }
+}
+
+#last_midi_event{
+    padding: 5px;
+    border: 1px solid darkgray;
+    width: 280px;
+    position: absolute;
+    bottom: 40px;
+}
+
+#midi_automation{
+    position:fixed;
+    height:340px;
+    width:320px;
+    top:25%;
+    left:25%;    
+    display:none;
+    z-index: 1000;
+}
+
+#midi_automation_display{
+    top: 40px;
+    left: 10px;
+    position: relative;
+}
+
+#midi_automation_drawer{
+    display: flex;
+    top: 30px;
+    position: absolute;
+    width: 345px;
+    left: 5%;
+    height: 260px;
+}
+
+#midi_automation_buttons{
+    position: absolute;
+    bottom: 10px;
+    width: 90%;
+    left: 5%;
+    display: flex;
+    justify-content: space-evenly;
+}
+

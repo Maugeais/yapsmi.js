@@ -1,0 +1,59 @@
+<link rel="stylesheet" href="../../controls/midi-v1.1.plugin/css/midi.css" />
+<div class="plugin_title">Midi</div>
+
+
+    <select id="midi_inputs">
+
+    </select>
+
+    <div id="midi_events">
+        <table id="midi_events_table">
+            <thead>
+                <tr>
+                    <th style="width:30%">Midi code</th>
+                    <th style="width:30%">Plugin, control</th>
+                    <th style="width:30%">Automation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td ><input onclick="record_midi_events(true)" value="?, ?, ?"></td>
+                    <td onclick="choose_midi_control(this)">?, ? </td>
+                    <td onclick="choose_midi_automation(this)">{"method" : "lagrange", "x":[0, 1], "y":[0, 1]}</td>
+                </tr>
+                <tr>
+                    <td><input onclick="record_midi_events(true)" value="?, ?, ?"></td>
+                    <td onclick="choose_midi_control(this)">?, ? </td>
+                    <td onclick="choose_midi_automation(this)">{"method" : "lagrange", "x":[0, 1], "y":[0, 1]}</td>
+                </tr>  
+            </tbody>         
+        </table> 
+    </div>     
+
+    <div id="midi_controls">
+
+        <button onclick="record_midi_events()" id="record_midi_events"><div id="recording_midi"></div><div id="record_text">Record</div></button>
+        <!-- <button onclick="save_midi_events()" id="save_midi_events">Save</button> -->
+        <button onclick="add_midi_events()" id="add_midi_events">Add entry</button>
+
+        <div id="last_midi_event">Last midi event</div>
+
+    </div>
+
+    <div class="plugin" id="midi_automation">
+        <div onclick="$(this).parent().hide()" class="close_button"></div>
+
+        <!-- <div id="midi_automation_drawer"> -->
+
+            <div id="midi_automation_display"></div>
+
+           
+
+        <!-- </div> -->
+        <div id="midi_automation_buttons">
+            <button onclick="save_midi_interpolant()">Save</button>
+            <button onclick="reset_midi_interpolant()">Reset</button>
+        </div>
+
+    </div>
+</div>

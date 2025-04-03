@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Displays and enables the control via the midi controllers, do not work under firefox <div style='color:red'>Working with Chromium based browsers, not with firefox</div>",
+    "developper" : "Sylvain Maugeais"
+}

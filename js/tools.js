@@ -41,17 +41,9 @@ function init_menu(){
     init_plugins("controls");
     init_plugins("effects");
     init_plugins("analysis");
-    register_controls("Audio", {"on/off" : [Boolean, audio_start]});
+    // register_controls("Audio", {"on/off" : [Boolean, audio_start]});
+    rebuild_controls()
 }
-
-// async function loadJS(filename, uid){
-//     let { init } = await import(filename);
-//     init(uid);
-//     // if (Object.keys(state).length > 0){
-//     //     plugins[uid].load(state)
-//     // }
-//     plugins[uid].loaded = true;
-// }
 
 async function loadJS(filename, uid){
     return new Promise((resolve, reject) => {
@@ -112,34 +104,90 @@ function knobChanged(id, val) {
     eval(`${id[0]}_change(${val}, ${id[1]})`);
 }
 
+let timeout = 0;
+window.inst_controls = {}
+function load_inst_knobs(inst_id, step = 0){
+
+    inst_controls = { ...inst_controls, ...init_knobs(inst_id, "large", "Vintage")};
+    // if(typeof inst !== "undefined"){      
+
+    //     if (step == 0) {
+    //         inst.knobs = init_knobs(inst_id, "large", "Vintage");
+        
+    // Define thecontrols 
+    // for (let k = 0; k < inst.knobs.length; k++){
+    //     inst_controls[inst.knobs[k].id] = [Number,inst.knobs[k]];
+    // }
+    register_controls("instrument", inst_controls);
+            
+    // console.log(inst_controls)
+    // for (var key in inst_controls){
+    //     console.log(key)
+    // }
+    // //         inst_controls = inst.get_controls();
+    //         step = 1;
+    //     }
+
+    //     if (timeout > 100) return;
+    //     for (let i = step-1; i < inst.knobs.length; i++){
+
+    //         if (!(inst.knobs[i].id in inst.params)){
+    //             setTimeout(load_inst_knobs, 250, inst_id, i+1);
+    //             timeout += 1;
+    //             continue;
+    //         }  else {
+    //             let p = inst.params[inst.knobs[i].id]
+    //             inst.knobs[i].setValue(p.to_percentage()) 
+    //         }
+    //     }
+    // }
+    // else{
+    //     setTimeout(load_inst_knobs, 250, inst_id);
+    // }
+  }
 
 function init_knobs(name, size, type){
 
-        let knobList = document.getElementById(name).getElementsByClassName('knob');
-        let knobs = [];
-        for(let i = 0; i < knobList.length; i++) {
-          (function(index) {
-              let dial1 = new Knob({
-                size: size,
-                type: type,
-                lowVal: 0,
-                highVal: 100,
-                value: 50,
-                sensitivity: 1,
-                label: false,
-                lblTxtColor: "black",
-                id: knobList[index].id,
-                path:'../../../../css/knobs/'
-              });
+    console.log("==========", name)
 
-              knobs.push(dial1);
+    let knobList = document.getElementById(name).getElementsByClassName('knob');
+    let knobs = {};
+    for(let i = 0; i < knobList.length; i++) {
+        (function(index) {
+            // Build the knob
+            let dial1 = new Knob({
+            size: size,
+            type: type,
+            lowVal: 0,
+            highVal: 100,
+            value: 50,
+            sensitivity: 1,
+            label: false,
+            lblTxtColor: "black",
+            id: knobList[index].id,
+            path:'../../../../css/knobs/'
+            });
 
-            })(i);
-        }
+            knobs[knobList[index].id] = dial1;
 
-        return(knobs)
+            // Build the callback function if it does not already exists
+            let function_id = knobList[index].id.split("€")[0];
+            if (typeof window[function_id+"_change"] !== "function") {   
+                if (knobList[index].id.includes("€")){
+                    window[function_id+"_change"] = new Function('a, s', 'set_controls({["'+function_id+"€"+'"+s]: a}, false);'); 
+                } else {
+                    window[function_id+"_change"] = new Function('a', 'set_controls({"'+function_id+'": a}, false);'); 
+                }
+            }
+        })(i);
+    }
+
+    return(knobs)
 }
 
+/*===================================*/
+/*  Handling the sessions           */
+/*===================================*/
 function new_session(){
 
 }
@@ -147,10 +195,26 @@ function new_session(){
 const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function load_session_elements(session){
+
+    simulationNode.port.postMessage({property:"exec", method:"load_session", params:session['main']});
+
+    // And set the knobs
+    for (let key in inst_controls) {
+
+        try{
+            if (inst_controls[key] instanceof Knob) inst_controls[key].setValue(session['main'].params[key].value)
+        } catch(error){
+            console.log(error)
+        }
+        
+    }
+
+    let first_plugin_index = plugins.length;
+
+    let plugin_keys = Object.keys(plugins_list)
+
     let i = 0;
 
-    inst.load_session(session['main'])
-    let plugin_keys = Object.keys(plugins_list)
     while(i < session.plugins.length){
 
         // Look for a suitable version
@@ -159,7 +223,7 @@ async function load_session_elements(session){
         await load_plugin(session.plugins[i].entry, plugin_keys[j], );
         await delay(500)         
 
-        plugins[i].load(plugins[i].uid, session.plugins[i].state)
+        plugins[i+first_plugin_index].load(plugins[i+first_plugin_index].uid, session.plugins[i].state)
 
         i++;
     
@@ -191,9 +255,7 @@ function load_session(file){
         };
 
     reader.onload = on_reader_load(file);
-    reader.readAsText(file)
-
-    
+    reader.readAsText(file) 
 }
 
 function load_example_session(file){
@@ -211,10 +273,11 @@ function load_example_session(file){
     });
 }
 
-function save_session(){
+async function save_session(){
     let session = {"program" : "yapsmi.js", "date" : Date()};
-
-    session.main = inst.save_session()
+    
+    session.main = await query_simulator("save_session", null);
+    console.log(session.main)
 
     session.plugins = [];
 
@@ -233,43 +296,56 @@ function save_session(){
     URL.revokeObjectURL(link.href);
 }
 
-let controls = {};
 
-let register_controls_origin_callback;
-let register_controls_origin_element;
+/*===================================*/
+/* Handling  the controls           */
+/*===================================*/
+window.global_controls = {};
 
-let elmnt;
-function register_controls_origin(inst, param){
+// let set_control_destination_callback;
+let set_control_destination_element;
+
+function set_control_destination(plugin, control){
     $("#controls").hide() 
-    register_controls_origin_callback(inst, param, register_controls_origin_element)
+    $(set_control_destination_element).text(control +', ' + plugin)
+    // set_control_destination_callback(plugin, control)
 }
 
-function register_controls(module, objs){
-    if (!(module in controls)) controls[module] = {};
+/*
+    plugin_controls is of shape {"control_name" : callback_function}
+    where callback_function take (identifier, percentage for parameter)
+*/
+function register_controls(plugin_name, plugin_controls){
 
-    Object.keys(objs).forEach(function (k) { controls[module][k] = objs[k]; });
+    if (!(plugin_name in global_controls)) global_controls[plugin_name] = {};
 
-    // Rebuild the control element
+    for (const control_key in plugin_controls){
+        global_controls[plugin_name][control_key] = plugin_controls[control_key];
+    }
+
+   rebuild_controls()
+}
+
+function rebuild_controls(){
+     // Rebuild the control element html
     let html = "";
-    for (const m in controls){
-        html += "<div class='module' onclick=\"$('.controls').hide(); $(this).children(':first').show()\">"+m+"<table class='controls'>"
-        let control = controls[m];
-        for (const c in control){
-            html += `<tr><td onclick="register_controls_origin('${m}', '${c}')">${c}</td/></tr>`;
+    for (const plugin_key in global_controls){
+        html += "<div class='plugin_controls' onclick=\"$('.controls').hide(); $(this).children(':first').show()\">"+plugin_key+"<table class='controls'>"
+        for (const control in global_controls[plugin_key]){
+            html += `<tr><td onclick="set_control_destination('${plugin_key}', '${control}')">${control}</td/></tr>`;
         }
         html += "</table></div>";
     }
 
-    $("#modules").html(html);
+    $("#plugins_controls").html(html);
 }
 
-function choose_control(callback, elmnt){
+function choose_control(elmnt){
+    console.log("choose_control")
     $("#controls").show();
-    register_controls_origin_callback = callback;
-    register_controls_origin_element = elmnt;
+    // set_control_destination_callback = callback;
+    set_control_destination_element = elmnt;
   }
-
-// import('./controls.js')
 
 $(".plugin").click(function(e){
     e.stopPropagation();
@@ -297,13 +373,13 @@ $("body").click(function(e){
 function load_dragenter(e) {
     e.stopPropagation();
     e.preventDefault();
-    load_dropbox.css({"border":"1px solid red"});
+    $("#load_dropbox").css({"border":"1px solid red"});
 }
 
 function load_dragleave(e) {
     e.stopPropagation();
     e.preventDefault();
-    load_dropbox.css({"border":"none"});
+    $("#load_dropbox").css({"border":"none"});
 }
   
 function load_dragover(e) {
@@ -324,40 +400,48 @@ function load_drop(e) {
 // handleFiles(files);
 }
 
+/*
+    Handling tabs of parameters
+*/
 
-var currentMenu = {};
+var current_menu = {};
 function change_controls(direction, menu=""){
 
     let controls_windows = $("#"+menu+" .instrument_controls_window");
 
-    $(controls_windows[currentMenu[menu]]).fadeOut(300)
+    $(controls_windows[current_menu[menu]]).fadeOut(300)
 
-    currentMenu[menu] = (currentMenu[menu] + direction) % controls_windows.length;
+    current_menu[menu] = (current_menu[menu] + direction) % controls_windows.length;
 
-    if (currentMenu[menu] < 0) {
-      currentMenu[menu] += controls_windows.length;
+    // console.log(direction, menu, current_menu)
+
+    if (current_menu[menu] < 0) {
+      current_menu[menu] += controls_windows.length;
     }
 
-    $(controls_windows[currentMenu[menu]]).delay(300).fadeIn(300)
-
-    // console.log(menu, direction, currentMenu)
+    $(controls_windows[current_menu[menu]]).delay(300).fadeIn(300)
 }
 
+/*
+    Handling of parameters
+*/
 
-function parameters_to_range(){
+async function parameters_to_range(){
 
     $("#parameters_table tbody").empty(); 
 
     let content = "";
+    // let params = await query_simulator("get_controls_details")
+    instrument_controls_details = await query_simulator("get_controls_details");
 
-    for (let i = 0; i < inst.knobs.length; i++){
-        let control = inst.knobs[i].id;
+    
+    for (let control in instrument_controls_details){
 
         content += '<tr><td>'+control+'</td>';
-        content += '<td><input value="'+inst.params[control].value+'"></td>';
-        content += '<td><input value="'+inst.params[control].range[0]+'"></td>';
-        content += '<td><input value="'+inst.params[control].range[1]+'"></td>';
-
+        content += '<td><input value="'+instrument_controls_details[control].value+'"></td>';
+        content += '<td><input value="'+instrument_controls_details[control].range[0]+'"></td>';
+        content += '<td><input value="'+instrument_controls_details[control].range[1]+'"></td>';
+        content += '<td style="width:5%"><input type="checkbox" value='+instrument_controls_details[control].log_scale+'"></td>';
         content += '</tr>'
 
     }
@@ -366,48 +450,47 @@ function parameters_to_range(){
     $('#parameters_range').show()
 }
 
-function parameters_from_range(){
+
+async function parameters_from_range(){
+
+    instrument_controls_details = await query_simulator("get_controls_details")
+    
 
     let trs = $("#parameters_table").find("tr")
 
-    for (let i = 0; i < inst.knobs.length; i++){
-
-        let control = inst.knobs[i].id;
+    for (let i = 0; i < trs.length; i++){
 
         let tds = $(trs[i+1]).find('td');
 
-        inst.params[control].goal_value = parseFloat($($(tds[1]).find('input')[0]).val())
-        inst.params[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
-        inst.params[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
+        let control = $(tds[0]).text()
 
-        inst.knobs[i].setValue(inst.params[control].to_percentage()) 
+        if (control in instrument_controls_details){
+            instrument_controls_details[control].value = parseFloat($($(tds[1]).find('input')[0]).val())
+            instrument_controls_details[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
+            instrument_controls_details[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
+        }
+    }
 
-      }
-}
+    instrument_controls_details = await query_simulator("set_controls_details", instrument_controls_details);
 
-function smoothening(){
-    $('#smoothening_controls').show()
+    for (let control in instrument_controls_details){
 
-}
+       if ((control in inst_controls) && (inst_controls[control] instanceof Knob)) {
+            inst_controls[control].setValue(instrument_controls_details[control])
+        
+       }
 
-function change_smoothening_accuracy(value){
-    inst.smoothening_accuracy.set_from_percentage(value);
-    return(inst.smoothening_accuracy.to_string())
-}
-
-function change_smoothening_delay(value){
-    inst.smoothening_delay.set_from_percentage(value);
-    return(inst.smoothening_delay.to_string())
-}
-
-function toggle_smoothening(elmnt){
-    for (var key in inst.params) {
-        inst.params[key].smoothened = elmnt.checked;
     }
 }
 
 
+
 let is_shiftkey_pressed = false;
 
-document.addEventListener("keydown", function(evt){if (evt.key == "Shift"){is_shiftkey_pressed = true}}, true); 
+document.addEventListener("keydown", function(evt){
+                            if (evt.key == "Shift"){is_shiftkey_pressed = true}
+                            if (evt.key == " "){toggle_audio()}
+                        }, true); 
 document.addEventListener("keyup", function(evt){if (evt.key == "Shift"){is_shiftkey_pressed = false}}, true); 
+
+

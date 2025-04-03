@@ -1,0 +1,437 @@
+{
+    "program": "yapsmi.js",
+    "date": "Wed Mar 19 2025 09:55:03 GMT+0100 (heure normale d’Europe centrale)",
+    "main": {
+        "params": {
+            "dimension": {
+                "value": 3.4482758620689653,
+                "range": [
+                    1,
+                    30
+                ]
+            },
+            "output_impedance": {
+                "value": 50,
+                "range": [
+                    1,
+                    4
+                ]
+            },
+            "width": {
+                "value": 0.2,
+                "range": [
+                    0,
+                    10
+                ]
+            },
+            "position": {
+                "value": 38.58267716535434,
+                "range": [
+                    0.005,
+                    0.17
+                ]
+            },
+            "strength": {
+                "value": 48.818897637795274,
+                "range": [
+                    0.1,
+                    2.0
+                ]
+            },
+            "bow_speed": {
+                "value": 60.01465262072414,
+                "range": [
+                    -0.2,
+                    0.2
+                ]
+            },
+            "vreg": {
+                "value": 48.031496062992126,
+                "range": [
+                    0.0005,
+                    10
+                ]
+            },
+            "mus": {
+                "value": 44.44444444444446,
+                "range": [
+                    0.1,
+                    1
+                ]
+            },
+            "mud": {
+                "value": 11.111111111111112,
+                "range": [
+                    0.1,
+                    1
+                ]
+            },
+            "friction_s0": {
+                "value": 9.99990999991,
+                "range": [
+                    0.1,
+                    100000
+                ]
+            },
+            "friction_s1": {
+                "value": 10,
+                "range": [
+                    0,
+                    1
+                ]
+            },
+            "friction_s2": {
+                "value": 0,
+                "range": [
+                    0,
+                    1
+                ]
+            },
+            "output_impedance€1": {
+                "value": 50,
+                "range": [
+                    1,
+                    4
+                ]
+            },
+            "density€1": {
+                "value": 50,
+                "range": [
+                    0.00139499964468151,
+                    0.00557999857872604
+                ]
+            },
+            "tension€1": {
+                "value": 50,
+                "range": [
+                    21.95,
+                    87.8
+                ]
+            },
+            "stiffness€1": {
+                "value": 50,
+                "range": [
+                    0.0000012273858579082674,
+                    0.012273858579082675
+                ]
+            },
+            "losses_eta€1": {
+                "value": 50,
+                "range": [
+                    2.5e-10,
+                    4e-9
+                ]
+            },
+            "losses_R€1": {
+                "value": 50,
+                "range": [
+                    0.25,
+                    4
+                ]
+            },
+            "nonlinearity€1": {
+                "value": 50,
+                "range": [
+                    27.18086328931804,
+                    271808.6328931804
+                ]
+            },
+            "output_impedance€2": {
+                "value": 50,
+                "range": [
+                    1,
+                    4
+                ]
+            },
+            "density€2": {
+                "value": 50,
+                "range": [
+                    0.0008049994396091381,
+                    0.0032199977584365523
+                ]
+            },
+            "tension€2": {
+                "value": 50,
+                "range": [
+                    28.44,
+                    113.76
+                ]
+            },
+            "stiffness€2": {
+                "value": 50,
+                "range": [
+                    0.0000013423489578746192,
+                    0.013423489578746192
+                ]
+            },
+            "losses_eta€2": {
+                "value": 50,
+                "range": [
+                    2.5e-10,
+                    4e-9
+                ]
+            },
+            "losses_R€2": {
+                "value": 50,
+                "range": [
+                    0.25,
+                    4
+                ]
+            },
+            "nonlinearity€2": {
+                "value": 50,
+                "range": [
+                    27.734482600715275,
+                    277344.82600715273
+                ]
+            },
+            "output_impedance€3": {
+                "value": 50,
+                "range": [
+                    1,
+                    4
+                ]
+            },
+            "density€3": {
+                "value": 50,
+                "range": [
+                    0.0003599987150064059,
+                    0.0014399948600256236
+                ]
+            },
+            "tension€3": {
+                "value": 50,
+                "range": [
+                    28.55,
+                    114.2
+                ]
+            },
+            "stiffness€3": {
+                "value": 50,
+                "range": [
+                    0.000001240536399086269,
+                    0.01240536399086269
+                ]
+            },
+            "losses_eta€3": {
+                "value": 50,
+                "range": [
+                    2.5e-10,
+                    4e-9
+                ]
+            },
+            "losses_R€3": {
+                "value": 50,
+                "range": [
+                    0.25,
+                    4
+                ]
+            },
+            "nonlinearity€3": {
+                "value": 50,
+                "range": [
+                    55.13495107050087,
+                    551349.5107050086
+                ]
+            },
+            "output_impedance€4": {
+                "value": 50,
+                "range": [
+                    1,
+                    4
+                ]
+            },
+            "density€4": {
+                "value": 50,
+                "range": [
+                    0.00020499967903077622,
+                    0.0008199987161231049
+                ]
+            },
+            "tension€4": {
+                "value": 50,
+                "range": [
+                    36.5,
+                    146
+                ]
+            },
+            "stiffness€4": {
+                "value": 50,
+                "range": [
+                    3.6383600599002547e-7,
+                    0.0036383600599002547
+                ]
+            },
+            "losses_eta€4": {
+                "value": 50,
+                "range": [
+                    2.5e-10,
+                    4e-9
+                ]
+            },
+            "losses_R€4": {
+                "value": 50,
+                "range": [
+                    0.25,
+                    4
+                ]
+            },
+            "nonlinearity€4": {
+                "value": 50.00000000000002,
+                "range": [
+                    53.456162496238825,
+                    534561.6249623882
+                ]
+            }
+        }
+    },
+    "plugins": [
+        {
+            "name": "midi",
+            "entry": "controls",
+            "loaded": true,
+            "state": {
+                "Midi Through Port-0": {},
+                "TOUCHE_SE Main Port": {
+                    "176, 17": [
+                        {
+                            "plugin": "instrument",
+                            "control": "bow_speed",
+                            "automation": {
+                                "x": [
+                                    0.0,
+                                    1.0
+                                ],
+                                "y": [
+                                    0.50,
+                                    1.0
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ],
+                    "176, 16": [
+                            {
+                                "plugin": "instrument",
+                                "control": "strength",
+                                "automation": {
+                                    "x": [
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "y": [
+                                        0.0,
+                                        1.0
+                                    ],
+                                    "method": "lagrange"
+                                }
+                            }
+                        ]    
+                },
+                "nanoKONTROL2 nanoKONTROL2 _ CTR": {
+                    "176, 0": [
+                        {
+                            "plugin": "instrument",
+                            "control": "bow_speed",
+                            "automation": {
+                                "x": [
+                                    0.0,
+                                    1
+                                ],
+                                "y": [
+                                    0.5,
+                                    1
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ],
+                    "176, 1": [
+                        {
+                            "plugin": "instrument",
+                            "control": "position",
+                            "automation": {
+                                "x": [
+                                    0,
+                                    1
+                                ],
+                                "y": [
+                                    0,
+                                    1
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ],
+                    "176, 2": [
+                        {
+                            "plugin": "instrument",
+                            "control": "strength",
+                            "automation": {
+                                "x": [
+                                    0,
+                                    1
+                                ],
+                                "y": [
+                                    0,
+                                    1
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ],
+                    "176, 16": [
+                        {
+                            "plugin": "instrument",
+                            "control": "vreg",
+                            "automation": {
+                                "x": [
+                                    0,
+                                    1
+                                ],
+                                "y": [
+                                    0,
+                                    1
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ],
+                    "176, 17": [
+                        {
+                            "plugin": "instrument",
+                            "control": "dimension",
+                            "automation": {
+                                "x": [
+                                    0,
+                                    1
+                                ],
+                                "y": [
+                                    0,
+                                    1
+                                ],
+                                "method": "lagrange"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "waveform",
+            "entry": "analysis",
+            "loaded": true,
+            "state": {}
+        },
+        {
+            "name": "continuation",
+            "entry": "analysis",
+            "loaded": true,
+            "state": {
+                "tail_size": 100,
+                "key_x": "time",
+                "key_y": "frequency"
+            }
+        }
+    ]
+}

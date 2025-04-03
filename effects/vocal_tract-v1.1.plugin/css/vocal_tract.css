@@ -1,0 +1,74 @@
+.vocal_tract{
+    grid-column: span 4;
+    width:460px;
+}
+
+#vocal_tract_controls{
+    display: grid;
+    gap: 1px 1px;
+    grid-template-columns: 30px 90px 90px 90px; 
+    position: relative;
+    left: 5px;
+    top: 15px;
+}
+
+#vocal_tract_controls .knob_value{
+    position: relative;
+    top: -23px;
+    /* left: 30px; */
+    /* width: 70px; */
+    text-align: right;
+}
+
+#vocal_tract_controls .control_knob{
+    width: 90px;
+    height: 50px;
+}
+
+#vocal_tract_controls .knob{
+    left: -20px;
+}
+
+.vocal_tract_grid_item{
+    text-align: center;
+    outline: 1px solid black;
+}
+
+/* #vocal_tract_controls .value_container{
+    background-color: blue;
+} */
+
+#vocal_tract_display{
+    width: 150px;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#vocal_tract_display .main-svg{
+    border-radius: 0px 18px 18px 0px;
+}
+
+#vowel_choice{
+    /* width: 290px; */
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    height: 25px;
+    display: flex;
+    position: absolute;
+    bottom: 5px
+}
+  
+#vowel_choice legend{
+    position : relative;
+}
+
+#vowel_choice  * {
+    margin-top: -10px;
+}
+
+#vowel_choice  label {
+    margin-right: 20px;
+}

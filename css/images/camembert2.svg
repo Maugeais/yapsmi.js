@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="70mm"
+   height="70mm"
+   viewBox="0 0 70 70"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="camembert2.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.1893044"
+     inkscape:cx="203.48029"
+     inkscape:cy="34.894346"
+     inkscape:window-width="1680"
+     inkscape:window-height="986"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient20809">
+      <stop
+         style="stop-color:#a8bc44;stop-opacity:1;"
+         offset="0"
+         id="stop20805" />
+      <stop
+         style="stop-color:#bc4444;stop-opacity:1;"
+         offset="1"
+         id="stop20807" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient20809"
+       id="linearGradient20811"
+       x1="-208.94673"
+       y1="291.478"
+       x2="-148.47923"
+       y2="230.77011"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-142.70807,-226.77808)">
+    <path
+       style="opacity:0.93825;fill:none;stroke:url(#linearGradient20811);stroke-width:10;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
+       id="path234"
+       sodipodi:type="arc"
+       sodipodi:cx="-212.59158"
+       sodipodi:cy="226.88951"
+       sodipodi:rx="65"
+       sodipodi:ry="65"
+       sodipodi:start="0"
+       sodipodi:end="1.5707963"
+       sodipodi:arc-type="arc"
+       d="m -147.59158,226.88951 a 65,65 0 0 1 -65,65"
+       sodipodi:open="true"
+       transform="scale(-1,1)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';stroke-width:0.264583"
+       x="178.42244"
+       y="258.04218"
+       id="text8319"><tspan
+         sodipodi:role="line"
+         id="tspan8317"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:10.5833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="178.42244"
+         y="258.04218">Bowed </tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:10.5833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';text-align:center;text-anchor:middle;stroke-width:0.264583"
+         x="178.42244"
+         y="271.2713"
+         id="tspan21556">String</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+
+
+.automation{
+    grid-column: span 3;
+    width:334px;
+}
+
+.automation_tab{
+    width: 95%;
+    left: 2.5%;
+    height: 90%;
+    position: relative;
+    bottom : -10px;
+}
+
+#automation_nav{
+    display:inline-flex;
+    bottom: 0;
+    position: absolute;
+    right: 10px;
+}
+
+.automation_nav_button{
+    width:50px;
+    text-align:center;
+    border-radius: 0px 0px 10px 10px;
+    background: linear-gradient(135deg,rgb(137, 132, 94) 0%,  rgb(81, 77, 49) 50%);
+}
+
+.automation_nav_button:hover, .automation_nav_button:active{
+    filter:grayscale(0.5); 
+} 
+
+#automation_1{
+    background:red;
+}
+
+#automation_2{
+    display:none;
+}
+

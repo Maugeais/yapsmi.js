@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="70mm"
+   height="70mm"
+   viewBox="0 0 70 70"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="camembert3.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.84096521"
+     inkscape:cx="258.03683"
+     inkscape:cy="120.69465"
+     inkscape:window-width="1680"
+     inkscape:window-height="986"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient23806">
+      <stop
+         style="stop-color:#445abc;stop-opacity:1;"
+         offset="0"
+         id="stop23802" />
+      <stop
+         style="stop-color:#bc4444;stop-opacity:1;"
+         offset="1"
+         id="stop23804" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient23806"
+       id="linearGradient23808"
+       x1="-210.98674"
+       y1="-227.54456"
+       x2="-147.48698"
+       y2="-291.81137"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-142.70807,-223.55899)">
+    <path
+       style="opacity:0.93825;fill:none;stroke:url(#linearGradient23808);stroke-width:10;stroke-linecap:square;stroke-dasharray:none;stroke-opacity:1"
+       id="path234"
+       sodipodi:type="arc"
+       sodipodi:cx="-212.71143"
+       sodipodi:cy="-293.56232"
+       sodipodi:rx="65"
+       sodipodi:ry="65"
+       sodipodi:start="0"
+       sodipodi:end="1.5707963"
+       sodipodi:arc-type="arc"
+       d="m -147.71143,-293.56232 a 65,65 0 0 1 -65,65"
+       sodipodi:open="true"
+       transform="scale(-1)" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:14.1111px;line-height:1.25;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';stroke-width:0.264583"
+       x="149.32365"
+       y="262.46423"
+       id="text8319"><tspan
+         sodipodi:role="line"
+         id="tspan8317"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:10.5833px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';stroke-width:0.264583"
+         x="149.32365"
+         y="262.46423">Woodwind</tspan><tspan
+         sodipodi:role="line"
+         style="font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;font-size:14.1111px;font-family:Montserrat;-inkscape-font-specification:'Montserrat Light';stroke-width:0.264583"
+         x="149.32365"
+         y="280.10312"
+         id="tspan29644" /></text>
+  </g>
+</svg>

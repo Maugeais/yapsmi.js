@@ -103,7 +103,7 @@
 }
 
 #string_controls{
-  width:500px;
+  width:650px;
   height:45%;
 }
 
@@ -191,7 +191,7 @@
   width: 100px;
   height: 150px;
   position: absolute;
-  left: 650px;
+  left: 850px;
   top: 40%;
   padding: 0px 10px;
   text-align: center;
@@ -222,35 +222,13 @@
 }
 
 #righthand_controls{
-  width: 30%;
+  width: 350px;
   right: 0;
   top: 45%;
   position: absolute;
   height: 45%;
 }
 
-#attack_controls{
-  width: 100%;
-  position: absolute;
-  left: 0;
-}
-
-#plectrum_shape_signal, #plectrum_time_signal{
-    background-image: url("./images/signal_shapes.svg");
-
-    line-height: 18px;
-    min-width: 70px;
-    margin-top: -20px;
-    height: 100px;
-    background-size: auto calc(100% - 10px);
-    background-repeat: no-repeat;
-/*     border: 1px solid red; */
-    padding: 10px;
-    background-position: 10px 8px;
-    text-align: right;
-    white-space: break-spaces;
-    padding:10px;
-}
 
 #all_strings_at_once{
   position: absolute;
@@ -258,51 +236,6 @@
   bottom: 8px;
   width: 60px;
   text-align: center;
-}
-
-
-polygon.triangle_selector {
-  stroke:purple;
-  stroke-width:1;
-  cursor:pointer;
-  fill:red;
-}
-
-
-#microphone_selector {
-  height: 120px;
-  width: 165px;
-  position: relative;
-  top: -20px;
-}
-
-#microphone_selector_position {
-  height: 10px;
-  width: 10px;
-  background : red;
-  border-radius: 5px;
-  pointer-events: none;
-  position : fixed;
-}
-
-#microphone_selector polygon {
-  stroke: #b09b67;
-  stroke-width: 3;
-  cursor:crosshair;
-  filter: blur(1px);
-}
-
-.label_selector_mic{
-  pointer-events: none;
-}
-
-#nl_microphone{
-  position: absolute;
-  left: 50px;
-  top: 10px;
-  width: 40px;
-  text-align: center;
-  z-index :100;
 }
 
 #general_gain{

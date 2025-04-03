@@ -1,0 +1,12 @@
+{
+    "brand": "Desvages",
+    "fundamental": "D4",
+    "young": 4.56e9,
+    "density": 2647.10,
+    "r": 0.44e-3,
+    "T": 56.88,
+    "L": 0.32,
+    "R": 1,
+    "eta": 1e-9,
+    "r_core": 0.44e-3
+}

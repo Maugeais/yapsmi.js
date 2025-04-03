@@ -1,31 +1,33 @@
 'use strict';
 
-import { instrument, parameter } from "./instrument.js";
+import { instrument, parameter } from "./instrument.js?version=1.1";
 
 class string_instrument extends instrument{
-    constructor(name, strings, dim, max, gain){
-        // No params and no dim but can have mics and strings
-        super(name, [], {}, dim, max, gain)
+    constructor(name, params, strings, dim, limiter, output_impedance){
+        // No params but can have mics and strings
+        super(name, params, dim, limiter, output_impedance)
         this.dim = dim;
       
-        this.strings_details = strings;
+        this.strings_name = strings;
         this.strings = new Array(strings.length);
         this.mics = [];
     }
 
-    async init(){
-        for (let s = 0; s < this.strings_details.length; s++) {
-            let string_file = './data/strings/'+this.strings_details[s]+'.json';
-            await fetch(string_file)
-                .then((response) => response.json())
-                .then((params) => {
-                    this.strings[s] = new string(this, params, this.dim, this.max, this.gain.value);
-                });  
-                
-        }     
-        
-        load_IRF(this);
+    change_dimension(value){
+        if (value >= this.strings[0].dim){
+            console.log("Pb de dimension")
+            this.dim = this.strings[0].dim
+        } else {
+            this.dim = value;
+        }
     }
+
+    update_scheme_constants(){
+        for (let s = 0; s < this.strings.length; s++){
+            this.strings[s]._scheme_constants()
+        }
+    }
+
 
     add_microphone(type, position=0){
         let new_mic = new microphone(this, type, this.dim, position, 1, this.strings)
@@ -56,6 +58,25 @@ class string_instrument extends instrument{
         }
     }
 
+    _create_string(data, s){
+        return(new string(this, data["strings"][this.strings_name[s]], this.dim, this.limiter, this.output_impedance.value))
+    }
+
+    set_geometry(data){
+        for (let s = 0; s < this.strings_name.length; s++){
+
+            this.strings[s] = this._create_string(data, s);
+            for (const param in this.strings[s].params) {
+                this.params[param+'€'+(s+1)] = this.strings[s].params[param];
+            }
+        }
+
+        for (let m=0; m < this.mics.length; m++){
+            this.mics[m].compute_filter();
+        }
+
+    }
+
     output(outputData){
         // C'est la somme des outputs de toutes les cordes
         // Radiate sert de microphones = fonction de transfert
@@ -64,46 +85,52 @@ class string_instrument extends instrument{
         }
         for (let m=0; m < this.mics.length; m++){
             if (this.mics[m].type == "acoustic"){
-                this.mics[m].output(outputData, this.gain.value)
+                this.mics[m].output(outputData, this.output_impedance.value)
             } else {
-                this.mics[m].output(outputData, this.gain.value)
+                this.mics[m].output(outputData, this.output_impedance.value)
             }
         }
     }
 
-    change_fingering(string, position){
-        if ((string >= 0) && (string < this.strings.length)) {
-            if (position < 0){
+    change_fingering(params){
+        if ((params["string"] >= 0) && (params["string"] < this.strings.length)) {
+            if (params["position"] < 0){
                 console.log("mute")
             } else {
-                this.strings[string].change_fingering(position)
+                this.strings[params["string"]].change_fingering(params["position"])
             }
+        }
+    }
+
+    mute_string(params){
+        for (let i = 0; i < params.length; i++){
+            this.strings[params[i].string-1].muted = params[i].state;
         }
     }
 
 }
 
-async function load_IRF(object){
-    // $.getJSON('./data/'+folder+'transfer.json', function( data ) {
-    //     object.transfer_functions[folder.slice(0, -1)] = data;
-    // });
-    $.ajax({
-        url: `./data/IFR/`,
-        success: function(data){
-            $(data).find("a:contains(wav)").each(function(){
-                let file = $(this).attr("href");
-                object.radiation_filters[file.split(".")[0]] = './data/IFR/'+file;
-                if (object.radiation_filter.length == 0){
-                    object.radiation_filter = './data/IFR/'+file;
-                }
-            })
-        },
-        error: function(XMLHttpRequest, textStatus, errorThrown) { 
-            alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-        }    
-    });
+// async function load_IRF(object){
+//     // $.getJSON('./data/'+folder+'transfer.json', function( data ) {
+//     //     object.transfer_functions[folder.slice(0, -1)] = data;
+//     // });
+//     $.ajax({
+//         url: `./data/IFR/`,
+//         success: function(data){
+//             $(data).find("a:contains(wav)").each(function(){
+//                 let file = $(this).attr("href");
+//                 object.radiation_filters[file.split(".")[0]] = './data/IFR/'+file;
+//                 if (object.radiation_filter.length == 0){
+//                     object.radiation_filter = './data/IFR/'+file;
+//                 }
+//             })
+//         },
+//         error: function(XMLHttpRequest, textStatus, errorThrown) { 
+//             alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+//         }    
+//     });
     
-}
+// }
 
 class microphone{
     constructor(parent, type = "acoustic", dim = 15, position = 0.01, gain = 0.333, strings = []){
@@ -118,7 +145,7 @@ class microphone{
             this.width = new parameter(0, [0, 0.1], 'mm', 1e3, 0);
             this.output = this.acoustic_output;
             this.compute_filter = this.compute_filter_acoustic;
-            this.Zc = 1e-10;
+            this.Zc = 1;
         } else if (type == "single") {
             this.width = new parameter(0.02, [0.01, 0.03], 'mm', 1e3, 0);
             this.output = this.electric_output;
@@ -139,7 +166,7 @@ class microphone{
             this.spatial_filter[s] = new Float32Array(dim);
         }
        
-        this.compute_filter();
+        // this.compute_filter();
         
     }
 
@@ -156,16 +183,15 @@ class microphone{
                 
                 if (!this.strings[s].muted){ 
                     buffer_string = this.strings[s].buffer[k];
-                    for (let n = 0; n < this.strings[s].dim; n++){
+                    for (let n = 0; n < this.parent.dim; n++){
                         
                         x += buffer_string[n]*this.spatial_filter[s][n];
                     }  
                 }         
             }
             output[k] += gain*x;
-        }
-
-        
+            
+        }        
     }
 
     electric_output(output, gain){
@@ -231,7 +257,7 @@ class microphone{
     compute_filter_electric(){
 
         for (let s = 0; s < this.strings.length; s++){
-            for (var n =0; n < this.dim; n++){
+            for (var n =0; n < this.parent.dim; n++){
                 this.spatial_filter[s][n] = this.strings[s].r**2*this.Zc*Math.sin(2*(n+1)*Math.PI*this.position)*Math.sin((n+1)*Math.PI*this.width.value)/(n+1);
             }   
         } 
@@ -241,8 +267,8 @@ class microphone{
     compute_filter_acoustic(){
 
         for (let s = 0; s < this.strings.length; s++){
-            for (var n =0; n < this.dim; n++){
-                this.spatial_filter[s][n] = this.Zc*(this.strings[s].T*(n+1)+this.strings[s].EI*(n+1)**3);
+            for (var n =0; n < this.parent.dim; n++){
+                this.spatial_filter[s][n] = this.Zc*(this.parent.strings[s].params["tension"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)-this.parent.strings[s].params["stiffness"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)**3);
             }
         }
 
@@ -251,27 +277,29 @@ class microphone{
 }
 
 class string extends instrument{
-    constructor(parent, params, dim, max, gain){
-        super(params["brand"]+params["fundamental"], params, dim, max, gain)
+    constructor(parent, params, dim, limiter, output_impedance){
+        // No params inherited
+        super(params["brand"]+params["fundamental"], {}, dim, 0, output_impedance)
         
         this.parent = parent;
 
         this.r = params["r"]
-        this.EI = this.params["young"]*Math.PI*(params["r_core"]**4)/4; // Module d'Young...
-        this.mu = params['density']*Math.PI*(this.r**2);
-        this.T = params['T'];
+        let mu = params['density']*Math.PI*(this.r**2);
         this.L = params['L'];
-        this.R = params['R'];
-        this.eta = params['eta'];
+        this.L0 = this.L;
+        let EI = params["young"]*Math.PI*(this.r**4)/4;
+        let EA = params["young"]*Math.PI*(this.r**2);
 
-        this.params["density"] = new parameter(this.mu, [this.mu*0.5, this.mu*2], 'g/m', 1e3, 0, true);
-        this.params["tension"] = new parameter(this.T, [this.T*0.5, this.T*2], 'N', 1, 0, true);
-        this.params["stiffness"] = new parameter(this.EI, [this.EI*1e-2, this.EI*1e2], 'N', 1e3, 2, true);
-        this.params["eta"] = new parameter(this.eta, [this.eta/4, this.eta*4], 'νs', 1e9, 1, true);
-        this.params["R"] = new parameter(this.R, [this.R/4, this.R*4], 'Hz', 1, 2, true);
+        this.params["density"] = new parameter(mu, [mu*0.5, mu*2], 'g/m', 1e3, 2, true);
+        this.params["tension"] = new parameter(params['T'], [params['T']*0.5, params['T']*2], 'N', 1, 0, true);
+        this.params["stiffness"] = new parameter(EI, [EI*1e-2, EI*1e2], 'N', 1e3, 2, true);
+        this.params["losses_eta"] = new parameter(params['eta'], [params['eta']/4, params['eta']*4], 'νs', 1e9, 1, true);
+        this.params["losses_R"] = new parameter(params['R'], [params['R']/4, params['R']*4], 'Hz', 1, 2, true);
+        this.params["nonlinearity"] = new parameter(EA, [EA*1e-2, EA*1e2], 'N', 1e-3, 0, true);
 
 
-        
+
+        console.log("Frequency", params["fundamental"], 1/(2*this.L)*(params['T']/mu)**0.5)
         this.dim = dim; // Nombre d'harmoniques
 
         this.attack_time_position = 0; //attack_duration0;
@@ -294,8 +322,8 @@ class string extends instrument{
 
         this.dt = dt;
                 
-        this.buffer = new Array((buffer_size+1));   // Tableau contenant les lesdonnées en chaque temps
-        for (let k=0; k < buffer_size+1; k++){
+        this.buffer = new Array((buffer_size+2));   // Tableau contenant les lesdonnées en chaque temps
+        for (let k=0; k < this.buffer.length; k++){
             this.buffer[k] = new Float32Array(this.dim) // Pour chaque temps, on a les composantes 
             for (let i = 0; i < this.dim; i++){
                 this.buffer[k][i] = 0;
@@ -311,11 +339,11 @@ class string extends instrument{
         var a;
         for (var n=1; n <= this.dim; n++){
         
-            let Lap = -Math.pow(n*Math.PI/this.L, 2);                  
-            a = this.mu-Math.pow(this.dt, 2)*(-this.EI*this.theta*Math.pow(Lap, 2)+this.T*this.theta*Lap)-2*this.dt*(this.T*this.eta*Lap-this.mu*this.R);
-            this.b[n-1] = (2*this.mu+Math.pow(this.dt, 2)*(-this.EI*(1-2*this.theta)*Math.pow(Lap, 2)+this.T*(1-2*this.theta)*Lap))/a;
-            this.c[n-1] = (-this.mu+Math.pow(this.dt, 2)*(-this.EI*this.theta*Math.pow(Lap, 2)+this.T*this.theta*Lap)-2*this.dt*(this.T*this.eta*Lap-this.mu*this.R))/a
-        }
+            let Lap = -1*(n*Math.PI/this.L)**2;                  
+            a = this.params["density"].value-this.dt**2*(-this.params["stiffness"].value*this.theta*Lap**2+this.params["tension"].value*this.theta*Lap)-this.dt*(this.params["tension"].value*this.params["losses_eta"].value*Lap-this.params["density"].value*this.params["losses_R"].value);
+            this.b[n-1] = (2*this.params["density"].value+this.dt**2*(-this.params["stiffness"].value*(1-2*this.theta)*Lap**2+this.params["tension"].value*(1-2*this.theta)*Lap))/a;
+            this.c[n-1] = (-this.params["density"].value+this.dt**2*(-this.params["stiffness"].value*this.theta*Lap**2+this.params["tension"].value*this.theta*Lap)-this.dt*(this.params["tension"].value*this.params["losses_eta"].value*Lap-this.params["density"].value*this.params["losses_R"].value))/a
+        }      
 
         this._compute_extra_constants()       
     }
@@ -340,32 +368,21 @@ class string extends instrument{
      *  à redéfinir !!!
      */ 
     next_chunk(t0, buffer_size, dt){
-        var ip, ipm1;
+        var ip, ipm1, ipm2;
+        for (var i = 2; i < buffer_size+2; i++){ // Pour chaque pas de temps
 
-        for (var i = 0; i < buffer_size+1; i++){ // Pour chaque pas de temps
+            // Strang splitting
 
-            if (i == 0){
+            // this.add_attack(dt/2, this.buffer[ip], this.buffer[ipm2]);
 
-                ip = buffer_size-1;
-                ipm1 = buffer_size-2;
 
-            } else if (i == 1){
-
-                ip = 0;
-                ipm1 = buffer_size-1;
-
-            } else {
-
-                ip = i-1;
-                ipm1 = i-2;
-
+            for (var n = 0; n < this.parent.dim; n++){
+                this.buffer[i][n] = (this.buffer[i-1][n]*this.b[n]+this.c[n]*this.buffer[i-2][n]);
             }
+            
+            this.add_attack(dt, this.buffer[i], this.buffer[i-1], this.buffer[i-2]);
 
-            for (var n = 0; n < this.dim; n++){
-                this.buffer[i][n] = (this.buffer[ip][n]*this.b[n]+this.c[n]*this.buffer[ipm1][n])
-            }
-
-            this.add_attack(dt, this.buffer[i], this.buffer[ip]);
+            // this.add_attack(dt/2, this.buffer[i], this.buffer[ipm1]);
         }
     }    
 
@@ -378,47 +395,53 @@ class string extends instrument{
 
     loop_chunk(){
         for (let i=0; i < this.dim; i++){
-            this.buffer[0][i] = this.buffer[this.buffer.length-3][i];
-            this.buffer[1][i] = this.buffer[this.buffer.length-2][i];
+            this.buffer[0][i] = this.buffer[this.buffer.length-2][i];
+            this.buffer[1][i] = this.buffer[this.buffer.length-1][i];
         }
     }
 
 
     change_fingering(position){
-        this.L = this.params["L"]*position; 
+        this.L = this.L0*position; 
         this._scheme_constants()
     }
 
-    set_control(params){
-        let s = this;         
 
-        let key = Object.keys(params)[0];        
-        this.params[key].set_from_percentage(params[key]);
-       
-
-        switch (key) {
-            case 'density' : 
-                    s.mu = s.params[key].value;
-                    break;
-            case 'tension' :
-                    s.T = s.params[key].value;
-                    break;
-            case 'stiffness' :
-                    s.EI = s.params[key].value;
-                    break;
-            case 'R' :
-                    s.R = s.params[key].value;
-                    break;
-            case 'eta' : 
-                    s.eta = s.params[key].value;
-                    break
-        }
-
-        this._scheme_constants();
-
-        return(this.params[key].to_string())
-    }
 }
 
 
-export { string_instrument, string, microphone, parameter };
+async function load_string_details(object, string_name){
+
+    let string_file = './data/strings/default/'+string_name+'.json';
+    let response = await fetch(string_file)
+    let data =  await response.json() 
+    object.strings[string_name] = data;
+}
+
+async function load_strings(object){
+
+    let response = await globalThis.fetch("./data/strings/default");
+    let str = await response.text();
+    let el = document.createElement('html');
+    el.innerHTML = str;
+    let list = el.getElementsByTagName("a");
+
+    for (let item of list) {
+        let ref = item.innerText;
+        if (ref.slice(-4) == 'json'){
+            await load_string_details(object, ref.slice(0, -5));
+            // await load_transfer(object, ref);
+        }   
+    }
+}
+
+async function init_instrument(params){
+    let object = {
+        impedances :{},
+        strings : {}
+    }
+    await load_strings(object)
+    return(object)
+}
+
+export { string_instrument, string, parameter, init_instrument };

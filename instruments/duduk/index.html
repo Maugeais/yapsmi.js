@@ -4,16 +4,20 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 
+<script src="../../js/external/plotly-latest.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+<script src="../../js/external/jquery.js"></script>
+<script src="../../js/knobs.js?version=1.01"></script>
+<script src="../../js/external/jquery-ui.js"></script>
+<script src="../../js/plugins.js?version=1.02"></script>
+
+
 <html lang="">
   <head>
     <meta charset="utf-8">
     <title>Yapsmi-Duduk</title>
-    <link rel="stylesheet" href="./css/duduk.css?version=1.02" />
+    <link rel="stylesheet" href="./css/duduk.css?version=1.03" />
     <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
-    <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   </head>
   <body>
     <header>
@@ -34,10 +38,9 @@
       
         <div class = "plugin" id="duduk">
           <div id="duduk_menu" class="pop">
-            <div class="plugin_menu" onclick="$('#duduk_menu').hide(); parameters_to_range()">Parameters range</div>
-            <div class="plugin_menu" onclick="$('#duduk_menu').hide(); smoothening()">Smoothening</div>
-            <!-- <div class="plugin_menu">Test</div>
-            <div class="plugin_menu">Test</div> -->
+            <div class="plugin_menu" onclick="$('.pop').hide(); $('#duduk_menu').hide(); parameters_to_range()">Parameters range</div>
+            <!-- <div class="plugin_menu" onclick="$('.pop').hide(); $('#duduk_menu').hide(); $('#smoothening_controls').show()">Smoothening</div> -->
+            <!-- <div class="plugin_menu" onclick="$('.pop').hide(); $('#duduk_menu').hide(); $('#numerical_scheme_controls').show()">Numerical scheme</div> -->
           </div>
 
           <div id = "duduk_control">
@@ -55,69 +58,142 @@
 
           <div class="instrument_controls">
 
-            <button id="previous_controls" onclick="change_controls(-1, 'duduk')"></button>
+            <div class="previous_controls" onclick="change_controls(-1, 'duduk')"></div>
 
-            <button id="next_controls" onclick="change_controls(+1, 'duduk')"></button>
+            <div class="next_controls" onclick="change_controls(+1, 'duduk')"></div>
 
-            <div class ="instrument_controls_window">
+              <div class ="instrument_controls_window">
+              
+                <div class="controls_title">Controls (1)</div>
 
-                <div class="controls_title">Controls</div>
-
-                <div class = "control_knob">
+                <div class = "control_knob" title="Mouth pressure">
                     <div class="value_container">\(P_m^\vphantom{0}\)=<div class="knob_value" id="pm_value">100</div></div>
                     <div class="knob" id="pm"></div>
 
                 </div>
 
-                <div class = "control_knob">
+                <div class = "control_knob" title="Reed frequency">
                     <div class="value_container">\(F_r^\vphantom{0}\)=<div class="knob_value" id="Fr_value">100</div></div>
                     <div class="knob" id="Fr"></div>
+                </div>
+
+                <div id="constant_mass_container" title="Reed density kept constant if Checked ">
+                  <input type="checkbox" id="constant_mass" checked="false"/>
+                  <label for="constant_mass">constant mass</label><br>
                 </div>
 <!-- 
                 <div class = "control_knob">
                   <div class="value_container">\(\mu_\ell^\vphantom{0}\)=<div class="knob_value" id="mur_value">100</div></div>
                   <div class="knob" id="mur"></div>
                 </div> -->
-                <div class = "control_knob">
+                <div class = "control_knob" title="Reed stiffness">
                   <div class="value_container">\(K_r^\vphantom{0}\)=<div class="knob_value" id="Kr_value">100</div></div>
                   <div class="knob" id="Kr"></div>
                 </div>
-                <div class = "control_knob">
+
+                <div class="expand_controls" onclick='$("#controls2").toggle()'>+</div>
+              </div>               
+              <div class ="instrument_controls_window" style="display:none">
+
+                <div class="controls_title">Regularisation</div>
+                <div class = "control_knob" title="Singularity at flow direction change">
+                  <div class="value_container">\(\varepsilon_{flow}^\vphantom{0}\)=<div class="knob_value" id="epsilon_flow_value">100</div></div>
+                  <div class="knob" id="epsilon_flow"></div>
+                </div>
+
+                <div class = "control_knob" title="Singularity at reed closure">
+                  <div class="value_container">\(\varepsilon_{beating}^\vphantom{0}\)=<div class="knob_value" id="epsilon_beating_value">100</div></div>
+                  <div class="knob" id="epsilon_beating"></div>
+                </div>
+              
+                <!-- <div class = "control_knob" title="Reed quality factor">
                   <div class="value_container">\(Q_r^\vphantom{0}\)=<div class="knob_value" id="Qr_value">100</div></div>
                   <div class="knob" id="Qr"></div>
                 </div>
-            </div>
-            <div class ="instrument_controls_window" style="display:none">
-              <div class = "control_knob">
-                <div class="value_container">\(H^\vphantom{0}\)=<div class="knob_value" id="H_value">100</div></div>
-                <div class="knob" id="H"></div>
+                <div class = "control_knob" title ="Reed flow length">
+                  <div class="value_container">\(L_r^\vphantom{0}\)=<div class="knob_value" id="Lr_value">100</div></div>
+                  <div class="knob" id="Lr"></div>
+                </div> -->
               </div>
-              <div class = "control_knob">
-                <div class="value_container">\(C_d^\vphantom{0}\)=<div class="knob_value" id="Cd_value">100</div></div>
-                <div class="knob" id="Cd"></div>
-              </div>
+              <div class ="instrument_controls_window" style="display:none">
+                <div class="controls_title">Double reed geometry</div>
+                
+                <div class = "control_knob" title="Recovery coefficient">
+                  <div class="value_container">\(C_p^\vphantom{0}\)=<div class="knob_value" id="Cp_value">100</div></div>
+                  <div class="knob" id="Cp"></div>
+                </div>
+ 
+                <div class = "control_knob" title="Constriction radius">
+                  <div class="value_container">\(S_c^\vphantom{0}\)=<div class="knob_value" id="Rc_value">100</div></div>
+                  <div class="knob" id="Rc"></div>
+                </div>
+                
+              </div> 
 
-            </div>
+            <!-- <div class ="instrument_controls_window"  style="display:none">
+              <legend>Contact force </legend> 
+              <div class = "control_knob">
+                <div class="value_container">\(K_c^\vphantom{0}\)=<div class="knob_value" id="contact_stiffness_value">100</div></div>
+                <div class="knob" id="contact_stiffness"></div>
+              </div>
+              <div class = "control_knob">
+                <div class="value_container">\(\alpha^\vphantom{0}\)=<div class="knob_value" id="contact_alpha_value">100</div></div>
+                <div class="knob" id="contact_alpha"></div>
+              </div>             
+            </div> -->
           </div>
         </div>
-
       </div>
+
+      <div id="controls2" class="expanded_controls">
+        <div class ="instrument_controls_window">
+          <div class = "control_knob" title="Opening at rest">
+          <div class="value_container">\(H^\vphantom{0}\)=<div class="knob_value" id="H_value">100</div></div>
+          <div class="knob" id="H"></div>
+        </div>
+      
+        <div class = "control_knob" title="Reed quality factor">
+          <div class="value_container">\(Q_r^\vphantom{0}\)=<div class="knob_value" id="Qr_value">100</div></div>
+          <div class="knob" id="Qr"></div>
+        </div>
+        <div class = "control_knob" title ="Reed flow length">
+          <div class="value_container">\(L_r^\vphantom{0}\)=<div class="knob_value" id="Lr_value">100</div></div>
+          <div class="knob" id="Lr"></div>
+        </div>
+          
+        </div> 
+        <p>Drag</p> 
+        
+      </div>
+
+      <!-- <div id="numerical_scheme_controls" class = "pop option_window">
+        numerical_scheme parameters
+        <div id="numerical_scheme_accuracy" title="Percentage of control change relative to maximal range between two time steps">
+             <label>Control step stize (%) </label>
+             <input type="range" min="0" max="100" value="50" class="slider" id="numerical_scheme_accuracy_slider" oninput="numerical_scheme_accuracy_slider_output.value=change_numerical_scheme_accuracy(this.value) ">
+             <output id="numerical_scheme_accuracy_slider_output">0.012%</output>
+        </div>
+   
+        <div id="numerical_scheme_delay" title="Delay between two time steps">
+             <label>Delay </label>
+             <input type="range" min="0" max="100" value="50" class="slider" id="numerical_scheme_delay_slider" oninput="numerical_scheme_delay_slider_output.value=change_numerical_scheme_delay(this.value)">
+             <output id="numerical_scheme_delay_slider_output">34ms</output>
+        </div>
+      </div>  -->
 
     </main>
 
 
     <footer></footer>
   </body>
+  <!-- <script src="../../js/knobs.js?version=1"></script> -->
 
-  <script src="../../js/knobs.js?version=1"></script>
 
-  <script src="../../js/tools.js?version=1.02"></script>
 
-  <script src="../../js/plugins.js?version=1"> 
-  </script>
+  <script src="../../js/tools.js?version=1.1"></script>
 
-  <script type="module" src="js/init.js?version=1.02"></script>
-  <script src="./js/duduk-ui.js?version=1.02"></script>
+  <script type="module" src="js/init.js?version=1.1"></script>
+  <script src="./js/duduk-ui.js?version=1.1"></script>
 
   <script> 
     $(function(){
@@ -130,20 +206,28 @@
   <script> 
     
     $(function(){
-      $("#tools").load("../../templates/tools.html?version=1.02", init_menu); 
+      $("#tools").load("../../templates/tools.html?version=1.1", init_menu); 
     });
     
 
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
 
-      inst.knobs = init_knobs("duduk", "large", "Vintage");
+      load_inst_knobs("duduk")
 
+      $("#controls2").draggable({position:'fixed', handle: "p" })
+
+      load_inst_knobs("controls2")
+
+
+      // inst.knobs = init_knobs("duduk", "large", "Vintage");
+      //  // Define thecontrols 
+      // let inst_controls = {}
+      // for (let k = 0; k < inst.knobs.length; k++){
+      //     inst_controls[inst.knobs[k].id] = [Number,inst.knobs[k]];
+      // }
+      // register_controls("instrument", inst_controls);
     }, false);
 
   </script> 
-  <!-- <script>window.addEventListener('load', async function () {
-     //init_plugins()
-     await delay(1000)
-     load_plugin('effects','radiate-v1.0');
-   })</script> -->
+
 </html>

@@ -1,38 +1,39 @@
 'use strict';
 
-import { parameter } from "./parameters.js?version=1.02";
+import { parameter } from "./parameters.js?version=1.1";
 
 class instrument{
     
-    constructor(name, params, dim, max, gain){
+    constructor(name, params, dim, limiter, output_impedance){
         this.name = name;
         this.params = params;
         this.dim = dim;
-        this.max = max;
-        this.gain = new parameter(gain, [0, gain*2], '', 1, 2, false)
-        this.smoothening_accuracy = new parameter(1e-4, [1e-5, 1e-3], '%', 1e2, 3, true)
-        this.smoothening_delay = new parameter(1e-4, [1e-2, 10], 'ms', 1, 2, true)
-        this.vars = {};
-        this.rms = 0;
-        this.freq= 0;
-        this.self = this;
+        if (limiter > 0){
+            this.limiter = new parameter(limiter, [0, limiter], '', 1, 1);
+            this.params['limiter'] = this.limiter
+        }
+        this.output_impedance = new parameter(output_impedance, [output_impedance/2, output_impedance*2], '', 1e-9, 2, true)
+        this.params["output_impedance"] = this.output_impedance
+        // this.vars = {};
+        // this.rms = 0;
+        // this.freq= 0;
+        // this.self = this;
         this.X0 = []; // Initial conditions
-        this.radiation_callbacks = [];
-        this.radiation_filters = {};
-        this.radiation_filter = "";
+        this.radiation_on = false;
+        this.error_time = new Date()
     }
 
     init_audio(buffer_size, dt){
-        console.log("Cette fonction doit être redéfinie")
+        console.log("This function must be redefined by the user")
     }
     
 
     next_chunk(t0, size, dt){
-        console.log("la fonction 'next_chunk' doit être redéfinie");
+        console.log("This function must be redefined by the user");
     }
 
     reset_chunk(){
-        console.log("Cette fonction doit être redéfinie")
+        console.log("This function must be redefined by the user")
     }
 
     loop_chunk(){
@@ -42,10 +43,6 @@ class instrument{
     get_controls(){
         return({})
     }
-
-    // set_controls(params, knob){
-
-    // }
 
     play_note(note, velocity){
         console.log("play", note, velocity)
@@ -59,95 +56,108 @@ class instrument{
         return(0);
     }
 
-    add_radiation_callback(callback){
-        this.radiation_callbacks.push(callback);
+    set_radiation_status(status){
+        this.radiation_on = status;
     }
 
-    _change_radiation(name){
-        this.radiation_callbacks.forEach((callback) => (callback(name)));
+    update_scheme_constants(){
+        // console.log("undefined")
     }
 
-    radiate_status(status){
-    }
+    set_controls(params){
 
-    set_controls(params, knob = true, relative  = false){
-        // Prend des valeurs entre 0 et 100
-
+        // Take value between 0 and 100
         let inst = this;
-        let smoothening = {'accuracy' : this.smoothening_accuracy, 'delay' : this.smoothening_delay}
     
-        let keys = Object.keys(params);        
-
-        $.each(keys, function (val, key) {
-            // let c = duduk.params[key].range;
-    
-            if (relative){
-                let old = inst.params[key].to_percentage();
-                inst.params[key].set_from_percentage(old+0.01*(params[key]-old), smoothening)
-            } else {
-                inst.params[key].set_from_percentage(params[key], smoothening);
+        Object.keys(params).forEach(function (key) {
+            try {
+            inst.params[key].set_from_percentage(params[key]);   
+            } catch(err) {
+                console.log(key, err)
             }
-    
-            if (knob){
-                let index = inst.knobs.findIndex(element => element.id == key);
-                inst.knobs[index].setValue(params[key]);
-            }
-    
-            $("#"+key+"_value").html(inst.params[key].to_string());
-    
-            return(inst.params[key].to_string())
-    
         });
+
+        this.update_scheme_constants();
+
     }
 
-    save_parameters(){
+    get_controls_details(){
+
+        let controls = {};
+
+        for (let key in this.params){
+            controls[key] = {}
+            controls[key].value = this.params[key].value;
+            controls[key].range = this.params[key].range;
+            controls[key].log_scale = this.params[key].log_scale;
+        }
+
+        return(controls)
+    }
+
+    set_controls_details(params){
+
+        let output = {};
+
+        for (let key in params){
+            this.params[key].value = params[key].value;
+            this.params[key].range = params[key].range;
+            this.params[key].log_scale = params[key].log_scale;    
+            output[key] = this.params[key].to_percentage()
+        }
+
+        return(output)
+    }
+
+    save_session(){
         let session = {}
 
-        session['gain'] = {'value' : this.gain.to_percentage(),
-                            'range' : this.gain.range
-                        }
-
-        session['smoothening_accuracy'] = {'value' : this.smoothening_accuracy.to_percentage(),
-                                            'range' : this.smoothening_accuracy.range
-                                        }
-
-        session['smoothening_delay'] = {'value' : this.smoothening_delay.to_percentage(),
-                                        'range' : this.smoothening_delay.range
-                                    }
+        // session['output_impedance'] = {'value' : this.output_impedance.to_percentage(),
+        //                     'range' : this.output_impedance.range
+        //                 }
 
         session['params'] = {}
         for (var key in this.params){
-            session['params'][key] = {'value' : this.params[key].to_percentage(),
-                                        'range' : this.params[key].range
+            if (typeof(this.params[key]) == "object" ) {
+                session['params'][key] = {'value' : this.params[key].to_percentage(),
+                                            'range' : this.params[key].range
+                                       }
             }
         }
         return(session)
     }
 
-    load_parameters(session){
+    load_session(session){
 
-        this.gain.range = session['gain']['range']
-        this.gain.set_from_percentage(session['gain']['value'])
+        console.log("loading")
 
-        this.smoothening_accuracy.range = session['smoothening_accuracy']['range']
-        this.smoothening_accuracy.set_from_percentage(session['smoothening_accuracy']['value'])
-        $('#smoothening_accuracy_slider_output').html(this.smoothening_accuracy.to_string())
-        $('#smoothening_accuracy_slider').val(session['smoothening_accuracy']['value'])
-
-        this.smoothening_delay.range = session['smoothening_delay']['range']
-        this.smoothening_delay.set_from_percentage(session['smoothening_delay']['value'])
-        $('#smoothening_delay_slider_output').html(this.smoothening_delay.to_string())
-        $('#smoothening_delay_slider').val(session['smoothening_delay']['value'])
-
+        // this.output_impedance.range = session['output_impedance']['range']
+        // this.output_impedance.set_from_percentage(session['output_impedance']['value'])
 
 
         for (var key in this.params){
-            this.params[key].range = session['params'][key].range;   
-            let param = {}
-            param[key] = session['params'][key]['value'];
-            this.set_controls(param, true, false)
+            try{
+            if ((typeof(this.params[key]) == "object" )){ //} && (knob_ids.includes(key))) {
+                this.params[key].range = session['params'][key].range;   
+                let param = {}
+                param[key] = session['params'][key]['value'];
+                this.set_controls(param)
+            }} catch(e){
+                console.log(key, e)
+            }
         }
         return(session)
+    }
+
+    declare_error(message){
+
+        let Delta = new Date()-this.error_time;
+        if (Delta > 1000){
+             this.port.postMessage({property:"message", 
+                text : message
+                });
+             this.error_time = new Date()
+        }
     }
 
 }

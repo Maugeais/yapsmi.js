@@ -1,0 +1,5 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Compute the amplitude of the harmonics relative to the total energy",
+    "developper" : "Sylvain Maugeais"
+}

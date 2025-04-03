@@ -1,89 +1,104 @@
 let isPlaying = false;
 
 function density_change(a, s){
-  let display = inst.strings[s-1].set_control({"density" : a})
-  $("#density€"+s+"_value").html(display)
+  set_controls({["density€"+s] : a}, false)
 }
 
 function stiffness_change(a, s){
-  let display = inst.strings[s-1].set_control({"stiffness" : a})
-  $("#stiffness€"+s+"_value").html(display)
+  set_controls({["stiffness€"+s] : a}, false)
 
+  // inst.set_controls({["stiffness€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
 }
 
 function tension_change(a, s){
-  let display = inst.strings[s-1].set_control({"tension" : a})
-  $("#tension€"+s+"_value").html(display)
+  set_controls({["tension€"+s] : a}, false)
+
+  // inst.set_controls({["tension€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
 }
 
 function losses_eta_change(a, s){
-  let display = inst.strings[s-1].set_control({"eta" : a})
-  $("#losses_eta€"+s+"_value").html(display)
+  set_controls({["losses_eta€"+s] : a}, false)
 
+  // inst.set_controls({["losses_eta€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
 }
 
 function losses_R_change(a, s){
-  let display = inst.strings[s-1].set_control({"R" : a})
-  $("#losses_R€"+s+"_value").html(display)
+  set_controls({["losses_R€"+s] : a}, false)
+
+  // inst.set_controls({["losses_R€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
+}
+
+function nonlinearity_change(a, s){
+  set_controls({["nonlinearity€"+s] : a}, false)
+
+  // inst.set_controls({["nonlinearity€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
 }
 
 function regularity_change(a, s){
-  let display = inst.set_plectrum({"regularity" : a})
-  $("#regularity_value").html(display)
+  set_controls({["regularity"] : a}, false)
+
+  // inst.set_controls({["regularity"] : a}, false, is_shiftkey_pressed)
+  // inst.compute_attack_coefs()
 }
 
 function width_change(a, s){
-  let display = inst.set_plectrum({"width" : a})
-  $("#width_value").html(display)
+  set_controls({["width"] : a}, false)
+
+  // inst.set_controls({["width"] : a}, false, is_shiftkey_pressed)
+  // inst.compute_attack_coefs()
 }
 
 function position_change(a, s){
-  let display = inst.set_plectrum({"position" : a})
-  $("#position_value").html(display)
+  set_controls({["position"] : a}, false)
+
+  // inst.set_controls({["position"] : a}, false, is_shiftkey_pressed)
+  // inst.compute_attack_coefs()
 }
 
 function duration_change(a, s){
-  let display = inst.set_plectrum({"duration" : a})
-  $("#duration_value").html(display)
+  set_controls({["duration"] : a}, false)
+
+  // inst.set_controls({["duration"] : a}, false, is_shiftkey_pressed)
+  // inst.compute_attack_coefs()
 }
 
 function increase_duration_change(a, s){
-  let display = inst.set_plectrum({"increase_duration" : a})
-  $("#increase_duration_value").html(display)
+  set_controls({["increase_duration"] : a}, false)
+
+  // inst.set_controls({["increase_duration"] : a}, false, is_shiftkey_pressed)
 }
 
 function strength_change(a, s){
-  let display = inst.set_plectrum({"strength" : a})
-  $("#strength_value").html(display)
-}
+  set_controls({["strength"] : a}, false)
 
-function widthmic_change(a, s){
-  if (s < inst.mics.length) {
-    let display = inst.mics[s-1].set_width(a)
-    $("#widthmic€"+s+"_value").html(display)
-  }
-}
-
-function gain_change(a, s){
-  inst.gain.set_from_precentage(a);
-  $("#gain_value").html(inst.gain.to_string() )
+  // inst.set_controls({["strength"] : a}, false, is_shiftkey_pressed)
 }
 
 function attack_losses_change(a, s){
-  inst.plectrum["losses"].set_from_precentage(a);
-  $("#attack_losses_value").html(inst.plectrum["losses"].to_string() )
+  set_controls({["attack_lossess€"+s] : a}, false)
+
+  // inst.plectrum["losses"].set_from_precentage(a);
+  // $("#attack_losses_value").html(inst.plectrum["losses"].to_string() )
+  // inst.set_controls({["attack_losses€"+s] : a}, false, is_shiftkey_pressed)
+  // inst.strings[s-1]._scheme_constants()
 }
 
 $("#fretboard").click(set_finger_callback);
+let fret_positions = [2.54, 9.297, 16.05, 22.377, 28.441, 34.262, 39.741, 44.981, 49.90, 54.664, 59.003, 63.317, 67.243, 71.058, 74.668, 78.081, 81.375, 84.342, 87.183, 90.014, 92.555, 95.033, 97.367];
 
 
 
 function id_string_fret(e){
   e.stopPropagation();
     
-  let string = inst.strings.length-Math.floor(inst.strings.length*(e.clientY-$("#fretboard").offset().top)/e.target.offsetHeight);
+  let string = nb_strings-Math.floor(nb_strings*(e.clientY-$("#fretboard").offset().top)/e.target.offsetHeight);
   let x = (e.clientX-$("#fretboard").offset().left)/e.target.offsetWidth;
-  let fret = inst.fret_positions.findIndex(element => element > 100*x);
+  let fret = fret_positions.findIndex(element => element > 100*x);
 
   return [string, fret]
   
@@ -91,11 +106,12 @@ function id_string_fret(e){
 
 function set_finger(string, fret){
     if (fret > 0){
-       $('#finger'+(string)).css('left', (0.666*inst.fret_positions[fret-1]+0.333*inst.fret_positions[fret])*$("#fretboard").width()*0.01);
+       $('#finger'+(string)).css('left', (0.666*fret_positions[fret-1]+0.333*fret_positions[fret])*$("#fretboard").width()*0.01);
     } else {
        $('#finger'+(string)).css('left', -100);
     }
-    inst.change_fingering(string-1, Math.pow(2, -fret/12));
+    simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: string-1, position: Math.pow(2, -fret/12)}});
+
 }
   
 function set_finger_callback(e){
@@ -109,24 +125,29 @@ function set_finger_callback(e){
 }
 
 function mute_string(s, state){
+  string_muted[s-1].muted = state;
   if (state == false){
-      inst.strings[s-1].muted = false;
-      $($(".stringName")[inst.strings.length-s]).css('color', 'lime');
+      $($(".stringName")[string_muted.length-s]).css('color', 'lime');
   } else {
-      inst.strings[s-1].muted = true;
-      $($(".stringName")[inst.strings.length-s]).css('color', 'red');
+      $($(".stringName")[string_muted.length-s]).css('color', 'red');
   }
+  simulationNode.port.postMessage({property:"exec", method:"mute_string", params:[{string: s, state:state}]});
 }
+
+let string_muted = [false, false, false, false, false, false];
 
 function toggle_string_callback(e, s){
   e.stopPropagation();
-  mute_string(s, !inst.strings[s-1].muted)
+  // mute_string(s, !inst.strings[s-1].muted)
+  string_muted[s-1] = !string_muted[s-1]
+  // simulationNode.port.postMessage({property:"exec", method:"mute_string", params:[{string: s, state:string_muted[s-1]}]});
+  mute_string(s, !string_muted[s-1])
 }
 
 $(".stringName").dblclick(function(){
-  let index = inst.strings.length-$('.stringName').index(this);
+  let index = nb_strings-$('.stringName').index(this);
   mute_string(index, false)
-  for (let s = 1; s <= inst.strings.length; s++) {
+  for (let s = 1; s <= nb_strings; s++) {
     if (s != index){
       mute_string(s, true)
     }
@@ -137,9 +158,10 @@ $(".stringName").dblclick(function(){
 var struming = false;
 var position_struming_x=0, position_struming_y=-0.5, timeStamp;
 $("#struming").mousemove(strum);
-$("#struming").mousedown(function(e){struming=true; var rect = e.target.getBoundingClientRect(); position_struming_y=(inst.strings.length*(e.clientY-rect.top)/$("#struming").height()-1/2);});
+$("#struming").mousedown(function(e){struming=true; var rect = e.target.getBoundingClientRect(); position_struming_y=(nb_strings*(e.clientY-rect.top)/$("#struming").height()-1/2);});
 $("#struming").mouseup(function(){struming=false});
 
+var nb_strings = 6;
 
 function strum(e){
   
@@ -150,21 +172,22 @@ function strum(e){
     var x, y;
     var rect = e.target.getBoundingClientRect()
     
-    y = (inst.strings.length*(e.clientY-rect.top)/$("#struming").height()-1/2);
+    y = (nb_strings*(e.clientY-rect.top)/$("#struming").height()-1/2);
     
-    speed = (y - position_struming_y)/(e.timeStamp-timeStamp);
+    let speed = (y - position_struming_y)/(e.timeStamp-timeStamp);
+    speed = 1;
 
     position_struming_x = (1-(e.pageX-rect.left)/$("#struming").width())*0.3;
     
     if (Math.floor(y) != Math.floor(position_struming_y)  ) {
-      if (y > position_struming_y && (y < inst.strings.length )) {
+      if (y > position_struming_y && (y < nb_strings )) {
         for (var i = Math.floor(position_struming_y)+1; i <= Math.floor(y); i++) {
-          inst.strings[5-i].pluck(position_struming_x, speed);
+          simulationNode.port.postMessage({property:"exec", method:"pluck", params:{position: position_struming_x, speed: speed, string_number: 5-i}});
         }
-      } else if (position_struming_y < inst.strings.length){
+      } else if (position_struming_y < nb_strings){
         
         for (var i = Math.floor(position_struming_y); i >= Math.floor(y)+1; i--) {
-          inst.strings[5-i].pluck(position_struming_x, speed);
+          simulationNode.port.postMessage({property:"exec", method:"pluck", params:{position: position_struming_x, speed: speed, string_number: 5-i}});
         }
       }
     }    
@@ -242,11 +265,6 @@ $('input[type=checkbox][name=nl_microphone]').change(function() {
   }
 });
 
-
-function all_strings(object){
-  console.log("test", object.checked)
-}
-
 function change_microphone_selector(e){
   var offset = $("#microphone_selector polygon").offset(); 
   var parent_offset = $("#microphone_selector").offset(); 
@@ -262,8 +280,11 @@ function change_microphone_selector(e){
   $("#microphone_selector_position").css({left : e.pageX -5, top:e.pageY -5});
 }
 
-window.addEventListener('load', function () {
-  setTimeout(() => {
-    guitar_knobs.forEach((knob) => knob.setValue(50))
-  }, 1000);
-})
+current_menu["string_controls"] = 0;
+current_menu["righthand_controls"] = 0;
+
+// window.addEventListener('load', function () {
+//   setTimeout(() => {
+//     guitar_knobs.forEach((knob) => knob.setValue(50))
+//   }, 1000);
+// })

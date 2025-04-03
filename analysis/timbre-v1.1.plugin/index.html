@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="../../analysis/timbre-v1.1.plugin/css/timbre.css" />
+
+<div class="plugin_title">Timbre</div>
+
+<div id="timbre_display"></div>
+
+<div id="timbre_controls">
+
+
+    <!-- <input type="range" min="3" max="100" value="4" class="slider" id="timbre_tail" oninput="timbre_tail_output.value=this.value;"> -->
+    <!-- <input type="range" min="3" max="10" value="4" class="slider" id="timbre_harmonics" oninput="timbre_harmonics_output.value=this.value;"> -->
+    <select name="pets" id="timbre_harmonics" onchange="change_timbre_indicator(this)">
+        <option value = "4-harmonics">4 normalised harmonics</option>
+        <option value = "9-harmonics">9 normalised harmonics</option>
+        <option value = "cgs">CGS</option>
+        <option value = "tristimulus">Tristimulus</option>
+        <option value = "odd2even">Odd to even</option>
+        <option value = "none">None</option>
+        <option value = "none">None</option>
+        <option value = "none">None</option>
+    </select>
+
+
+    <!-- <label>Tail size: <output id="timbre_tail_output"></output></label> -->
+    <div class = "control_knob timbre_tail">
+        <div class="value_container">History<br><div class="knob_value" id="timbre_tail_value">36s</div></div>
+        <div id="timbre_tail_container">
+            <div class="knob" id="timbre_tail"></div>
+        </div>
+ 
+    </div>
+
+
+    <!-- <label>Harmonics: <output id="timbre_harmonics_output"></output></label> -->
+</div>
