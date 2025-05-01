@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="../../analysis/continuation3d-v1.1.plugin/css/continuation3d.css" />
+
+<div class="plugin_title">continuation3d</div>
+
+
+<div id="continuation3d_display"></div>
+
+<div id="continuation3d_controls">
+    <div class = "control_knob continuation3d_tail">
+        <div class="value_container">History=<div class="knob_value" id="continuation3d_tail_value">100</div></div>
+        <div class="knob" id="continuation3d_tail"></div>
+        
+    </div>
+
+    <br>
+
+    <label for="continuation3d_x">x:</label>
+
+    <select id="continuation3d_x" onchange="continuation3d_change_axis('x', this)">
+
+        <option value="time" selected>time</option>
+        <option value="rms">rms</option>
+        <option value="frequency">frequency</option>
+        <option value="amplitude">amplitude</option>
+
+
+    </select>
+
+    <br>
+
+    <label for="continuation3d_y">y:</label>
+
+    <select id="continuation3d_y" onchange="continuation3d_change_axis('y', this)">
+
+        <option value="time" selected>time</option>
+        <option value="rms">rms</option>
+        <option value="frequency">frequency</option>
+        <option value="amplitude">amplitude</option>
+
+    </select>
+
+    <br>
+
+    <label for="continuation3d_z">z:</label>
+
+    <select id="continuation3d_z" onchange="continuation3d_change_axis('z', this)">
+
+        <option value="rms" selected>rms</option>
+        <option value="frequency">frequency</option>
+        <option value="max">max</option>
+
+    </select>
+</div>

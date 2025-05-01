@@ -122,6 +122,12 @@ body{
   background-image:url('./images/duduk.png');
 }
 
+#crumhorn{
+  top : 5%;
+  right : 5%;
+  background-image:url('./images/crumhorn.png');
+}
+
 #guitar{
   top : 5%;
   right : 5%;

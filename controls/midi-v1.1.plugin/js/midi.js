@@ -32,7 +32,7 @@ function load(uid, settings){
 
       for (let i = 0; i < command.length; i++){     
         
-        var interpol = new interpolant(command[i]["automation"].x, command[i]["automation"].y, command[i]["automation"].method)
+        var interpol = new interpolant(command[i]["automation"].x, command[i]["automation"].y, command[i]["automation"].method, [0, 1])
         command[i].automation = interpol;
 
         html += `<tr><td><input onclick="record_midi_events()" value="${key}, ${controler}"></td><td onclick="choose_control(this)">${command[i]['control']}, ${command[i]['plugin']}</td><td onclick="choose_midi_automation(this)">${interpol}</td></tr>`;
@@ -103,10 +103,9 @@ function parse_midi_message(message) {
 function play_midi(command, note, velocity, controler){
   // If 128 then play_note, otherwise see commands
     if (command == 144){
-      // inst.play_note(note, velocity)
-      simulationNode.port.postMessage({property:"exec", method:"play_note", params:{note: note, velocity:velocity, string:0}});
+      play_midi_note(note, velocity)
     } else if (command == 128){
-      simulationNode.port.postMessage({property:"exec", method:"stop_note", params:{note: note, velocity:velocity, string:0}});
+      stop_midi_note(note, velocity)
     } else {
       let key = `${command}, ${note}`;
       if (key in midi_to_control[controler]){
@@ -207,7 +206,7 @@ function save_midi_events(){
       if (!(key in midi_to_control[midi_code[2]])){
         midi_to_control[midi_code[2]][key] = [];
       }
-      var obj ={'plugin': control[1], 'control': control[0], 'automation' : new interpolant(automation["x"], automation["y"], automation["method"])};
+      var obj ={'plugin': control[1], 'control': control[0], 'automation' : new interpolant(automation["x"], automation["y"], automation["method"], [0, 1])};
       midi_to_control[midi_code[2]][key].push(obj);
 
     }  
@@ -263,7 +262,7 @@ function compute_y_cont(){
 
 }
 
-let interp = new interpolant([0, 1], [0, 1], "lagrange");
+let interp = new interpolant([0, 1], [0, 1], "lagrange", [0, 1]);
 
 
 var trace = [{

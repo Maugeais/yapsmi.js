@@ -45,7 +45,6 @@ class wind_instrument extends instrument {
         this.transitioning_impedance = false;
         this.S = []
         this.C = [];
-        this.transition_time = 10000;
         this._transition_impedance_counter = 0;
         this.X0 = new Array(this.dim).fill(0);
 
@@ -55,18 +54,24 @@ class wind_instrument extends instrument {
 
         this.S0 = new Array(this.impedances_dim+this.vocal_tract_dim );
         this.C0 = new Array(this.impedances_dim+this.vocal_tract_dim );
-
-        this.dS = new Array(this.impedances_dim+this.vocal_tract_dim );
-        this.dC = new Array(this.impedances_dim+this.vocal_tract_dim );
+        this.S1 = new Array(this.impedances_dim+this.vocal_tract_dim );
+        this.C1 = new Array(this.impedances_dim+this.vocal_tract_dim );
 
         for (let i=0; i < this.impedances_dim+this.vocal_tract_dim ; i++ ){
             this.S0[i] = new complex(0, 0);
             this.C0[i] = new complex(0, 0);
+            this.S1[i] = new complex(0, 0);
+            this.C1[i] = new complex(0, 0);
             this.S[i] = new complex(0, 0);
             this.C[i] = new complex(0, 0);
-            this.dS[i] = new complex(0, 0);
-            this.dC[i] = new complex(0, 0);
         }
+
+
+        let der = new Float32Array(this.dim);
+        this.model = this.model.bind(this)
+
+        // console.log(this.model)
+
          // Functions to be calls when the fingering is chhanged
         // load_fingerings(this);
     }
@@ -82,11 +87,12 @@ class wind_instrument extends instrument {
             }
          });
 
-        //  console.log(this.impedances)
-        this.change_fingering("A");
+        this.change_fingering(this.fingering);
     }
 
     init_audio(buffer_size, dt){
+
+        this.dt = dt;
 
         this.buffer = new Array(buffer_size+1);   // Tableau contenant les données en chaque temps
         // int.reset_buffer(buffer)
@@ -118,19 +124,19 @@ class wind_instrument extends instrument {
             this.S0[i].im = this.S[i].im;
             this.C0[i].re = this.C[i].re;
             this.C0[i].im = this.C[i].im;
-            this.dS[i].re = 0;
-            this.dC[i].re = 0;
-            this.dS[i].im = 0;
-            this.dC[i].im = 0;
+            this.S1[i].re = this.S[i].re;
+            this.S1[i].im = this.S[i].im;
+            this.C1[i].re = this.C[i].re;
+            this.C1[i].im = this.C[i].im;
         }
         
         for (let i=0; i < this.impedances_dim; i++ ){
             this.S0[i+this.vocal_tract_dim] = this.impedances[this.fingering]['S'][i];
             this.C0[i+this.vocal_tract_dim] = this.impedances[this.fingering]['C'][i];
-            this.dS[i+this.vocal_tract_dim].re = (this.impedances[name]['S'][i].re-this.impedances[this.fingering]['S'][i].re);
-            this.dC[i+this.vocal_tract_dim].re = (this.impedances[name]['C'][i].re-this.impedances[this.fingering]['C'][i].re);
-            this.dS[i+this.vocal_tract_dim].im = (this.impedances[name]['S'][i].im-this.impedances[this.fingering]['S'][i].im);
-            this.dC[i+this.vocal_tract_dim].im = (this.impedances[name]['C'][i].im-this.impedances[this.fingering]['C'][i].im);
+            this.S1[i+this.vocal_tract_dim].re = this.impedances[name]['S'][i].re;
+            this.S1[i+this.vocal_tract_dim].im = this.impedances[name]['S'][i].im;
+            this.C1[i+this.vocal_tract_dim].re = this.impedances[name]['C'][i].re;
+            this.C1[i+this.vocal_tract_dim].im = this.impedances[name]['C'][i].im;
         }
             
         this.transitioning_impedance = true;
@@ -146,19 +152,19 @@ class wind_instrument extends instrument {
             for (let i=0; i < this.vocal_tract_dim; i++ ){
                         this.S0[i] = this.S[i];
                         this.C0[i] = this.C[i]
-                        this.dS[i].re = vocal_tract_parameters[i][0].re/this.characteristic_impedance-this.S[i].re;
-                        this.dS[i].im = vocal_tract_parameters[i][0].im/this.characteristic_impedance-this.S[i].im;
-                        this.dC[i].re = vocal_tract_parameters[i][1].re/this.characteristic_impedance-this.C[i].re;
-                        this.dC[i].im = vocal_tract_parameters[i][1].im/this.characteristic_impedance-this.C[i].im;
+
+                        this.S1[i].re = vocal_tract_parameters[i][0].re/this.characteristic_impedance;
+                        this.S1[i].im = vocal_tract_parameters[i][0].im/this.characteristic_impedance;
+                        this.C1[i].re = vocal_tract_parameters[i][1].re/this.characteristic_impedance;
+                        this.C1[i].im = vocal_tract_parameters[i][1].im/this.characteristic_impedance;
                     }
                     
                     for (let i=0; i < this.impedances_dim; i++ ){
                         this.S0[i+this.vocal_tract_dim] = this.S[i+this.vocal_tract_dim];
                         this.C0[i+this.vocal_tract_dim] = this.C[i+this.vocal_tract_dim];
-                        this.dS[i+this.vocal_tract_dim].re = 0;
-                        this.dC[i+this.vocal_tract_dim].re = 0;
-                        this.dS[i+this.vocal_tract_dim].im = 0;
-                        this.dC[i+this.vocal_tract_dim].im = 0;
+                        this.S1[i+this.vocal_tract_dim] = this.S[i+this.vocal_tract_dim];
+                        this.C1[i+this.vocal_tract_dim] = this.C[i+this.vocal_tract_dim];
+
                     }
                 
                     this.transitioning_impedance = true;
@@ -191,18 +197,21 @@ class wind_instrument extends instrument {
     }
 
     transition_impedance(){
-        if (this._transition_impedance_counter <= this.transition_time){
-            this._transition_impedance_counter++;
-            let t = this._transition_impedance_counter/this.transition_time;
-            let transition_coeff = 1/(1+10**(12*(1/2-t)));   
-
-            
+        if (this._transition_impedance_counter <= this.params['transition_time'].value){
+            this._transition_impedance_counter+= this.dt;
+            let t = this._transition_impedance_counter/this.params['transition_time'].value;
+            let transition_speed = this.params['transition_speed'].value
+            // let transition_coeff = 1/(1+10**(12*(1/2-t)));   
+            // let transition_coeff = (1+Math.atan(transition_speed*(t-0.5))*2/Math.PI)/2;
+            let transition_coeff = 1/(1+Math.exp(-transition_speed*0.5))
+            transition_coeff = 1/(1+Math.exp(-transition_speed*(t-0.5)));
+           
            
             for (let i=0; i < this.impedances_dim+this.vocal_tract_dim; i++){
-                this.S[i].re = this.S0[i].re+this.dS[i].re*transition_coeff;
-                this.C[i].re = this.C0[i].re+this.dC[i].re*transition_coeff;
-                this.S[i].im = this.S0[i].im+this.dS[i].im*transition_coeff;
-                this.C[i].im = this.C0[i].im+this.dC[i].im*transition_coeff;
+                this.S[i].re = this.S0[i].re*(1-transition_coeff)+this.S1[i].re*transition_coeff;
+                this.C[i].re = this.C0[i].re*(1-transition_coeff)+this.C1[i].re*transition_coeff;
+                this.S[i].im = this.S0[i].im*(1-transition_coeff)+this.S1[i].im*transition_coeff;
+                this.C[i].im = this.C0[i].im*(1-transition_coeff)+this.C1[i].im*transition_coeff;
                 // 
             } 
             return(t)
@@ -248,6 +257,14 @@ class wind_instrument extends instrument {
     
     }
 
+    output(outputBuffer){
+        if (this.radiation_on){
+             this.pressure_derivative_output(outputBuffer);
+        } else {
+            this.pressure_output(outputBuffer);
+        }
+    }
+
     // save_session(){
 
     //     let session = this.save_parameters();
@@ -290,7 +307,9 @@ async function load_fingerings(object){
 
     for (let item of list) {
         let ref = item.innerText;
+        if (ref.slice(-5) == '.json'){
             await load_impedance(object, ref);
+        }
     }
 }
 

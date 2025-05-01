@@ -93,6 +93,7 @@
   z-index: 100;
   right: 0;
   top: 0;
+  cursor: url("./images/pick.png") 30 70, auto;
 }
 
 .stringName{
@@ -242,4 +243,19 @@
 position: absolute;
   top: 57%;
   left: 52%;
+}
+
+#plectrum_shape_signal{
+  border: 1px black solid;
+  border-radius: 5px;
+  color: white;
+  margin-top: -20px;
+  width: 120px;
+}
+
+#plectrum_shape_signal legend{
+  position: relative;
+  border: none;
+  padding: 0.2em 0.8em;
+  width: 45px;
 }

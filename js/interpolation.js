@@ -1,10 +1,11 @@
 'use strict';
 
 class interpolant{
-    constructor(x = [], y = [], method="lagrange"){
+    constructor(x = [], y = [], method="lagrange", range = [0, -1]){
         this.x = x;
         this.y = y;
         this.method = method;
+        this.range = range;
     }
 
     eval(x){
@@ -20,7 +21,10 @@ class interpolant{
           }
           res += this.y[j]*prod;
         }
-        return(res)
+
+        if (this.range[0] > this.range[1]) return(res);
+
+        return(Math.max(Math.min(res, this.range[1]), this.range[0]))
     }
 
     toString(){

@@ -14,7 +14,7 @@ Time dependant variable:
   
  <br>
 
-Phyisical constants:
+Physical constants:
 
 <ul>
 	<li>mouth pressure \(p_m\)</li>
@@ -22,14 +22,17 @@ Phyisical constants:
 	<li>reed stifness \(K_r\)</li>
 	<li>reed quality factor \(Q_r\)</li>
 	<li>reed opening at rest \(H\)</li>
+	<li>width of the reed \(w\)</li>
+	<li>equivalent length for the reed flow \(L_r\)</li>
+	<li>regularisation of the non linear characteristic \(\varepsilon_{flow}, \varepsilon_{beating}\)</li>
 </ul>
 
 The reed is modeled as a one degree of freedom oscillator driven by the pressure differential
-\begin{equation}
-		\ddot{h}+\frac{\omega_r}{Q_r} \dot{h} + \omega^2_r(h-H) = -(p_m-p) \frac{\omega_r^2}{K}
+\begin{cases}
+		\ddot{h}+\frac{\omega_r}{Q_r} \dot{h} + \omega^2_r(h-H) = -(p_m-p) \frac{\omega_r^2}{K} \\
 		\hat{p}(\omega) = Z(\omega) \hat{u}(\omega) \\
-		u = w h^+ \mathrm{sgn}(p_m-p)\sqrt{\frac{2|p_m-p|}{\rho}}
-\end{equation}
+		u = w h^+ \mathrm{sgn}(p_m-p)\sqrt{\frac{2|p_m-p|}{\rho}} - wL_r \frac{d}{dt}
+\end{cases}
 
 The resonator is described by its input impedance in the Fourier domain
 \begin{equation}
@@ -45,7 +48,24 @@ where \(Z_c\) represents the characteristic impedance \(Z_c = \frac{\rho c_0}{\p
 <br>
 
 Last equation linking the pressure differential to the flow through the reed obtained through Bernoulli's equation, where \(w\) is the reed width,
-\(h^+(t)= \max(h(t), 0)\) (so that \(w h^+(t)\) represents the opening section when \(h(t) \ge 0\)) and \(\rho\) is the air density.
+\(h^+= \max(h, 0)\) (so that \(w h^+\) represents the opening section when \(h \ge 0\)) and \(\rho\) is the air density.
 \begin{equation}
 	u = w h^+ \mathrm{sgn}(p_m-p)\sqrt{\frac{2|p_m-p|}{\rho}}
 \end{equation}
+
+To avoid numerical instabilities, this equation is regularized using a heuristic formula for \(h^+\)
+\begin{equation}
+h^+ \to \frac{1}{2}\left(h+\frac{h^2+\frac{1}{2}\varepsilon_{beating} H^2}{\sqrt{h^2+\varepsilon_{beating} H^2}}\right)
+\end{equation}
+
+(whose effect is shown in the figure below)
+<br>
+<img src="regularisation-h.svg"></img>
+<br>
+
+and adding a Poiseuille term for the flow, which leads to 
+\begin{equation}
+\mathrm{sgn}(\Delta p)\sqrt{\frac{2|\Delta p|}{\rho}} \to \mathrm{sgn}(\Delta p) \frac{-\varepsilon_{flow}+\sqrt{\varepsilon_{flow}^2+2\rho |\Delta p|}}{\rho}
+\end{equation}
+
+<img src="regularisation-flux.svg"></img>

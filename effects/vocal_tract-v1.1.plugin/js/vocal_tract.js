@@ -6,32 +6,38 @@ import { complex } from "../../../js/wind_instrument.js?version=1.1";
 
 let vocal_tract_knobs;
 let vocal_tract_vowels = {
-  "none" : [[2, 240, 1e5], [2, 1040, 1e5], [2, 2200, 1e5], [2, 4000, 1e5]],  
+  "none" : [[25, 550, 2.38e9], [42, 761, 5.79e8], [32, 2146, 2.2e10], [78, 4373, 4.2e10]],  
   "low" : [[8, 240, 4e9], [10, 1040, 3e8], [30, 2200, 5e9], [30, 4000, 1e10]],
   "mid" : [[6, 300, 4e8], [30, 1140, 3e9], [30, 2500, 1e9], [30, 3800, 4e9]],
   "high" : [[6, 240, 1e8], [30, 1040, 3e9], [6, 2200, 1e9], [30, 3600, 4e9]]
 };
 
+/* none : 
+A  = 9.51765906e+07, 1.36193992e+07, 6.75598482e+08, 5.32355970e+08
+Q = 25.08564293,  42.56763049,  32.60609907, 78.74604946       
+F = 550.5325032 ,  761.02070159, 2146.41393871, 2952.0497376, 4373.63839585
+*/
+
 let vocal_tract_buttons = [
         {
-          "A" : new parameter(1e5, [1e5, 1e11], '', 1e-9, 2, true),
-          "F" : new parameter(240, [200, 300], '', 1, 0, true),
-          "Q" : new parameter(8, [2, 30], '', 1, 0, true),
+          "A" : new parameter(2.38e9, [1e7, 1e12], '', 1e-9, 2, true),
+          "F" : new parameter(550, [200, 700], '', 1, 0, true),
+          "Q" : new parameter(25, [2, 80], '', 1, 0, true),
         },
         {
-          "A" : new parameter(2, [1e5, 1e11], '', 1e-9, 2, true),
-          "F" : new parameter(1040, [800, 1400], '', 1, 0, true),
-          "Q" : new parameter(10, [2, 30], '', 1, 0, true),
+          "A" : new parameter(5.79e8, [1e7, 1e12], '', 1e-9, 2, true),
+          "F" : new parameter(761, [500, 1400], '', 1, 0, true),
+          "Q" : new parameter(42, [2, 80], '', 1, 0, true),
         },
         {
-          "A" : new parameter(2, [1e5, 1e11], '', 1e-9, 2, true),
-          "F" : new parameter(2200, [2100, 2300], '', 1, 0, true),
-          "Q" : new parameter(30, [2, 30], '', 1, 0, true),
+          "A" : new parameter(2.2e10, [1e7, 1e12], '', 1e-9, 2, true),
+          "F" : new parameter(2146, [1800, 2500], '', 1, 0, true),
+          "Q" : new parameter(32, [2, 80], '', 1, 0, true),
         },
         {
-          "A" : new parameter(2, [1e5, 1e11], '', 1e-9, 2, true),
-          "F" : new parameter(4000, [3500, 4500], '', 1, 0, true),
-          "Q" : new parameter(30, [2, 30], '', 1, 0, true),
+          "A" : new parameter(4.2e10, [1e7, 1e12], '', 1e-9, 2, true),
+          "F" : new parameter(4373, [3500, 5000], '', 1, 0, true),
+          "Q" : new parameter(78, [2, 80], '', 1, 0, true),
         }
 
 ];
@@ -61,6 +67,8 @@ function real_to_complex(){
     let C = new complex(A/2, -A/2/Math.sqrt(Q**2-1));
     vocal_tract_parameters[i] = [S, C];
   }  
+
+  console.log(vocal_tract_parameters)
 }
 
 function update_vocal_tract_impedance(continuous = false){

@@ -5,12 +5,8 @@
     <title>Yapsmi-guitar</title>
     <link rel="stylesheet" href="./css/guitar.css" />
     <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
-    <!-- <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    <script src="../../js/external/plotly-latest.min.js"></script>
+    <script src="../../js/external/tex-chtml-full.js" type="text/javascript"></script>
     <script src="../../js/external/jquery.js"></script>
     <script src="../../js/knobs.js?version=1.01"></script>
     <script src="../../js/external/jquery-ui.js"></script>
@@ -20,11 +16,6 @@
     <header>
       <div id="tools">
       </div> 
-
-      <div id="model" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()">x</div>
-        <div id="model_content"></div>
-      </div>  
-
     </header>
     <main>
 
@@ -72,7 +63,7 @@
               <div id="string1" class="string strummable" style="height:7px"> <div class="spuned"></div></div>
             </div>
 
-            <div id="struming" onclick="strum(event)"></div>
+            <div id="struming" onclick="strum(event)" onmousemove="change_plectrum_position(event)"></div>
 
           </div>
     
@@ -305,13 +296,28 @@
             <div class="previous_controls" onclick="change_controls(-1, 'righthand_controls')"></div>
         
             <div class="next_controls" onclick="change_controls(+1, 'righthand_controls')"></div>
-            
+
             <div class ="instrument_controls_window" >
-              <legend>Plectrum</legend>
+              <legend>Model</legend>
               <div class="control_knob">
+                <div class="value_container">\(dim^\vphantom{0}\)=<div class="knob_value" id="dimension_value">100</div></div>
+                <div class="knob" id="dimension"></div>
+              </div>
+
+            </div>
+            
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>Plectrum</legend>
+
+              <fieldset id="plectrum_shape_signal"><legend>Shape</legend>
+                <input type="radio" name="plectrum_shape_signal" value="dirac" checked><label for="dirac">Dirac</label><br>
+                <input type="radio" name="plectrum_shape_signal" value="rectangle"><label for="rectangle">Rectangle</label><br>
+                <input type="radio" name="plectrum_shape_signal" value="sine"><label for="sine">Sine</label>
+              </fieldset>
+              <!-- <div class="control_knob">
                 <div class="value_container">\(reg^\vphantom{0}\)=<div class="knob_value" id="regularity_value">100</div></div>
                 <div class="knob" id="regularity"></div>
-              </div>
+              </div> -->
 
               <div class="control_knob">
                 <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
@@ -322,43 +328,60 @@
                 <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
                 <div class="knob" id="position"></div>
               </div>
+              
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>Plectrum attack</legend>
 
-                
-                
-                
+              <div class="control_knob" title="Contact duration">
+                <div class="value_container">\(\delta t^\vphantom{0}\)=<div class="knob_value" id="duration_value">100</div></div>
+                <div class="knob" id="duration"></div>
+              </div>
+
+              <!-- <div class="control_knob">
+                <div class="value_container">\(\delta\delta t^\vphantom{0}\)=<div class="knob_value" id="increase_duration_value">100</div></div>
+                <div class="knob" id="increase_duration"></div>
+              </div>                -->
+              
+              <div class="control_knob"  title="Contact strength">
+                <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
+                <div class="knob" id="strength"></div>
+              </div>
+
+              <div class="control_knob"  title="Plectrum losses">
+                <div class="value_container">\(\epsilon^\vphantom{0}\)=<div class="knob_value" id="losses_value">100</div></div>
+                <div class="knob" id="losses"></div>
+              </div>
                              
             </div>
             <div class ="instrument_controls_window" style="display:none">
-                <legend>Attack</legend>
-      
+              <legend>Fingering transitions</legend>
 
-                  <!-- <div id="plectrum_shape_signal"><input type="radio" name="plectrum_shape_signal" value="square" checked>
-                      <input type="radio" name="plectrum_shape_signal" value="triangle">
-                      <input type="radio" name="plectrum_shape_signal" value="sine">
-                  </div> -->
+              <div class="control_knob" title="Transition time">
+                <div class="value_container">\(T_{tr}^\vphantom{0}\)=<div class="knob_value" id="transition_time_value">100</div></div>
+                <div class="knob" id="transition_time"></div>
+              </div>
 
-                <div class="control_knob">
-                  <div class="value_container">\(\delta t^\vphantom{0}\)=<div class="knob_value" id="duration_value">100</div></div>
-                  <div class="knob" id="duration"></div>
-                </div>
+              <div class="control_knob"  title="Transition speed">
+                <div class="value_container">\(V_{tr}^\vphantom{0}\)=<div class="knob_value" id="transition_speed_value">100</div></div>
+                <div class="knob" id="transition_speed"></div>
+              </div>               
+<!--               
+              <div class="control_knob">
+                <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
+                <div class="knob" id="strength"></div>
+              </div>
 
-                <div class="control_knob">
-                  <div class="value_container">\(\delta\delta t^\vphantom{0}\)=<div class="knob_value" id="increase_duration_value">100</div></div>
-                  <div class="knob" id="increase_duration"></div>
-                </div>               
-                
-                <div class="control_knob">
-                  <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
-                  <div class="knob" id="strength"></div>
-                </div>
-
-                <!-- <div class="control_knob">
-                  <div class="value_container">\(\epsilon^\vphantom{0}\)=<div class="knob_value" id="attack_losses_value">100</div></div>
-                  <div class="knob" id="attack_losses"></div>
-                </div> -->
-                             
+              <div class="control_knob">
+                <div class="value_container">\(\epsilon^\vphantom{0}\)=<div class="knob_value" id="losses_value">100</div></div>
+                <div class="knob" id="losses"></div>
+              </div>
+                           -->
             </div>
           </div>
+
+          
+      </div>
 
           <!-- <div class="control_knob" id="general_gain">
             <div class="value_container">\(Gain\)=<div class="knob_value" id="gain_value">100</div></div>
@@ -414,24 +437,13 @@
   <script src="../../js/tools.js"></script>
   <script src="./js/guitar-ui.js"></script>
 
-  <script> 
-    $(function(){
-      $("#model_content").load("model.html"); 
-    });
-  </script>
 
   <script> 
-    
-    $(function(){
-      $("#tools").load("../../templates/tools.html", init_menu); 
-    });
-    
+  
     document.addEventListener('DOMContentLoaded', async function() {
       load_inst_knobs("guitar")
     }, false);
 
   </script> 
-  <!-- <script>window.addEventListener('load', function () {
-     init_plugins()
-   })</script> -->
+  
 </html>

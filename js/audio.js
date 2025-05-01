@@ -155,9 +155,9 @@ window.get_frequency = function(data){
     }
     if (frequency_computed == false) {
         frequency = yin(data.slice(0, frequency_length_computation), fs, 0.07);
-        if (isNaN(frequency)){
-            frequency = 100000.0;
-        }
+        // if (isNaN(frequency)){
+        //     frequency = 100000.0;
+        // }
         frequency_computed = true;
     }
     return(frequency)
@@ -206,17 +206,17 @@ async function inmessage(event) {
         case "set_html_knob": 
             for (let key in event.knobs) {
                 $("#"+key+"_value").html(event.knobs[key]["string"]);
-                if ((event.knobs[key]["percentage"] >= 0) && (key in inst_controls)){  
-                        inst_controls[key].setValue(event.knobs[key]["percentage"])
+                if ((event.knobs[key]["percentage"] >= 0) && (key in instrument_controls)){  
+                        instrument_controls[key].setValue(event.knobs[key]["percentage"])
                 }
             }
             break;
         case "get_controls_value": 
             for (let key in event.params){
-                if (key in inst_controls) {
-                    inst_controls[key].real_value = event.params[key].value
+                if (key in instrument_controls) {
+                    instrument_controls[key].value = event.params[key].value
                 } else {
-                    inst_controls[key] = {"real_value" : event.params[key].value}
+                    instrument_controls[key] = {value : event.params[key].value}
                 }
             }
             break;
@@ -251,7 +251,7 @@ window.set_controls = async function(params, knob = true){
 
     if (knob){
         console.log("knob = true", params)
-        let index = inst_controls.findIndex(element => element.id == key);
+        let index = instrument_controls.findIndex(element => element.id == key);
         inst.knobs[index].setValue(params[key]);
     }
 }
@@ -348,8 +348,11 @@ async function initialise_audio() {
     simulationNode.connect(window.vol)
     vol.connect(audioCtx.destination);
 
+    audioCtx.suspend()
+
     // get_controls_value()
-    window.instrument_controls_details = await query_simulator("get_controls_details");
+    // window.instrument_controls_details = await query_simulator("get_controls_details");
+    await update_intrument_controls_details();
 } 
 
 export { initialise_audio}

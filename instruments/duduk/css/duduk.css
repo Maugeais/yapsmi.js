@@ -1,5 +1,4 @@
 #duduk{
-/*   background-image : url('./images/velvet.jpg'); */
   grid-column: 1 / span 5; 
   background-size: cover;
   width : 580px;

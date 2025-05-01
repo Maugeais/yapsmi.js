@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
+
+
+<script src="../../js/external/plotly-latest.min.js"></script>
+<!-- <script src="../../js/external/tex-chtml-full.js" type="text/javascript"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script src="../../js/external/jquery.js"></script>
+<script src="../../js/knobs.js?version=1.1"></script>
+<script src="../../js/external/jquery-ui.js"></script>
+<script src="../../js/plugins.js?version=1.1"></script>
+
+
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Yapsmi-minimal</title>
+    <link rel="stylesheet" href="./css/minimal.css?version=1.1" />
+    <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
+  </head>
+  <body>
+    <header>
+      <div id="tools">
+      </div> 
+    </header>
+    <main>
+
+      <div  id="wrapper">
+      
+        <div class = "plugin" id="minimal">
+         
+          <div class="instrument_controls">
+
+            <div class="previous_controls" onclick="change_controls(-1, 'minimal')"></div>
+
+            <div class="next_controls" onclick="change_controls(+1, 'minimal')"></div>
+
+              <div class ="instrument_controls_window">
+              
+                <div class="controls_title">Controls</div>
+
+                <div class = "control_knob" title="Mouth pressure">
+                    <div class="value_container">\(P_m^\vphantom{0}\)=<div class="knob_value" id="pm_value">100</div></div>
+                    <div class="knob" id="pm"></div>
+
+                
+              </div>               
+            
+          </div>
+        </div>
+      </div>
+
+
+    </main>
+
+
+    <footer></footer>
+  </body>
+
+  <script src="../../js/tools.js?version=1.1"></script>
+
+  <script type="module" src="js/init.js?version=1.1"></script>
+  <script src="./js/minimal-ui.js?version=1.1"></script>
+
+  <script> 
+     </script> 
+
+
+  <script> 
+    
+
+    document.addEventListener('DOMContentLoaded', async function() {
+
+      load_inst_knobs("minimal") // Ig there are knobs
+
+    }, false);
+
+  </script> 
+
+</html>

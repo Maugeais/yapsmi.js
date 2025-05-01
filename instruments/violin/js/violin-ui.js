@@ -16,7 +16,6 @@ function output_impedance_change(a, s){
 function dimension_change(a, s){
   simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: 1+parseInt(a/3)});
   $("#dimension_value").html(1+parseInt(a/3))
-
 }
 
 function change_friction_model(e){
@@ -37,6 +36,9 @@ $("#fretboard").click(set_finger_callback);
 
 // });
 
+let N_strings = 4;
+let fretboard_height = 200;
+
 function id_string_pos(e){
   e.stopPropagation();
 
@@ -44,7 +46,7 @@ function id_string_pos(e){
   let h = 2/3.5+(1-2/3.5)*x;
   let y = (e.clientY-$("#fretboard").offset().top)/e.target.offsetHeight;
   let yr = (y-1/2)/h+1/2;
-  let string = inst.strings.length-Math.floor(inst.strings.length*yr);
+  let string = N_strings-Math.floor(N_strings*yr);
 
   return [string, x]
   
@@ -52,13 +54,15 @@ function id_string_pos(e){
 
 function set_finger(string, x){
     let h = 2/3.5+(1-2/3.5)*x;
-    let y = (-string/inst.strings.length+1/2)*h+1/2;
+    let y = (-string/N_strings+1/2)*h+1/2;
     if (x > 0){
        $('#finger'+(string)).css('left', x*$("#fretboard").width()).css('top', y*$("#fretboard").height());
     } else {
        $('#finger'+(string)).css('left', -100);
     }
-    inst.change_fingering(string-1, (1-0.64*x));
+    x = 1-x*$("#fretboard").width()/($("#fretboard").width()+$("#bowing_area").width())
+   simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: string-1, position: x}});
+
 }
   
 function set_finger_callback(e){
@@ -120,4 +124,39 @@ $("#bow").draggable({axis:"x",
 
 current_menu["string_controls"] = 0;
 current_menu["righthand_controls"] = 0;
+
+let string_on = [-1, -1, -1, -1];
+let strings_fundamental = [40, 45, 50, 55];
+
+
+// Plays only first position
+// Range = G3, D4, A4, E5
+
+window.play_note = function(note, velocity){
+    let string = 4-Math.floor((note-55)/7);
+
+    if ((string < 1) || (string > 4)){
+        console.log("Bad string")
+        return
+    }
+
+    let position = (note-55) % 7;
+
+    if (inst.strings[string-1].muted) {
+        inst.strings[string-1].muted = false;
+    }
+    set_finger(string, 2**(position/12)-1);
+}
+
+window.stop_note = function(note, velocity){
+    let string = 4-Math.floor((note-55)/7);
+
+    if ((string < 1) || (string > 4)){
+        console.log("Bad string")
+        return
+    }
+
+    violin.strings[string-1].muted = true;
+   
+}
 

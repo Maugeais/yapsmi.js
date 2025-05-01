@@ -5,8 +5,8 @@
     <title>Yapsmi-violin</title>
     <link rel="stylesheet" href="./css/violin.css" />
     <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+    <script src="../../js/external/plotly-latest.min.js"></script>
+    <script src="../../js/external/tex-chtml-full.js" type="text/javascript"></script>
     <script src="../../js/external/jquery.js"></script>
     <script src="../../js/knobs.js?version=1.1"></script>
     <script src="../../js/external/jquery-ui.js"></script>
@@ -23,10 +23,6 @@
     <header>
       <div id="tools">
       </div> 
-
-      <div id="model" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()">x</div>
-        <div id="model_content"></div>
-      </div>  
 
       <div id="string_maker_content" style="display:none"></div>
     </header>
@@ -221,13 +217,7 @@
               </div>                 
             </div> 
             <div class ="instrument_controls_window"  style="display:none">
-              <legend>Friction</legend>
-             
-                       
-               <div class="control_knob">
-                  <div class="value_container">\(v_t^\vphantom{0}\)=<div class="knob_value" id="vreg_value">100</div></div>
-                  <div class="knob" id="vreg"></div>
-                </div>   
+              <legend>Friction</legend>         
                 
                 <div class="control_knob">
                   <div class="value_container">\(\mu_s^\vphantom{0}\)=<div class="knob_value" id="mus_value">100</div></div>
@@ -238,20 +228,17 @@
                   <div class="value_container">\(\mu_d^\vphantom{0}\)=<div class="knob_value" id="mud_value">100</div></div>
                   <div class="knob" id="mud"></div>
                 </div>   
-            </div>
-            <div class ="instrument_controls_window"  style="display:none">
-              <legend>Model </legend> 
 
                 <fieldset id="model_choice">
 
-                  <legend>Choices</legend>
+                  <legend>Model</legend>
              
                   <select name="friction_model" id="friction_model-select" onchange="change_friction_model(this)">
                     <option value="static" selected>Static</option>
                     <option value="elasto-plastic">Elasto-plastic</option>
                   </select>    
                   <br>
-
+  
                   <select name="friction_model-regularisation" id="friction_model-select" onchange="change_friction_model_regularisation(this)">
                     <!-- <option value="Coulomb">Coulomb</option> -->
                     <option value="Stribeck">Stribeck</option>
@@ -261,6 +248,16 @@
                     <option value="Ablitzer" selected>Ablitzer</option>
                   </select>    
                 </fieldset>
+
+                <div class="control_knob">
+                  <div class="value_container">\(v_t^\vphantom{0}\)=<div class="knob_value" id="vreg_value">100</div></div>
+                  <div class="knob" id="vreg"></div>
+                </div>   
+            </div>
+            <div class ="instrument_controls_window"  style="display:none">
+              <legend>Model </legend> 
+
+               
 
                <div class="control_knob">
                   <div class="value_container">\(dim^\vphantom{0}\)=<div class="knob_value" id="dimension_value">100</div></div>
@@ -313,17 +310,9 @@
     <footer></footer>
   </body>
 
-  <script>
-    $(function(){
-      $("#tools").load("../../templates/tools.html?version=1.1", init_menu); 
-    });
-  </script>
+
   <script src="../../js/tools.js?version=1.1"></script>
-  <script> 
-    $(function(){
-      $("#model_content").load("model.html"); 
-    });
-  </script> 
+  
   <script type="module" src="js/init.js?version=1.1"></script>
   <script src="./js/violin-ui.js?version=1.1"></script>
 

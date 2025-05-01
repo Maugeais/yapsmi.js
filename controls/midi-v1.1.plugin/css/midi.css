@@ -88,17 +88,6 @@ max-width:37px;
     position: relative;
 }
 
-.blink{
-    animation: blink 1s infinite;
-}
-@keyframes blink{
-    0% {
-        background: #824040;
-    }
-    20% {
-        background: red;
-    }
-}
 
 #last_midi_event{
     padding: 5px;

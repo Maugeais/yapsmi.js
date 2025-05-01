@@ -66,7 +66,7 @@ function record(uid){
     if (analysers[uid].recorded_chunks <  nbchunks_max){
         let ref = analysers[uid].analyser.wavArray.length*(analysers[uid].recorded_chunks);
         for (let i = 0; i < analysers[uid].analyser.wavArray.length; i++){
-            analysers[uid].y[ref+i] = analysers[uid].analyser.wavArray[i]/inst_controls["output_impedance"].real_value;
+            analysers[uid].y[ref+i] = analysers[uid].analyser.wavArray[i]/instrument_controls["output_impedance"].real_value;
         }      
         analysers[uid].recorded_chunks++;
         draw(uid, analysers[uid].x, analysers[uid].y)
@@ -84,7 +84,7 @@ function record_analyser(uid){
 
     analysers[uid].analyser.getFloatTimeDomainData(analysers[uid].analyser.wavArray);
     if (use_trigger){
-        let amplitude = dynamics(analysers[uid].analyser.wavArray, uid)/inst_controls["output_impedance"].real_value;
+        let amplitude = dynamics(analysers[uid].analyser.wavArray, uid)/instrument_controls["output_impedance"].real_value;
         if (amplitude < trigger_threshold) return;
     }
     record(uid)

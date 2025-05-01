@@ -1,0 +1,144 @@
+<link rel="stylesheet" href="../../controls/formula-v1.1.plugin/css/formula.css" />
+
+<div class="plugin_title">formula</div>
+
+<div id="formula_tabs">
+
+    <div class="formula_tab" id="formula_1">
+        <select>
+            <option value = "none">None</option>
+        </select>
+
+
+        <div class="formula_textarea">
+            <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             id="formula_formula_1" cols="40" rows="5">
+                let tt=t/10000;
+                let x = tt*3500;
+                return(x)
+            </textarea>
+        </div>
+
+        <div class="formula_duration">
+            <label for = "formula_duration_1">Duration (s) T=</label>
+            <input type="text" id="formula_duration_1" value="10000"/>
+        </div>
+
+        <div class="formula_step">
+            <label for = "formula_step_1">Time step(s) dt=</label>
+            <input type="text" id="formula_step_1"  value="100"/>
+        </div>
+
+        <button onclick="exec_formula(1)">Exec</button>
+        <button onclick="stop_formula(1)">Stop</button>
+    </div>
+
+    <div class="formula_tab" id="formula_2"  style="display:none">
+        <select>
+            <option value = "none">None</option>
+        </select>
+
+        <div class="formula_textarea">
+            <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             id="formula_formula_2" cols="40" rows="5">let tt=t/10000;
+                let x = (1-tt)*3500;
+                return(x)
+            </textarea>
+        </div>
+
+        <div class="formula_duration">
+            <label for = "formula_duration_2">Duration (ms)</label>
+            <input type="text" id="formula_duration_2" value="10000"/>
+        </div>
+
+        <div class="formula_step">
+            <label for = "formula_step_2">Time step(ms)</label>
+            <input type="text" id="formula_step_2"  value="100"/>
+        </div>
+
+        <button onclick="exec_formula(2)">Exec</button>
+        <button onclick="stop_formula(2)">Stop</button>
+    </div>
+
+    <div class="formula_tab" id="formula_3"  style="display:none">
+        <select>
+            <option value = "none">None</option>
+        </select>
+
+        <div class="formula_textarea">
+            <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             id="formula_formula_3" cols="40" rows="5">let tt=t/10000;
+                let x = (1-tt)*3500;
+                return(x)
+            </textarea>
+        </div>
+
+        <div class="formula_duration">
+            <label for = "formula_duration_3">Duration (ms)</label>
+            <input type="text" id="formula_duration3" value="10000"/>
+        </div>
+
+        <div class="formula_step">
+            <label for = "formula_step_3">Time step(ms)</label>
+            <input type="text" id="formula_step_3"  value="100"/>
+        </div>
+
+        <button onclick="exec_formula(3)">Exec</button>
+        <button onclick="stop_formula(3)">Stop</button>
+    </div>
+
+    <div class="formula_tab" id="formula_4"  style="display:none">
+        <select>
+            <option value = "none">None</option>
+        </select>
+
+        <div class="formula_textarea">
+            <textarea autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+             id="formula_formula_4" cols="40" rows="5">let tt=t/10000;
+                let x = (1-tt)*3500;
+                return(x)
+            </textarea>
+        </div>
+
+        <div class="formula_duration">
+            <label for = "formula_duration_4">Duration (ms)</label>
+            <input type="text" id="formula_duration_4" value="10000"/>
+        </div>
+
+        <div class="formula_step">
+            <label for = "formula_step_4">Time step(ms)</label>
+            <input type="text" id="formula_step_4"  value="100"/>
+        </div>
+
+        <button onclick="exec_formula(4)">Exec</button>
+        <button onclick="stop_formula(4)">Stop</button>
+    </div>
+    
+</div>
+
+
+<div id="formula_nav">
+    <div class="formula_nav_button" onclick="add_formula_tab(0)">add</div>
+    <div class="formula_nav_button" onclick="draw_formula_tab('first')">≪</div>
+    <div class="formula_nav_button" onclick="draw_formula_tab('previous')"><</div>
+    <div class="formula_nav_button set_formula_nav" onclick="set_formula_tab(0)">1 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(1)">2 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(2)">3 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(3)" style="display:none">4 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(4)" style="display:none">5 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(5)" style="display:none">6 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(6)" style="display:none">7 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(7)" style="display:none">8 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(8)" style="display:none">9 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(9)" style="display:none">10 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(10)" style="display:none">11 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(11)" style="display:none">12 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="set_formula_tab(12)" style="display:none">13 <div class="formula_state"></div></div>
+    <div class="formula_nav_button" onclick="draw_formula_tab('next')">></div>
+    <div class="formula_nav_button" onclick="draw_formula_tab('last')">≫</div>
+</div>
+
+
+    
+
+

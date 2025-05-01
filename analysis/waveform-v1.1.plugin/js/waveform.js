@@ -17,24 +17,30 @@ function init_waveform_analyser(audioCtx, uid){
     return({'input': analysers[uid], 'output': analysers[uid], 'is_on': true, 'callback': waveform_analyser})
 }
 
-
 function waveform_analyser(uid){
 
     let freq = get_frequency(analysers[uid].wavArray);
     let sr = parseInt(fs/freq);
     analysers[uid].getFloatTimeDomainData(analysers[uid].wavArray);
 
+  //   let avg = 0;
+
+  //   for (let i = 0; i < sr; i++){
+  //     avg += analysers[uid].wavArray[i];
+  //   }
+
+  //   avg /= sr;
+
+
+  //   for (let i = 0; i < sr; i++){
+  //     analysers[uid].wavArray[i]-= avg;
+  // }
+
     let firstPos = 0;
+    let x = analysers[uid].wavArray.slice(0, sr);
     
     // First find min and max, and store position of min
-    let max = 0, min = 0;
-    for (let i = 0; i < sr; i++){
-        max = Math.max(max, analysers[uid].wavArray[i])
-        if (analysers[uid].wavArray[i] < min) {
-            firstPos = i;
-            min =  analysers[uid].wavArray[i]
-        }
-    }
+    let max = Math.max(...x), min = Math.min(...x);
 
     if (min < max) {
 
@@ -43,14 +49,15 @@ function waveform_analyser(uid){
             ++firstPos;
         }
         // from_max(uid, analysers[uid].wavArray)
-        let x = new Array(sr);
-        let y = new Array(sr);
+        let x = new Array(sr+1);
+        let y = new Array(sr+1);
 
 
-
+        let dec = analysers[uid].wavArray[firstPos]/(analysers[uid].wavArray[firstPos]-analysers[uid].wavArray[firstPos+1]);
+        y[0] = x[0] = 0;
         for (let i = 0; i < sr; i++){
-                x[i] = i/sr;
-                y[i] = analysers[uid].wavArray[firstPos+i];
+                x[i] = (i)/sr;
+                y[i] = (analysers[uid].wavArray[firstPos+i]+dec*(analysers[uid].wavArray[firstPos+i+1]-analysers[uid].wavArray[firstPos+i]))/instrument_controls['output_impedance'].value;
         }
 
         draw(uid, x, y)

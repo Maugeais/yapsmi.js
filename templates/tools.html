@@ -3,6 +3,25 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 
+
+<header>
+     <div id="tools">
+     </div> 
+
+     <div id="model" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+       <div id="model_content"></div>
+     </div>  
+
+     <div id="help" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+       <div id="help_content"></div>
+     </div>  
+
+     <div id="credits" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+       <div id="credits_content"></div>
+     </div>  
+
+</header>
+
 <div id="tools_menu">
   <div id="audio_start" onclick="toggle_audio()" title="Simulation starting point"> </div>
   <div id="speed" title="Estimation of CPU used&#013;by model and filters"> CPU: 0% </div>
@@ -12,50 +31,59 @@
      <label>Gain</label><input type="range" min="0" max="100" value="50" class="slider" id="gain_slider" oninput="gain_output.value=parseInt(-60+3*gain_slider.value/5); change_global_gain(this.value)">(<output id="gain_output">-30</output>dB) 
   </div>
 
+  <div id="menu_button" onclick='$("#side_menu").toggle()'>&#8801;</div>
 
-  <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_effects_list").toggle()' id="tools_effects">
-       Effects
-       <div class = "menu_entry_list pop"  id="tools_effects_list"></div>
-  </div>
-  
-   <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_analysis_list").toggle()' id="tools_analysis">
-       Analysis
-       <div class = "menu_entry_list pop"  id="tools_analysis_list"></div>
+  <div id="side_menu">
 
-  </div>
-  
-   <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_controls_list").toggle()' id="tools_controls">
-       Controls
-       <div class = "menu_entry_list pop"  id="tools_controls_list"></div>
+     
 
-  </div>
-
-  <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_session_list").toggle()' id="tools_session">
-     Session
-     <div class = "menu_entry_list pop"  id="tools_session_list">
-          <div class = "plugin_menu" onclick="$('.pop').hide(100);$('#load').show()"> Load </div>
-          <div class = "plugin_menu" onclick="$('.pop').hide(100);save_session()"> Save </div>
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_effects_list").toggle()' id="tools_effects">
+          Effects
+          <div class = "menu_entry_list pop"  id="tools_effects_list"></div>
      </div>
-  </div>
+     
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_analysis_list").toggle()' id="tools_analysis">
+          Analysis
+          <div class = "menu_entry_list pop"  id="tools_analysis_list"></div>
 
-  <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_parameters_list").toggle()' id="tools_parameters">
-     Parameters
-     <div class = "menu_entry_list pop"  id="tools_parameters_list">
-          <div class = "plugin_menu" onclick="$('.pop').hide(100);parameters_to_range();"> Range </div>
-          <!-- <div class = "plugin_menu" onclick="$('.pop').hide(100);$('#smoothening_controls').show()"> Smoothening </div> -->
+     </div>
+     
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_controls_list").toggle()' id="tools_controls">
+          Controls
+          <div class = "menu_entry_list pop"  id="tools_controls_list"></div>
+
      </div>
 
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_session_list").toggle()' id="tools_session">
+          Session
+          <div class = "menu_entry_list pop"  id="tools_session_list">
+               <div class = "plugin_menu" onclick="$('.pop').hide(100);$('#load').show()"> Load </div>
+               <div class = "plugin_menu" onclick="$('.pop').hide(100);save_session()"> Save </div>
+          </div>
+     </div>
+
+     <!-- <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_parameters_list").toggle()' id="tools_parameters">
+          Parameters
+          <div class = "menu_entry_list pop"  id="tools_parameters_list">
+               <div class = "plugin_menu" onclick="$('.pop').hide(100);parameters_to_range();"> Range </div>
+          </div>
+
+     </div> -->
+     
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_help_list").toggle()' id="tools_help">
+          Help
+          <div class = "menu_entry_list pop"  id="tools_help_list">
+               <div class = "plugin_menu" onclick="$('.pop').hide(100);parameters_to_range();"> Parameters </div>
+               <div class = "plugin_menu" onclick="toggle_fullscreen()"> Fullscreen </div>
+               <div class = "plugin_menu" onclick="$('#model').show()"> Model </div>
+               <div class = "plugin_menu" onclick="$('#credits').show()"> Credits </div>
+               <div class = "plugin_menu" onclick="$('#help').show()"> Help </div>
+               <!-- <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div> -->
+          </div>
+
+     </div>
 </div>
-  
-  <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_help_list").toggle()' id="tools_help">
-       Help
-       <div class = "menu_entry_list pop"  id="tools_help_list">
-            <div class = "plugin_menu" onclick="$('#model').show()"> Model </div>
-            <div class = "plugin_menu" onclick="$('#help').show()"> Help </div>
-            <!-- <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div> -->
-       </div>
 
-  </div>
 </div>
 
 
@@ -164,12 +192,14 @@
 
      As such, it may sometimes produce non realistic sounds and/or infinite values.
 
-     The sounds produced are compressed over a default value. However, as there may be large dynamics depending on the physical and numerical parameters. 
-     Upon turning the program on, it is therefore a good idea to reduce the volume of the device.
+     The sounds produced are compressed over a default value. However, as there may be large dynamics depending on the physical and numerical parameters, it is advised you reduce the volume of the device before switching on the program. 
 
      This program has been optimised for desktop computers, not for mobile devices.
 
      It uses no cookies, and stores no personal information.
+
+     You are presently viewing version 1.1 of Yapsmi. Please click <a href="https://perso.univ-lemans.fr/~smauge/Acoustics/yapsmi.js/instruments/duduk/">here</a> if you want to access the previous version
+     
 
      <button onclick='$("#disclaimer_window").hide()'> OK</button>
      </div>

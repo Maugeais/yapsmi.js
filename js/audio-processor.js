@@ -1,6 +1,7 @@
 import { duduk } from "../instruments/duduk/js/duduk.js?version=1.1";
 import  { violin } from "../instruments/violin/js/violin.js?version=1.1";
-import  { guitar } from "../instruments/guitar/js/guitar.js?version=1.04";
+import  { guitar } from "../instruments/guitar/js/guitar.js?version=1.1";
+import  { crumhorn } from "../instruments/crumhorn/js/crumhorn.js?version=1.1";
 
 
 class simulationProcessor extends AudioWorkletProcessor {
@@ -15,6 +16,8 @@ class simulationProcessor extends AudioWorkletProcessor {
                           break;
           case "guitar" : this.inst = guitar;
                           break;
+          case "crumhorn" : this.inst = crumhorn;
+                          break;  
           default : console.log("Error !!!")
 
         }

@@ -15,7 +15,7 @@ window.radiation_callback = function(test){
 
 async function load_radiation_filters(){
 
-    let response = await globalThis.fetch("./data/radiate");
+    let response = await globalThis.fetch("./data/radiate/");
     let str = await response.text();
     let el = document.createElement('html');
     el.innerHTML = str;
@@ -24,8 +24,10 @@ async function load_radiation_filters(){
 
     for (let item of list) {
         let filename = item.innerText;
-        radiation_filters[filename.slice(0, -4)] = './data/radiate/'+filename;
-        html += "<tr><td>"+filename.slice(0, -4)+"</td></tr>"
+        if (filename.slice(-4) == '.wav'){
+            radiation_filters[filename.slice(0, -4)] = './data/radiate/'+filename;
+            html += "<tr><td>"+filename.slice(0, -4)+"</td></tr>"
+        }
     }
     $("#radiate_files tbody").html(html);
     $("#radiate_files td").click(function(){ radiation_filter = radiation_filters[this.innerText]; change_radiation_file(this.innerText) })

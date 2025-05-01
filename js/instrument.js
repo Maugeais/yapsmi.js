@@ -162,5 +162,9 @@ class instrument{
 
 }
 
+async function init_instrument(params){
+   // Must be redefined 
+}
 
-export { instrument, parameter };
+
+export { instrument, init_instrument, parameter };

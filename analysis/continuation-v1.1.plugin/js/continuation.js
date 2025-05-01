@@ -20,6 +20,7 @@ function continuation_analyser(uid){
     var update = {
             x: [[compute_value(key_x, analysers[uid].wavArray, freq)]],
             y: [[compute_value(key_y, analysers[uid].wavArray, freq)]],
+            'marker.color': [[time]],
     }
 
     ++time;
@@ -30,7 +31,7 @@ function continuation_analyser(uid){
 var time = 0;
 
 var history = new parameter(100, [0.85, 853.0], 's', 1, 0, true);
-var key_x = Object.keys(inst_controls)[0];
+var key_x = Object.keys(instrument_controls)[0];
 var key_y = "rms";
 
 window.continuation_tail_change = function(a){
@@ -63,15 +64,32 @@ window.continuation_change_axis = function(axis, container){
       // }
 }
 
+var color = 'rgb(55, 128, 191)';
+
+window.change_color = function(){
+  color = 'rgb(128, 0, 0)'
+  var update = {
+    line: {
+        color: 'orange',
+        size: 10
+        }
+    };
+    
+    Plotly.restyle('continuation_display', update);
+}
+
 function draw(){
     var x = [];
     var y = [];
     var data = [{
       x: x,
       y: y,
-      line: {
-        color: 'rgb(55, 128, 191)',
-        width: 3},
+      mode: 'markers',
+      marker: {
+        size: 10,
+        color: [0],
+        colorscale: 'Jet',
+      },
       type: 'scatter'
     }];
     var layout = {
@@ -111,24 +129,24 @@ function compute_value(key, output){
       let rms = -0.5*output[0]**2;
       for (j = 0; j < fs/freq; j++) rms += output[j]**2;
       rms -= 0.5*output[j]**2;
-      return(Math.sqrt(rms*freq/fs)/inst_controls['output_impedance'].real_value);
+      return(Math.sqrt(rms*freq/fs)/instrument_controls['output_impedance'].value);
     case "amplitude" :
       let amplitude = Math.max(...output)-Math.min(...output);
-      return(amplitude/inst_controls['output_impedance'].real_value);
+      return(amplitude/instrument_controls['output_impedance'].value);
     case "frequency" :
       return(freq);
     default :
-      return(inst_controls[key].real_value);
+      return(instrument_controls[key].value);
   }  
 }
 
 let continuation_knobs;
 function init(uid){
   continuation_knobs = init_knobs("continuation_controls", "large", "Vintage");
-
-  key_x = Object.keys(inst_controls)[0];
   
-  let keys = Object.keys(inst_controls);
+  key_x = Object.keys(instrument_controls)[0];
+  
+  let keys = Object.keys(instrument_controls);
   $.each(keys, function (i, item) {
       $('#continuation_x').append($('<option>', {
           value: item,
@@ -161,7 +179,7 @@ function load(uid, commands){
   $("#continuation_x").val(key_x);
   key_y = commands['key_y'];
   $("#continuation_y").val(key_y);
-  continuation_knobs[0].setValue(commands["tail_size"])
+  continuation_knobs["continuation_tail"].setValue(commands["tail_size"])
 
 }
 

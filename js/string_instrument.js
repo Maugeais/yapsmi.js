@@ -11,6 +11,10 @@ class string_instrument extends instrument{
         this.strings_name = strings;
         this.strings = new Array(strings.length);
         this.mics = [];
+
+        this.params["transition_time"] = new parameter(0.02, [0.01, 0.1], 'ms', 1e3, 0, false)
+        this.params["transition_speed"] = new parameter(1000, [100, 10000], '', 1e-3, 2, false)
+
     }
 
     change_dimension(value){
@@ -18,6 +22,7 @@ class string_instrument extends instrument{
             console.log("Pb de dimension")
             this.dim = this.strings[0].dim
         } else {
+            console.log("dim", value)
             this.dim = value;
         }
     }
@@ -109,28 +114,6 @@ class string_instrument extends instrument{
     }
 
 }
-
-// async function load_IRF(object){
-//     // $.getJSON('./data/'+folder+'transfer.json', function( data ) {
-//     //     object.transfer_functions[folder.slice(0, -1)] = data;
-//     // });
-//     $.ajax({
-//         url: `./data/IFR/`,
-//         success: function(data){
-//             $(data).find("a:contains(wav)").each(function(){
-//                 let file = $(this).attr("href");
-//                 object.radiation_filters[file.split(".")[0]] = './data/IFR/'+file;
-//                 if (object.radiation_filter.length == 0){
-//                     object.radiation_filter = './data/IFR/'+file;
-//                 }
-//             })
-//         },
-//         error: function(XMLHttpRequest, textStatus, errorThrown) { 
-//             alert("Status: " + textStatus); alert("Error: " + errorThrown); 
-//         }    
-//     });
-    
-// }
 
 class microphone{
     constructor(parent, type = "acoustic", dim = 15, position = 0.01, gain = 0.333, strings = []){
@@ -285,7 +268,7 @@ class string extends instrument{
 
         this.r = params["r"]
         let mu = params['density']*Math.PI*(this.r**2);
-        this.L = params['L'];
+        this.goal_L =  this.origin_L = this.L = params['L'];
         this.L0 = this.L;
         let EI = params["young"]*Math.PI*(this.r**4)/4;
         let EA = params["young"]*Math.PI*(this.r**2);
@@ -300,18 +283,20 @@ class string extends instrument{
 
 
         console.log("Frequency", params["fundamental"], 1/(2*this.L)*(params['T']/mu)**0.5)
-        this.dim = dim; // Nombre d'harmoniques
+        this.dim = dim; // Nombre d'harmoniques maximal
 
         this.attack_time_position = 0; //attack_duration0;
         
         // Données pour le théta schéma
-        this.b = new Float32Array(this.dim);
-        this.c = new Float32Array(this.dim);
+        this.b = new Float32Array(this.dim).fill(0);
+        this.c = new Float32Array(this.dim).fill(0);
         
         this.X0 = new Array(this.dim).fill(0);
         
         this.theta = 0.5;
         this.muted = false;
+
+        this._transition_length_counter = this.parent.params["transition_speed"].value;     
     }
 
     
@@ -321,13 +306,10 @@ class string extends instrument{
     init_audio(buffer_size, dt){
 
         this.dt = dt;
-                
+                 
         this.buffer = new Array((buffer_size+2));   // Tableau contenant les lesdonnées en chaque temps
         for (let k=0; k < this.buffer.length; k++){
-            this.buffer[k] = new Float32Array(this.dim) // Pour chaque temps, on a les composantes 
-            for (let i = 0; i < this.dim; i++){
-                this.buffer[k][i] = 0;
-            }
+            this.buffer[k] = new Float32Array(this.parent.dim).fill(0) // Pour chaque temps, on a les composantes 
         }      
         this._scheme_constants();
     }
@@ -337,7 +319,7 @@ class string extends instrument{
      */ 
     _scheme_constants(){
         var a;
-        for (var n=1; n <= this.dim; n++){
+        for (var n=1; n <= this.parent.dim; n++){
         
             let Lap = -1*(n*Math.PI/this.L)**2;                  
             a = this.params["density"].value-this.dt**2*(-this.params["stiffness"].value*this.theta*Lap**2+this.params["tension"].value*this.theta*Lap)-this.dt*(this.params["tension"].value*this.params["losses_eta"].value*Lap-this.params["density"].value*this.params["losses_R"].value);
@@ -362,15 +344,45 @@ class string extends instrument{
         //     this.attack_time_position -= 1/48000;
         // }
     }
+
+    transition_length(dt){
+
+
+        if (this._transition_length_counter <= this.parent.params["transition_time"].value){
+            // this.muted = true;
+
+            // console.log("Imhere", this._transition_length_counter, this.parent.params["transition_time"].value, dt)
+            
+            this._transition_length_counter+=dt;
+            let t = this._transition_length_counter/this.parent.params["transition_time"].value;
+            let transition_coeff = (1+1/(1+Math.exp(-this.parent.params["transition_speed"].value*t)))/2;
+
+           
+            this.L = transition_coeff*this.goal_L+(1-transition_coeff)*this.origin_L;  
+        
+            this._scheme_constants()
+            
+            return(t)
+
+        } else {
+            // this.muted = false
+
+            return(0)
+        }
+
+    }
     
     /**
      *  Calcule les coffeficients de Fourier pour le prochain buffer 
      *  à redéfinir !!!
      */ 
     next_chunk(t0, buffer_size, dt){
-        var ip, ipm1, ipm2;
-        for (var i = 2; i < buffer_size+2; i++){ // Pour chaque pas de temps
 
+        if (this.muted) return;
+        
+
+        for (var i = 2; i < buffer_size+2; i++){ // Pour chaque pas de temps
+            this.transition_length(dt)
             // Strang splitting
 
             // this.add_attack(dt/2, this.buffer[ip], this.buffer[ipm2]);
@@ -402,8 +414,9 @@ class string extends instrument{
 
 
     change_fingering(position){
-        this.L = this.L0*position; 
-        this._scheme_constants()
+        this.origin_L = this.L;
+        this.goal_L = this.L0*position; 
+        this._transition_length_counter = 0;
     }
 
 
@@ -420,7 +433,7 @@ async function load_string_details(object, string_name){
 
 async function load_strings(object){
 
-    let response = await globalThis.fetch("./data/strings/default");
+    let response = await globalThis.fetch("./data/strings/default/");
     let str = await response.text();
     let el = document.createElement('html');
     el.innerHTML = str;

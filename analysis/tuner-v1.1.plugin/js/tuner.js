@@ -18,7 +18,7 @@ function init_tuner(audioCtx, uid){
 
 // ctx.translate(canvas.width/2, canvas.height/2);
 
-const notes = ["C", "©#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const notes = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 
 function draw_tuner(uid){
 

@@ -43,7 +43,13 @@ function init_menu(){
     init_plugins("analysis");
     // register_controls("Audio", {"on/off" : [Boolean, audio_start]});
     rebuild_controls()
+    $("#model_content").load("model.html", () => MathJax.typeset()); 
+    $("#help_content").load("help.html"); 
+    $("#credits_content").load("credits.html"); 
+
 }
+
+$("#tools").load("../../templates/tools.html?version=1.1", init_menu); 
 
 async function loadJS(filename, uid){
     return new Promise((resolve, reject) => {
@@ -78,7 +84,11 @@ async function load_plugin(menu_entry, element){
                 loadJS(`../${menu_entry}/${element}.plugin/js/${reduced_element}.js`, plugins[plugins.length-1].uid);
 
                 if (!plugins_list[element].manifest.multi_threaded){
-                    $(`.plugin_menu:contains("${reduced_element}")`).css({"backgroundColor": "red", "pointer-events": "none"});
+                    $(`.plugin_menu`).each(function(){
+                        if (this.innerHTML.split('<')[0] == reduced_element){
+                            $(this).css({"backgroundColor": "red", "pointer-events": "none"});
+                        }
+                    })
                 }    
                 
                 $(".pop").hide();
@@ -105,10 +115,10 @@ function knobChanged(id, val) {
 }
 
 let timeout = 0;
-window.inst_controls = {}
+window.instrument_controls = {}
 function load_inst_knobs(inst_id, step = 0){
 
-    inst_controls = { ...inst_controls, ...init_knobs(inst_id, "large", "Vintage")};
+    instrument_controls = { ...instrument_controls, ...init_knobs(inst_id, "large", "Vintage")};
     // if(typeof inst !== "undefined"){      
 
     //     if (step == 0) {
@@ -116,15 +126,15 @@ function load_inst_knobs(inst_id, step = 0){
         
     // Define thecontrols 
     // for (let k = 0; k < inst.knobs.length; k++){
-    //     inst_controls[inst.knobs[k].id] = [Number,inst.knobs[k]];
+    //     instrument_controls[inst.knobs[k].id] = [Number,inst.knobs[k]];
     // }
-    register_controls("instrument", inst_controls);
+    register_controls("instrument", instrument_controls);
             
-    // console.log(inst_controls)
-    // for (var key in inst_controls){
+    // console.log(instrument_controls)
+    // for (var key in instrument_controls){
     //     console.log(key)
     // }
-    // //         inst_controls = inst.get_controls();
+    // //         instrument_controls = inst.get_controls();
     //         step = 1;
     //     }
 
@@ -199,15 +209,17 @@ async function load_session_elements(session){
     simulationNode.port.postMessage({property:"exec", method:"load_session", params:session['main']});
 
     // And set the knobs
-    for (let key in inst_controls) {
+    await update_intrument_controls_details();
 
-        try{
-            if (inst_controls[key] instanceof Knob) inst_controls[key].setValue(session['main'].params[key].value)
-        } catch(error){
-            console.log(error)
-        }
+    // for (let key in instrument_controls) {
+
+    //     try{
+    //         if (instrument_controls[key] instanceof Knob) instrument_controls[key].setValue(session['main'].params[key].value)
+    //     } catch(error){
+    //         console.log(error)
+    //     }
         
-    }
+    // }
 
     let first_plugin_index = plugins.length;
 
@@ -426,22 +438,40 @@ function change_controls(direction, menu=""){
     Handling of parameters
 */
 
+window.update_intrument_controls_details = async function(){
+    let details = await query_simulator("get_controls_details");
+
+    for (let control in details){
+        if (!(control in instrument_controls)){
+          instrument_controls[control] = {};
+        }  
+        
+        instrument_controls[control].range = details[control].range;
+        instrument_controls[control].log_scale = details[control].log_scale;
+        instrument_controls[control].value = details[control].value;
+    }
+
+}
+
 async function parameters_to_range(){
 
     $("#parameters_table tbody").empty(); 
 
     let content = "";
+    await update_intrument_controls_details();
     // let params = await query_simulator("get_controls_details")
-    instrument_controls_details = await query_simulator("get_controls_details");
+    // instrument_controls = await query_simulator("get_controls_details");
 
     
-    for (let control in instrument_controls_details){
+    for (let control in instrument_controls){
+
+        console.log(control)
 
         content += '<tr><td>'+control+'</td>';
-        content += '<td><input value="'+instrument_controls_details[control].value+'"></td>';
-        content += '<td><input value="'+instrument_controls_details[control].range[0]+'"></td>';
-        content += '<td><input value="'+instrument_controls_details[control].range[1]+'"></td>';
-        content += '<td style="width:5%"><input type="checkbox" value='+instrument_controls_details[control].log_scale+'"></td>';
+        content += '<td><input value="'+instrument_controls[control].value+'"></td>';
+        content += '<td><input value="'+instrument_controls[control].range[0]+'"></td>';
+        content += '<td><input value="'+instrument_controls[control].range[1]+'"></td>';
+        content += '<td style="width:5%"><input type="checkbox" value='+instrument_controls[control].log_scale+'"></td>';
         content += '</tr>'
 
     }
@@ -453,8 +483,7 @@ async function parameters_to_range(){
 
 async function parameters_from_range(){
 
-    instrument_controls_details = await query_simulator("get_controls_details")
-    
+    await update_intrument_controls_details();    
 
     let trs = $("#parameters_table").find("tr")
 
@@ -464,25 +493,40 @@ async function parameters_from_range(){
 
         let control = $(tds[0]).text()
 
-        if (control in instrument_controls_details){
-            instrument_controls_details[control].value = parseFloat($($(tds[1]).find('input')[0]).val())
-            instrument_controls_details[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
-            instrument_controls_details[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
+        if (control in instrument_controls){
+            instrument_controls[control].value = parseFloat($($(tds[1]).find('input')[0]).val())
+            instrument_controls[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
+            instrument_controls[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
         }
     }
 
-    instrument_controls_details = await query_simulator("set_controls_details", instrument_controls_details);
-
-    for (let control in instrument_controls_details){
-
-       if ((control in inst_controls) && (inst_controls[control] instanceof Knob)) {
-            inst_controls[control].setValue(instrument_controls_details[control])
-        
-       }
-
-    }
+    await query_simulator("set_controls_details", instrument_controls);
+    await update_intrument_controls_details();
 }
 
+let fullscreen_on = false;
+function toggle_fullscreen() {
+    var elem = document.documentElement;
+
+    if (!fullscreen_on){
+        if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+        elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+        elem.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+          } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+          }
+    }
+    fullscreen_on = !fullscreen_on;
+  }
 
 
 let is_shiftkey_pressed = false;

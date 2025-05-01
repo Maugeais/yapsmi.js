@@ -156,7 +156,7 @@ def print_details(filename) :
 
         
 
-def play_file(filename, channels) :
+def play_file(filename, channels, speed = 1.0) :
     midi_file = mido.MidiFile(filename)
     if len(channels) == 0 :
 
@@ -166,7 +166,7 @@ def play_file(filename, channels) :
 
     for msg in midi_file:
         
-        time.sleep(msg.time)
+        time.sleep(msg.time*speed)
         if not msg.is_meta and msg.channel in channels:
             if msg.type == "note_on" : 
                 if msg.velocity == 0 :
@@ -193,6 +193,7 @@ if __name__ == "__main__" :
 
     parser.add_argument('filename')           # positional argument
     parser.add_argument('-c', '--channels', nargs='+', help='<Required> Set flag')
+    parser.add_argument('-s', '--speed', type=float)
     parser.add_argument('-v', '--verbose',
                         action='store_true')  # on/off flag
 
@@ -204,6 +205,6 @@ if __name__ == "__main__" :
     if 'mid' in args.filename :
         midiout = rtmidi.MidiOut()
         midiout.open_virtual_port("Yapsmi Vitrual controller")
-        play_file(args.filename, channels = {int(i) for i in args.channels}) 
+        play_file(args.filename, channels = {int(i) for i in args.channels}, speed=args.speed) 
         del midiout
   

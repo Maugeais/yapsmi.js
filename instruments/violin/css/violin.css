@@ -126,11 +126,17 @@
   border: 1px black solid;
   border-radius: 5px;
   color: white;
+  width:30px;
 }
 
 #model_choice legend{
   position: relative;
   border: none;
-  margin-left: 1em;
-  padding: 0.2em 0.8em 
+  /* margin-left: 1em; */
+  padding: 0.2em 0.8em;
+  width:30px;
+}
+
+#friction_model-select{
+  width:60px;
 }

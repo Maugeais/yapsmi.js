@@ -1,0 +1,64 @@
+#crumhorn{
+/*   background-image : url('./images/velvet.jpg'); */
+  grid-column: 1 / span 5; 
+  background-size: cover;
+  width : 580px;
+}
+
+#crumhorn_menu{
+  background: #f2f2f2;
+  display: none;
+  position: fixed;
+  z-index: 100;
+  width:200px;
+}
+
+#crumhorn_control{
+  background-image : url('./images/bass_crumhorn.png');
+  height:125px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: -20px;
+}
+
+#controls2{
+  width:560px;
+  height:160px;
+}
+
+
+
+.crumhorn_hole{
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  top: 50px;
+  left: 117px;
+  border-radius: 10px;
+}
+
+.opened_hole{
+  background: red;
+}
+
+.closed_hole{
+  background: black;
+}
+
+#Gm1{ left : 10%; top:30px}
+#A{ left : 21.5%; }
+#B{ left : 27.5%; }
+#C{ left : 34%; }
+#D{ left : 41%; }
+#E{ left : 47%; }
+#F{ left : 54%; }
+#G{ left : 61%; }
+#Ap1{ left : 65%; top:30px}
+#Bp1{ left : 69%; }
+
+#constant_mass_container{
+  bottom: 2px;
+  position: absolute;
+  margin-left: 60px;
+}

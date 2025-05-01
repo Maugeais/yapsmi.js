@@ -1,91 +1,42 @@
 let isPlaying = false;
 
-function density_change(a, s){
-  set_controls({["density€"+s] : a}, false)
-}
-
-function stiffness_change(a, s){
-  set_controls({["stiffness€"+s] : a}, false)
-
-  // inst.set_controls({["stiffness€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
-}
-
-function tension_change(a, s){
-  set_controls({["tension€"+s] : a}, false)
-
-  // inst.set_controls({["tension€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
-}
-
-function losses_eta_change(a, s){
-  set_controls({["losses_eta€"+s] : a}, false)
-
-  // inst.set_controls({["losses_eta€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
-}
-
-function losses_R_change(a, s){
-  set_controls({["losses_R€"+s] : a}, false)
-
-  // inst.set_controls({["losses_R€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
-}
-
-function nonlinearity_change(a, s){
-  set_controls({["nonlinearity€"+s] : a}, false)
-
-  // inst.set_controls({["nonlinearity€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
-}
 
 function regularity_change(a, s){
   set_controls({["regularity"] : a}, false)
-
-  // inst.set_controls({["regularity"] : a}, false, is_shiftkey_pressed)
-  // inst.compute_attack_coefs()
 }
 
 function width_change(a, s){
   set_controls({["width"] : a}, false)
-
-  // inst.set_controls({["width"] : a}, false, is_shiftkey_pressed)
-  // inst.compute_attack_coefs()
 }
 
 function position_change(a, s){
   set_controls({["position"] : a}, false)
-
-  // inst.set_controls({["position"] : a}, false, is_shiftkey_pressed)
-  // inst.compute_attack_coefs()
 }
 
 function duration_change(a, s){
   set_controls({["duration"] : a}, false)
-
-  // inst.set_controls({["duration"] : a}, false, is_shiftkey_pressed)
-  // inst.compute_attack_coefs()
 }
 
 function increase_duration_change(a, s){
   set_controls({["increase_duration"] : a}, false)
-
-  // inst.set_controls({["increase_duration"] : a}, false, is_shiftkey_pressed)
 }
 
 function strength_change(a, s){
   set_controls({["strength"] : a}, false)
-
-  // inst.set_controls({["strength"] : a}, false, is_shiftkey_pressed)
 }
 
-function attack_losses_change(a, s){
-  set_controls({["attack_lossess€"+s] : a}, false)
+// function attack_losses_change(a, s){
+//   set_controls({["attack_lossess€"+s] : a}, false)
 
-  // inst.plectrum["losses"].set_from_precentage(a);
-  // $("#attack_losses_value").html(inst.plectrum["losses"].to_string() )
-  // inst.set_controls({["attack_losses€"+s] : a}, false, is_shiftkey_pressed)
-  // inst.strings[s-1]._scheme_constants()
+//   // inst.plectrum["losses"].set_from_precentage(a);
+//   // $("#attack_losses_value").html(inst.plectrum["losses"].to_string() )
+//   // inst.set_controls({["attack_losses€"+s] : a}, false, is_shiftkey_pressed)
+//   // inst.strings[s-1]._scheme_constants()
+// }
+
+function dimension_change(a, s){
+  simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: 1+parseInt(a/2)});
+  $("#dimension_value").html(1+parseInt(a/2))
 }
 
 $("#fretboard").click(set_finger_callback);
@@ -154,6 +105,10 @@ $(".stringName").dblclick(function(){
   }
 }); 
 
+window.change_plectrum_position = function(event){
+  let x = (event.clientX-$("#struming").offset().left)/event.target.offsetWidth;
+  instrument_controls["position"].setValue((1-x)*100) 
+}
 
 var struming = false;
 var position_struming_x=0, position_struming_y=-0.5, timeStamp;
@@ -283,8 +238,36 @@ function change_microphone_selector(e){
 current_menu["string_controls"] = 0;
 current_menu["righthand_controls"] = 0;
 
-// window.addEventListener('load', function () {
-//   setTimeout(() => {
-//     guitar_knobs.forEach((knob) => knob.setValue(50))
-//   }, 1000);
-// })
+
+let string_on = [-1, -1, -1, -1, -1, -1];
+let strings_fundamental = [40, 45, 50, 55, 59, 64];
+
+window.play_midi_note = function(note, velocity){
+
+    let string_fret = [0, 0, 0, 0, 0, 0];
+    for (let s=0; s < 6; s++){
+
+       string_fret[s] = note-strings_fundamental[s];
+       if ((string_fret[s]  < 0) || (string_fret[s] > 21) || (string_on[s] >= 0)){
+        string_fret[s] = 100;
+       }
+    }
+    // Play the note closest to the neck
+    let s = string_fret.indexOf(Math.min.apply(Math, string_fret))
+    if (string_fret[s] == 100){
+        message("This note requires a string that is already being played")
+        return
+    }
+    set_finger(s+1, string_fret[s]);
+    // guitar.strings[s].change_fingering(Math.pow(2, -string_fret[s]/12));
+    simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: s, position: Math.pow(2, -string_fret[s]/12)}});
+    string_on[s] = note;
+    // guitar.strings[s].pluck(0.01, params["velocity"]/100);
+    simulationNode.port.postMessage({property:"exec", method:"pluck", params:{speed: velocity/100, string_number: s}});
+}
+
+window.stop_midi_note = function(note, velocity){
+    let s = string_on.indexOf(note);
+    string_on[s] = -1;
+    // set_finger(s+1, -1);    
+}
