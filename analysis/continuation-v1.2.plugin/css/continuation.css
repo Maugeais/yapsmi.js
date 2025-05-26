@@ -1,0 +1,46 @@
+.continuation{
+    grid-column: span 5;
+    width:580px;
+}
+
+#continuation_display{
+    width: 450px;
+    height: 100%;
+}
+
+#continuation_controls{
+    right: 0;
+    position: absolute;
+    top: 0;
+    width: 130px;
+    height: 100%;
+    text-align: center;
+    white-space: nowrap;
+    margin-top: 30px;
+}
+
+#continuation_controls fieldset label{
+    vertical-align: super;
+    margin-left: 5px;
+}
+
+.continuation_tail{
+    margin: -15px auto 5px;
+}
+
+#continuation_display .main-svg{
+    border-radius: 18px 0px 0px 17px;
+}
+
+#continuation_x, #continuation_y{
+    width:80px;
+}
+
+#continuation_controls fieldset{
+  width: 70px;
+  left: 22px;
+  position: absolute;
+  bottom: 36px;
+  height: 71px;
+  padding: 0px 6px 16px 6px;
+}

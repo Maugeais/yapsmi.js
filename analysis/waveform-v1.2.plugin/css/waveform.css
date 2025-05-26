@@ -1,0 +1,28 @@
+.waveform{
+  grid-column: span 4; 
+  width: 430px;
+}
+
+.waveform_controls{
+   display : flex;
+}
+
+.waveform_canvas{
+    background : black;
+    width: 100%;
+    height: 100%;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+}
+
+.waveform .main-svg{
+  border-radius: 18px 0px 0px 18px;
+}
+
+#waveform_source{
+  min-width: 60px;
+  width: 5px;
+  position: absolute;
+  top: 20px;
+  right: 2px;
+}

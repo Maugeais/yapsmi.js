@@ -10,14 +10,22 @@
     <script src="../../js/external/jquery.js"></script>
     <script src="../../js/knobs.js?version=1.01"></script>
     <script src="../../js/external/jquery-ui.js"></script>
-    <script src="../../js/plugins.js?version=1.01"></script>
+    <script src="../../js/plugins.js?version=1.1"></script>
   </head>
   <body>
+
+    <div id="waiting">
+      <div class="loader"></div>
+    </div>
+ 
     <header>
       <div id="tools">
       </div> 
     </header>
     <main>
+
+     
+      
 
       <div  id="wrapper">
       
@@ -74,207 +82,408 @@
             <div class="next_controls" onclick="change_controls(+1, 'string_controls')"></div>
     
             <div class ="instrument_controls_window">
-              <legend>Low E string</legend>
-
-                <label id="all_strings_at_once">All strings
-                  <input type="checkbox" onclick="all_strings(this)">
-                </label>
+              <legend>Low E string <div class="polarized">/  z-polarisation</div></legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€1_value">100</div></div>
-                    <div class="knob" id="density€1"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€1_value">100</div></div>
+                    <div class="knob" id="density_z€1"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€1_value">100</div></div>
-                  <div class="knob" id="stiffness€1"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€1_value">100</div></div>
+                  <div class="knob" id="stiffness_z€1"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€1_value">100</div></div>
-                    <div class="knob" id="tension€1"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€1_value">100</div></div>
+                    <div class="knob" id="tension_z€1"></div>
                 </div>  
                 
                 <div class="control_knob">
-                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€1_value">100</div></div>
-                    <div class="knob" id="losses_eta€1"></div>
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€1_value">100</div></div>
+                    <div class="knob" id="losses_eta_z€1"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€1_value">100</div></div>
-                  <div class="knob" id="losses_R€1"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€1_value">100</div></div>
+                  <div class="knob" id="losses_R_z€1"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€1_value">100</div></div>
-                  <div class="knob" id="nonlinearity€1"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€1_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€1"></div>
+                </div>
+                
+            </div>
+
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>Low E string /  y-polarisation</legend>
+     
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€1_value">100</div></div>
+                    <div class="knob" id="density_y€1"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€1_value">100</div></div>
+                  <div class="knob" id="stiffness_y€1"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€1_value">100</div></div>
+                    <div class="knob" id="tension_y€1"></div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€1_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€1"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€1_value">100</div></div>
+                  <div class="knob" id="losses_R_y€1"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€1_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€1"></div>
                 </div>
                 
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>A string</legend>
+              <legend>A string  <div class="polarized">/  z-polarisation</div></legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€2_value">100</div></div>
-                    <div class="knob" id="density€2"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€2_value">100</div></div>
+                    <div class="knob" id="density_z€2"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€2_value">100</div></div>
-                  <div class="knob" id="stiffness€2"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€2_value">100</div></div>
+                  <div class="knob" id="stiffness_z€2"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€2_value">100</div></div>
-                    <div class="knob" id="tension€2"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€2_value">100</div></div>
+                    <div class="knob" id="tension_z€2"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€2_value">100</div></div>
-                  <div class="knob" id="losses_eta€2"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€2_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€2"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€2_value">100</div></div>
-                  <div class="knob" id="losses_R€2"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€2_value">100</div></div>
+                  <div class="knob" id="losses_R_z€2"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€2_value">100</div></div>
-                  <div class="knob" id="nonlinearity€2"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€2_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€2"></div>
                 </div>
             </div>
-            <div class ="instrument_controls_window" style="display:none">
-              <legend>D string</legend>
-      
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>A string /  y-polarisation</legend>
+     
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€3_value">100</div></div>
-                    <div class="knob" id="density€3"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€2_value">100</div></div>
+                    <div class="knob" id="density_y€2"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€3_value">100</div></div>
-                  <div class="knob" id="stiffness€3"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€2_value">100</div></div>
+                  <div class="knob" id="stiffness_y€2"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€3_value">100</div></div>
-                    <div class="knob" id="tension€3"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€2_value">100</div></div>
+                    <div class="knob" id="tension_y€2"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€3_value">100</div></div>
-                  <div class="knob" id="losses_eta€3"></div>
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€2_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€2"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€3_value">100</div></div>
-                  <div class="knob" id="losses_R€3"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€2_value">100</div></div>
+                  <div class="knob" id="losses_R_y€2"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€3_value">100</div></div>
-                  <div class="knob" id="nonlinearity€3"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€2_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€2"></div>
                 </div>
+                
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>G string</legend>
+              <legend>D string  <div class="polarized">/  z-polarisation</div></legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€4_value">100</div></div>
-                    <div class="knob" id="density€4"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€3_value">100</div></div>
+                    <div class="knob" id="density_z€3"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€4_value">100</div></div>
-                  <div class="knob" id="stiffness€4"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€3_value">100</div></div>
+                  <div class="knob" id="stiffness_z€3"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€4_value">100</div></div>
-                    <div class="knob" id="tension€4"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€3_value">100</div></div>
+                    <div class="knob" id="tension_z€3"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€4_value">100</div></div>
-                  <div class="knob" id="losses_eta€4"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€3_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€3"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€4_value">100</div></div>
-                  <div class="knob" id="losses_R€4"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€3_value">100</div></div>
+                  <div class="knob" id="losses_R_z€3"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€4_value">100</div></div>
-                  <div class="knob" id="nonlinearity€4"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€3_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€3"></div>
                 </div>
             </div>
-            <div class ="instrument_controls_window" style="display:none">
-              <legend>B string</legend>
-      
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>D string /  y-polarisation</legend>
+     
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€5_value">100</div></div>
-                    <div class="knob" id="density€5"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€3_value">100</div></div>
+                    <div class="knob" id="density_y€3"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€5_value">100</div></div>
-                  <div class="knob" id="stiffness€5"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€3_value">100</div></div>
+                  <div class="knob" id="stiffness_y€3"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€5_value">100</div></div>
-                    <div class="knob" id="tension€5"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€3_value">100</div></div>
+                    <div class="knob" id="tension_y€3"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€5_value">100</div></div>
-                  <div class="knob" id="losses_eta€5"></div>
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€3_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€3"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€5_value">100</div></div>
-                  <div class="knob" id="losses_R€5"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€3_value">100</div></div>
+                  <div class="knob" id="losses_R_y€3"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€5_value">100</div></div>
-                  <div class="knob" id="nonlinearity€5"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€3_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€3"></div>
                 </div>
+                
             </div>
             <div class ="instrument_controls_window" style="display:none">
-              <legend>High E string</legend>
+              <legend>G string  <div class="polarized">/  z-polarisation</div></legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€6_value">100</div></div>
-                    <div class="knob" id="density€6"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€4_value">100</div></div>
+                    <div class="knob" id="density_z€4"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€6_value">100</div></div>
-                  <div class="knob" id="stiffness€6"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€4_value">100</div></div>
+                  <div class="knob" id="stiffness_z€4"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€6_value">100</div></div>
-                    <div class="knob" id="tension€6"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€4_value">100</div></div>
+                    <div class="knob" id="tension_z€4"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€6_value">100</div></div>
-                  <div class="knob" id="losses_eta€6"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€4_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€4"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€6_value">100</div></div>
-                  <div class="knob" id="losses_R€6"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€4_value">100</div></div>
+                  <div class="knob" id="losses_R_z€4"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity€6_value">100</div></div>
-                  <div class="knob" id="nonlinearity€6"></div>
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€4_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€4"></div>
                 </div>
+            </div>
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>G string /  y-polarisation</legend>
+     
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€4_value">100</div></div>
+                    <div class="knob" id="density_y€4"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€4_value">100</div></div>
+                  <div class="knob" id="stiffness_y€4"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€4_value">100</div></div>
+                    <div class="knob" id="tension_y€4"></div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€4_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€4"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€4_value">100</div></div>
+                  <div class="knob" id="losses_R_y€4"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€4_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€4"></div>
+                </div>
+                
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>B string  <div class="polarized">/  z-polarisation</div></legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€5_value">100</div></div>
+                    <div class="knob" id="density_z€5"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€5_value">100</div></div>
+                  <div class="knob" id="stiffness_z€5"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€5_value">100</div></div>
+                    <div class="knob" id="tension_z€5"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€5_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€5"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€5_value">100</div></div>
+                  <div class="knob" id="losses_R_z€5"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€5_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€5"></div>
+                </div>
+            </div>
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>B string /  y-polarisation</legend>
+     
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€5_value">100</div></div>
+                    <div class="knob" id="density_y€5"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€5_value">100</div></div>
+                  <div class="knob" id="stiffness_y€5"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€5_value">100</div></div>
+                    <div class="knob" id="tension_y€5"></div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€5_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€5"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€5_value">100</div></div>
+                  <div class="knob" id="losses_R_y€5"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€5_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€5"></div>
+                </div>
+                
+            </div>
+            <div class ="instrument_controls_window" style="display:none">
+              <legend>High E string  <div class="polarized">/  z-polarisation</div></legend>
+      
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€6_value">100</div></div>
+                    <div class="knob" id="density_z€6"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€6_value">100</div></div>
+                  <div class="knob" id="stiffness_z€6"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€6_value">100</div></div>
+                    <div class="knob" id="tension_z€6"></div>
+                </div>  
+                
+                <div class="control_knob">
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€6_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€6"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€6_value">100</div></div>
+                  <div class="knob" id="losses_R_z€6"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€6_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€6"></div>
+                </div>
+            </div>
+            <div class ="instrument_controls_window polarized"  style="display:none">
+              <legend>High E string /  y-polarisation</legend>
+     
+                <div class="control_knob">
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_y€6_value">100</div></div>
+                    <div class="knob" id="density_y€6"></div>
+                </div>
+                
+                <div class="control_knob">
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_y€6_value">100</div></div>
+                  <div class="knob" id="stiffness_y€6"></div>
+                </div>
+                  
+                <div class="control_knob">
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_y€6_value">100</div></div>
+                    <div class="knob" id="tension_y€6"></div>
+                </div>  
+                
+                <div class="control_knob">
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_y€6_value">100</div></div>
+                    <div class="knob" id="losses_eta_y€6"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_y€6_value">100</div></div>
+                  <div class="knob" id="losses_R_y€6"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_y€6_value">100</div></div>
+                  <div class="knob" id="nonlinearity_y€6"></div>
+                </div>
+                
             </div>
 
           </div>
@@ -298,40 +507,50 @@
             <div class="next_controls" onclick="change_controls(+1, 'righthand_controls')"></div>
 
             <div class ="instrument_controls_window" >
-              <legend>Model</legend>
+              <legend>Dimension</legend>
+
+              <fieldset id="model_options"><legend>Options</legend>
+                <input type="checkbox" onclick="toggle_polarisation(this)" checked/><label>Polarisations</label><br>
+                <input type="checkbox" onclick="toggle_nonlinearity(this)" checked/><label>Non linear</label>
+              </fieldset>
+
               <div class="control_knob">
                 <div class="value_container">\(dim^\vphantom{0}\)=<div class="knob_value" id="dimension_value">100</div></div>
                 <div class="knob" id="dimension"></div>
               </div>
 
             </div>
-            
-            <div class ="instrument_controls_window" style="display:none">
-              <legend>Plectrum</legend>
+
+            <div class ="instrument_controls_window" style="display:none" >
+              <legend>Plectrum shape/position</legend>
 
               <fieldset id="plectrum_shape_signal"><legend>Shape</legend>
-                <input type="radio" name="plectrum_shape_signal" value="dirac" checked><label for="dirac">Dirac</label><br>
                 <input type="radio" name="plectrum_shape_signal" value="rectangle"><label for="rectangle">Rectangle</label><br>
-                <input type="radio" name="plectrum_shape_signal" value="sine"><label for="sine">Sine</label>
+                <input type="radio" name="plectrum_shape_signal" value="triangle"><label for="triangle">Triangle</label><br>
+                <input type="radio" name="plectrum_shape_signal" value="sine" checked><label for="sine">Sine</label>
+
               </fieldset>
-              <!-- <div class="control_knob">
-                <div class="value_container">\(reg^\vphantom{0}\)=<div class="knob_value" id="regularity_value">100</div></div>
-                <div class="knob" id="regularity"></div>
-              </div> -->
 
               <div class="control_knob">
                 <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
                 <div class="knob" id="width"></div>
               </div>
-              
+
               <div class="control_knob">
                 <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
                 <div class="knob" id="position"></div>
               </div>
-              
+
             </div>
+
+
             <div class ="instrument_controls_window" style="display:none">
               <legend>Plectrum attack</legend>
+
+              <div class="control_knob">
+                <div class="value_container">\(\theta^\vphantom{0}\)=<div class="knob_value" id="theta_value">100</div></div>
+                <div class="knob" id="theta"></div>
+              </div>
 
               <div class="control_knob" title="Contact duration">
                 <div class="value_container">\(\delta t^\vphantom{0}\)=<div class="knob_value" id="duration_value">100</div></div>
@@ -348,10 +567,10 @@
                 <div class="knob" id="strength"></div>
               </div>
 
-              <div class="control_knob"  title="Plectrum losses">
+              <!-- <div class="control_knob"  title="Plectrum losses">
                 <div class="value_container">\(\epsilon^\vphantom{0}\)=<div class="knob_value" id="losses_value">100</div></div>
                 <div class="knob" id="losses"></div>
-              </div>
+              </div> -->
                              
             </div>
             <div class ="instrument_controls_window" style="display:none">
@@ -434,8 +653,10 @@
   <script src="../../js/plugins.js"></script> -->
 
   <script type="module" src="js/init.js"></script>
-  <script src="../../js/tools.js"></script>
-  <script src="./js/guitar-ui.js"></script>
+  <script> description = ["string_instrument", "plucked_instrument"]</script>
+
+  <script src="../../js/tools.js?version=1.2"></script>
+  <script src="./js/guitar-ui.js?version=1.2"></script>
 
 
   <script> 

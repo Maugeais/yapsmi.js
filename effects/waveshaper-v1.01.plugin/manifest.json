@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "GUI for the waveshaper of the Web Audio API.",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

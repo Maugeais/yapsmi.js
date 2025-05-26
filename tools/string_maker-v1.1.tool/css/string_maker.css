@@ -1,0 +1,73 @@
+
+
+.formula{
+    grid-column: span 3;
+    width:334px;
+}
+
+.formula_tab{
+    width: 95%;
+    left: 2.5%;
+    height: 265px;
+    position: absolute;
+    bottom: 27px;
+    text-align: center;
+    box-shadow: 0px 3px 7px #262424;
+}
+
+.formula_tab textarea{
+    width: 90%;
+    position: relative;
+    height: 5.15em;
+}
+
+#formula_nav{
+    display:inline-flex;
+    bottom: 7px;
+    position: absolute;
+    right: 10px;
+}
+
+.formula_nav_button{
+    width:35px;
+    text-align:center;
+    border-radius: 0px 0px 10px 10px;
+    background: linear-gradient(135deg,rgb(137, 132, 94) 0%, rgb(125, 118, 64) 50%);
+    box-shadow: 3px 3px 3px #393030;
+    line-height: 20px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.formula_nav_button:hover, .formula_nav_button:active{
+    filter:grayscale(0.5); 
+} 
+
+.formula_duration{
+    padding:10px;
+}
+
+.formula_duration input[type=text]{
+    width:100px
+}
+
+.formula_step input[type=text]{
+    width:100px
+}
+
+.set_formula_nav{
+    background:rgb(0, 204, 255);
+}
+
+.formula_tab button{
+    margin: 10px;
+    padding: 0px 15px;
+}
+
+.formula_state{
+    width: 10px;
+    height:10px;
+    position: absolute;
+    top: 0;
+    border-radius: 10px;
+}

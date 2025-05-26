@@ -1,0 +1,157 @@
+.mixer{
+  grid-column: span 3; 
+  width: 304px;
+  order: 10;
+}
+
+.mixer_controls{
+   display : flex;
+}
+
+.mixer_channel{
+  height: 270px;
+  position: relative;
+  top: 20px;
+}
+
+.mixer_range_wrapper {
+  height: 200px;
+  width: 30px;
+  position: absolute;
+  left: calc(50% - 15px);
+
+  &::before,
+  &::after {
+    display: block;
+    position: absolute;
+    z-index: 99;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: .0rem 0;
+    pointer-events: none;
+  }
+
+  &::before {
+    content: "+";
+  }
+
+  &::after {
+    content: "−";
+    bottom: 0;
+  }
+}
+
+.mixer_range_wrapper output{
+  z-index: 10;
+  position: absolute;
+  transform: rotate(-90deg) translate(-25px, -20px);
+  padding: 5px;
+  left: 0;
+  height: 20px;
+  width: 60px;
+  pointer-events: none;
+}
+
+input[type="range"].mixer_volume {
+  -webkit-appearance: none;
+  appearance: none;
+  position: absolute;
+  width: 200px;
+  height: 30px;
+  transform: translate(-87px, 83px) rotate(-90deg);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: row-resize;
+  border: none;
+
+  --range: calc(var(--max) - var(--min));
+  --ratio: calc((var(--value) - var(--min)) / var(--range));
+  --sx: calc( var(--ratio) * (100% ));
+  
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1px;
+    height:200px;
+    background: blue;
+    box-shadow:  0 0;
+  }
+
+  &::-moz-range-thumb {
+    border: none;
+    width: 1px;
+    height:100%;
+    box-shadow:  0 0;
+  }
+
+  &::-moz-range-progress {
+    background : linear-gradient(#f00808,#cc5151) 0 100%;
+    height: 100%;
+  }
+
+   &::-webkit-slider-runnable-track{
+    -webkit-appearance: none;
+    height: 100%;
+    background: linear-gradient(#f00808,#cc5151) 0/var(--sx) 100% no-repeat, transparent;
+
+  } 
+}
+
+.slider_text{
+  transform: rotate(-90deg) translate(-150px, 0);
+  pointer-events: none;
+}
+
+.mixer_pan{
+  position: absolute;
+  width: calc(95% - 20px);
+  white-space: nowrap;
+  bottom: 5px;
+
+
+  &::before,
+  &::after {
+    position: absolute;
+    /* display: block;
+    position: absolute;
+    z-index: 99;
+    color: #fff;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    line-height: 1;
+    padding: .0rem 0; 
+    pointer-events: none;*/
+    color: #fff;
+  } 
+
+  &::before {
+    content: "L";
+    left: -5px;
+  }
+
+  &::after {
+    content: "R";
+    right: -5px;
+  }
+}
+
+.mixer_pan input[type="range"]{
+  background:green;
+  width:90%;
+}
+
+.mixer_controls input[type="checkbox"]{
+  position: absolute;
+
+  &::before {
+    position: absolute;
+    content: "mute";
+    left: -5px;
+    transform: rotate(-90deg) translate(-55px, -2px);
+    position: absolute;
+    color: black;
+  }
+}

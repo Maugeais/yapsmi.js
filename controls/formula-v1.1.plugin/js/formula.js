@@ -164,4 +164,10 @@ window.stop_formula = function(id){
     $(tabs_button[id+2]).find(".formula_state").removeClass('blink');
 
 }
+
+$(".formula").keydown(function(e) {
+    // e.preventDefault();
+    console.log(e)
+    e.stopPropagation()
+});
 export { init }

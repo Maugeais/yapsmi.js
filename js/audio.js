@@ -21,27 +21,31 @@ function next_filter_on(k){
     while ((k < filters.length) && (!filters[k].is_on)) {
         k++;
     }
-    if (k == filters.length) return [k, vol]
-    return [k, filters[k].input]
+    if (k == filters.length) return [k, mixer, null]
+    return [k, filters[k].input, filters[k].output]
 }
 
 function disconnect_filters(){
     if (filters.length == 0) {
-        simulationNode.disconnect(vol)
+        simulationNode.disconnect(mixer)
     } else {
         let k = 0, next, data;
         let current = simulationNode;
         data = next_filter_on(0)
         k = data[0]
-        next = data[1]
+        next = data[1]    
         simulationNode.disconnect(next)
-        current = next
+        if (data[2] != null){
+            current = next
+        }
         while(k < filters.length){
             let data = next_filter_on(k+1)
             k = data[0]
             next = data[1]
             current.disconnect(next)
-            current = next
+            if (data[2] != null){
+                current = next
+            }
         }
     }
 }
@@ -126,15 +130,17 @@ async function connect_filters(){ // connect_filters
 
             if ((filters[k].input != "") && (filters[k].is_on)){
                 current.connect(filters[k].input)
-                current = filters[k].output
+                if (filters[k].output != null){
+                    current = filters[k].output
+                }
             }
         }
     }
 
-    current.connect(window.vol)
-    current = window.vol
+    current.connect(mixer)
+    // current = mixer
 
-    current.connect(audioCtx.destination);
+    // current.connect(audioCtx.destination);
 }
 
 /*==================================*/
@@ -180,8 +186,8 @@ window.compute_fft = function(data, len){
 window.change_global_gain = function(value){
 
     let now = audioCtx.currentTime   
-    vol.gain.setValueAtTime(vol.gain.value, now);
-    vol.gain.exponentialRampToValueAtTime(10**(3*(-1+value/100)), now + 0.255)
+    main_level.gain.setValueAtTime(main_level.gain.value, now);
+    main_level.gain.exponentialRampToValueAtTime(10**(3*(-1+value/100)), now + 0.255)
   
 }
 
@@ -302,15 +308,15 @@ window.toggle_audio = function(){
     if (~simu_on){
         audioCtx.resume()
         let now = audioCtx.currentTime
-        vol.gain.setValueAtTime(Number.EPSILON, now);
-        vol.gain.exponentialRampToValueAtTime(10**(3*(-1+gain_slider.value/100)), now + 0.25)
+        main_level.gain.setValueAtTime(Number.EPSILON, now);
+        main_level.gain.exponentialRampToValueAtTime(10**(3*(-1+gain_slider.value/100)), now + 0.25)
         start_analysers()
         $('#audio_start').css('background-image','url(../../css/images/on.png)');
     } else {
         let now = audioCtx.currentTime
      
-        vol.gain.setValueAtTime(vol.gain.value, now);
-        vol.gain.exponentialRampToValueAtTime(Number.EPSILON, now + 0.25)
+        main_level.gain.setValueAtTime(main_level.gain.value, now);
+        main_level.gain.exponentialRampToValueAtTime(Number.EPSILON, now + 0.25)
         setTimeout(function(){
             audioCtx.suspend(),
             clearInterval(timer)
@@ -328,14 +334,23 @@ await audioCtx.audioWorklet.addModule("../../js/audio-processor.js");
 window.fs = audioCtx.sampleRate;
 let dt = 1 / fs;
 let buffer_size  = 128 //2*2048; //16384; ???? Chrmoe prend 512 !?
-window.vol = audioCtx.createGain();
+window.main_level = audioCtx.createGain();
 window.change_global_gain($("#gain_slider").val())
+
+window.mixer = audioCtx.createChannelSplitter(2)
+window.channel_level = [audioCtx.createGain(), audioCtx.createGain()]
+channel_level[0].gain.value = 1;
+channel_level[1].gain.value = 1;
+window.channel_panner = [audioCtx.createStereoPanner(), audioCtx.createStereoPanner()]
+channel_panner[0].pan.value = 0;
+channel_panner[1].pan.value = 0;
 
 async function initialise_audio() {
  
     window.simulationNode = new AudioWorkletNode(
         audioCtx, "simulation-processor", {
-            numberOfOutputs : 1, 
+            numberOfOutputs : 2, 
+            outputChannelCount : [3, 3],
             processorOptions: {
                 data : await init_instrument(),
                 instrument_name : window.instrument_name,
@@ -345,14 +360,26 @@ async function initialise_audio() {
     
     simulationNode.port.onmessage = (e) => inmessage(e.data);
 
-    simulationNode.connect(window.vol)
-    vol.connect(audioCtx.destination);
+    simulationNode.connect(mixer)
+    mixer.connect(channel_level[0], 0)
+    mixer.connect(channel_level[1], 1)
+    channel_level[0].connect(channel_panner[0])
+    channel_level[1].connect(channel_panner[1])
+    channel_panner[0].connect(main_level)
+    // channel_panner[1].connect(main_level)
+    main_level.connect(audioCtx.destination);
+
+
+    // simulationNode.connect(window.main_level)
+    // main_level.connect(audioCtx.destination);
 
     audioCtx.suspend()
 
     // get_controls_value()
     // window.instrument_controls_details = await query_simulator("get_controls_details");
     await update_intrument_controls_details();
+
+    audio_ready()
 } 
 
 export { initialise_audio}

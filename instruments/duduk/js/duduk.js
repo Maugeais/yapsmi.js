@@ -1,6 +1,6 @@
 'use strict';
 
-import { reed_instrument, parameter } from "../../../js/reed_instrument.js?version=1.1";
+import { reed_instrument, parameter } from "../../../js/reed_instrument.js?version=1.2";
 
 let rho  = 1.292*273.15/(273.15+20)//1.1851
 let R = 0.56; // Rayon à l'embouchure, très grand à cause de la normalisation des impédances (*1e3)

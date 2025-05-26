@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "Displays a pad to control the instrument's parameters",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

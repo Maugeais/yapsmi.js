@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
-    "presentation" : "GUI for the convolution filter of the Web Audio API, with a selection of reverbaration impulse response files.",
+    "presentation" : "GUI for the convolution filter of the Web Audio API, with a selection of reverbaration impulse response files. The IR files come from <a href='https://www.housecallfm.com/download-gns-personal-lexicon-480l'>Lexicon 480L </a>",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

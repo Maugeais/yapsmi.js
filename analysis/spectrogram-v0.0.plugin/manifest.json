@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "<div style='color:red'>To do</div>",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

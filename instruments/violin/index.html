@@ -20,6 +20,10 @@
 
   </head>
   <body>
+
+    <div id="waiting">
+      <div class="loader"></div>
+    </div>
     <header>
       <div id="tools">
       </div> 
@@ -75,112 +79,132 @@
                 </label>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€1_value">100</div></div>
-                    <div class="knob" id="density€1"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€1_value">100</div></div>
+                    <div class="knob" id="density_z€1"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€1_value">100</div></div>
-                  <div class="knob" id="stiffness€1"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€1_value">100</div></div>
+                  <div class="knob" id="stiffness_z€1"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€1_value">100</div></div>
-                    <div class="knob" id="tension€1"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€1_value">100</div></div>
+                    <div class="knob" id="tension_z€1"></div>
                 </div>  
                 
                 <div class="control_knob">
-                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€1_value">100</div></div>
-                    <div class="knob" id="losses_eta€1"></div>
+                    <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€1_value">100</div></div>
+                    <div class="knob" id="losses_eta_z€1"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€1_value">100</div></div>
-                  <div class="knob" id="losses_R€1"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€1_value">100</div></div>
+                  <div class="knob" id="losses_R_z€1"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€1_value">100</div></div>
+                <div class="knob" id="nonlinearity_z€1"></div>
               </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
               <legend>D string</legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€2_value">100</div></div>
-                    <div class="knob" id="density€2"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€2_value">100</div></div>
+                    <div class="knob" id="density_z€2"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€2_value">100</div></div>
-                  <div class="knob" id="stiffness€2"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€2_value">100</div></div>
+                  <div class="knob" id="stiffness_z€2"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€2_value">100</div></div>
-                    <div class="knob" id="tension€2"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€2_value">100</div></div>
+                    <div class="knob" id="tension_z€2"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€2_value">100</div></div>
-                  <div class="knob" id="losses_eta€2"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€2_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€2"></div>
               </div>
 
               <div class="control_knob">
-                <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€2_value">100</div></div>
-                <div class="knob" id="losses_R€2"></div>
-            </div>
+                <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€2_value">100</div></div>
+                <div class="knob" id="losses_R_z€2"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€2_value">100</div></div>
+                <div class="knob" id="nonlinearity_z€2"></div>
+              </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
               <legend>A string</legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€3_value">100</div></div>
-                    <div class="knob" id="density€3"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€3_value">100</div></div>
+                    <div class="knob" id="density_z€3"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€3_value">100</div></div>
-                  <div class="knob" id="stiffness€3"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€3_value">100</div></div>
+                  <div class="knob" id="stiffness_z€3"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€3_value">100</div></div>
-                    <div class="knob" id="tension€3"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€3_value">100</div></div>
+                    <div class="knob" id="tension_z€3"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€3_value">100</div></div>
-                  <div class="knob" id="losses_eta€3"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€3_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€3"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€3_value">100</div></div>
-                  <div class="knob" id="losses_R€3"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€3_value">100</div></div>
+                  <div class="knob" id="losses_R_z€3"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€3_value">100</div></div>
+                <div class="knob" id="nonlinearity_z€3"></div>
               </div>
             </div>
             <div class ="instrument_controls_window" style="display:none">
               <legend>E string</legend>
       
                 <div class="control_knob">
-                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density€4_value">100</div></div>
-                    <div class="knob" id="density€4"></div>
+                    <div class="value_container">\(\mu^\vphantom{0}=\)<div class="knob_value" id="density_z€4_value">100</div></div>
+                    <div class="knob" id="density_z€4"></div>
                 </div>
                 
                 <div class="control_knob">
-                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness€4_value">100</div></div>
-                  <div class="knob" id="stiffness€4"></div>
+                  <div class="value_container">\(EI^\vphantom{0}=\)<div class="knob_value" id="stiffness_z€4_value">100</div></div>
+                  <div class="knob" id="stiffness_z€4"></div>
                 </div>
                   
                 <div class="control_knob">
-                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension€4_value">100</div></div>
-                    <div class="knob" id="tension€4"></div>
+                    <div class="value_container">\(T^\vphantom{0}=\)<div class="knob_value" id="tension_z€4_value">100</div></div>
+                    <div class="knob" id="tension_z€4"></div>
                 </div>  
                 
                 <div class="control_knob">
-                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta€4_value">100</div></div>
-                  <div class="knob" id="losses_eta€4"></div>
+                  <div class="value_container">\(\eta^\vphantom{0}=\)<div class="knob_value" id="losses_eta_z€4_value">100</div></div>
+                  <div class="knob" id="losses_eta_z€4"></div>
                 </div>
 
                 <div class="control_knob">
-                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R€4_value">100</div></div>
-                  <div class="knob" id="losses_R€4"></div>
+                  <div class="value_container">\(R^\vphantom{0}=\)<div class="knob_value" id="losses_R_z€4_value">100</div></div>
+                  <div class="knob" id="losses_R_z€4"></div>
+                </div>
+
+                <div class="control_knob">
+                  <div class="value_container">\(EA^\vphantom{0}=\)<div class="knob_value" id="nonlinearity_z€4_value">100</div></div>
+                  <div class="knob" id="nonlinearity_z€4"></div>
                 </div>
             </div>
         
@@ -194,17 +218,14 @@
             <div class="next_controls" onclick="change_controls(+1, 'righthand_controls')"></div>
             
             <div class ="instrument_controls_window" >
-              <legend>Bow</legend>
+              <legend>Bow shape/position</legend>
 
-              <div class="control_knob">
-                <div class="value_container">\(v^\vphantom{0}\)=<div class="knob_value" id="bow_speed_value">100</div></div>
-                <div class="knob" id="bow_speed"></div>
-              </div>
-
-              <div class="control_knob">
-                <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="width_value">100</div></div>
-                <div class="knob" id="width"></div>
-              </div>
+              <fieldset id="bow_shape_signal"><legend>Shape</legend>
+                <!-- <input type="radio" name="bow_shape_signal" value="dirac" checked><label for="dirac">Dirac</label><br> -->
+                <input type="radio" name="bow_shape_signal" value="rectangle"><label for="rectangle">Rectangle</label><br>
+                <input type="radio" name="bow_shape_signal" value="triangle"><label for="triangle">Triangle</label><br>
+                <input type="radio" name="bow_shape_signal" value="sine" checked><label for="dsine">Sine</label><br>
+              </fieldset>
               
               <div class="control_knob">
                 <div class="value_container">\(x^\vphantom{0}\)=<div class="knob_value" id="position_value">100</div></div>
@@ -212,10 +233,35 @@
               </div>
 
               <div class="control_knob">
-                <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="strength_value">100</div></div>
-                <div class="knob" id="strength"></div>
+                <div class="value_container">\(w^\vphantom{0}\)=<div class="knob_value" id="bow_width_value">100</div></div>
+                <div class="knob" id="bow_width"></div>
+              </div>
+           
+            </div> 
+
+            <div class ="instrument_controls_window"  style="display:none">
+              <legend>Bow attack</legend>
+
+              <div class="control_knob">
+                <div class="value_container">\(v^\vphantom{0}\)=<div class="knob_value" id="bow_speed_value">100</div></div>
+                <div class="knob" id="bow_speed"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(\theta^\vphantom{0}\)=<div class="knob_value" id="theta_value">100</div></div>
+                <div class="knob" id="theta"></div>
+              </div>
+
+              <div class="control_knob">
+                <div class="value_container">\(F_0^\vphantom{0}\)=<div class="knob_value" id="bow_strength_value">100</div></div>
+                <div class="knob" id="bow_strength"></div>
               </div>                 
             </div> 
+
+
+
+
+
             <div class ="instrument_controls_window"  style="display:none">
               <legend>Friction</legend>         
                 
@@ -250,14 +296,17 @@
                 </fieldset>
 
                 <div class="control_knob">
-                  <div class="value_container">\(v_t^\vphantom{0}\)=<div class="knob_value" id="vreg_value">100</div></div>
-                  <div class="knob" id="vreg"></div>
+                  <div class="value_container">\(v_t^\vphantom{0}\)=<div class="knob_value" id="bow_vreg_value">100</div></div>
+                  <div class="knob" id="bow_vreg"></div>
                 </div>   
             </div>
             <div class ="instrument_controls_window"  style="display:none">
-              <legend>Model </legend> 
+              <legend>Dimension</legend> 
 
-               
+              <div >
+                <input type="checkbox" onclick="toggle_polarisation()" checked/><br><label>Polarisations</label>
+              </div>
+
 
                <div class="control_knob">
                   <div class="value_container">\(dim^\vphantom{0}\)=<div class="knob_value" id="dimension_value">100</div></div>
@@ -295,10 +344,10 @@
             </div>
           </div>
 
-          <div class="control_knob" id="general_output_impedance">
+          <!-- <div class="control_knob" id="general_output_impedance">
             <div class="value_container">Z=<div class="knob_value" id="output_impedance_value">100</div></div>
             <div class="knob" id="output_impedance"></div>
-          </div>
+          </div> -->
 
         </div>   
 
@@ -310,7 +359,7 @@
     <footer></footer>
   </body>
 
-
+  <script> description = ["string_instrument", "bowed_instrument"]</script>
   <script src="../../js/tools.js?version=1.1"></script>
   
   <script type="module" src="js/init.js?version=1.1"></script>

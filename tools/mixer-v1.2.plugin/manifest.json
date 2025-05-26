@@ -1,0 +1,6 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Displays the waveform of the signal",
+    "limitations" : "none",
+    "developper" : "Sylvain Maugeais"
+}

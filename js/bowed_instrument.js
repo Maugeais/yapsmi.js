@@ -1,12 +1,11 @@
 'use strict';
 
-import { string_instrument, string, parameter, init_instrument } from "./string_instrument.js?version=1.1";
+import { string_instrument, string, parameter, init_instrument } from "./string_instrument.js?version=1.2";
 
 class bowed_instrument extends string_instrument{
     constructor(name, params, strings, bow, dim, limiter, output_impedance){
         // No params but can have mics and strings
         super(name, params, strings, dim, limiter, output_impedance)
-
         this.bow = bow;
         for (const param in this.bow) {
             this.params[param] = this.bow[param];
@@ -117,29 +116,32 @@ class bowed_string extends string{
         //     this.attack_coefs[n] = Math.sin((n+1)*x0); // Add sinc(n*delta)
         // }
         // console.log(this.attack_coefs[0])
+
+        this.compute_attack_shape_decompostion(this.parent.params["position"].value, this.parent.params["bow_width"].value)
     }
 
-    reset_chunk(){
-        for (let i=0; i < this.dim; i++){
-            this.buffer[0][i] = 0;
-            this.buffer[1][i] = 0;
-        }
+    _reset_chunk(){
         this.zn = 0;
     }
 
-    add_attack(dt, buffer, bufferm1, bufferm2){
+    add_attack(dt , buffer_z, buffer_zm1, buffer_zm2, buffer_y, buffer_ym1, buffer_ym2){
         let x0 = Math.PI*this.parent.bow["position"].value/this.L;
         let mu;
+
+        let ctheta = Math.cos(2*Math.PI*this.parent.bow["theta"].value/360);
+        let stheta = Math.sin(2*Math.PI*this.parent.bow["theta"].value/360);
 
         // Compute the speed at time i using i-2
         let vc = 0;
         for (let n = 0; n < this.parent.dim; n++){
-            // vc += (buffer[n]-bufferm1[n])*Math.sin((n+1)*x0)/(dt);
-            vc += (3/2*buffer[n]-2*bufferm1[n]+1/2*bufferm2[n])/(dt)*Math.sin((n+1)*x0);
+            vc += (buffer_z[n]-buffer_zm1[n])*Math.sin((n+1)*x0)/(dt)*stheta;
+            vc += (buffer_y[n]-buffer_ym1[n])*Math.sin((n+1)*x0)/(dt)*ctheta;
 
+            // vc += (3/2*buffer_z[n]-2*buffer_zm1[n]+1/2*buffer_zm2[n])/(dt)*Math.sin((n+1)*x0)*stheta;
+            // vc += (3/2*buffer_y[n]-2*buffer_ym1[n]+1/2*buffer_ym2[n])/(dt)*Math.sin((n+1)*x0)*ctheta;
         }
     
-        let vt = this.parent.bow["vreg"].value;
+        let vt = this.parent.bow["bow_vreg"].value;
         let Dv = (vc-this.parent.bow["bow_speed"].value);
         let mu_s= this.parent.bow["mus"].value;
         let mu_c= this.parent.bow["mud"].value;
@@ -149,26 +151,17 @@ class bowed_string extends string{
 
         mu = this.parent.friction(Dv, vt, mu_s, mu_c);
         
-        // // let attack = 2/Math.PI*(Math.atan(-alpha*Dv)*((mu_c + (mu_s-mu_c)/(1+Math.abs(Dv)/vinf))));
-        // switch (this.parent.regularisation){
-        //     case "A" : mu = mu_c*Math.tanh(4*Dv/vt)+16*(mu_s-mu_c)*(Dv/vt)/((Dv/vt)**2+3)**2;
-        //                 break;
-        //     case "B" : mu = Math.sign(Dv)*(mu_c+(mu_s-mu_c)*Math.exp(-1*(Dv/vt)**2))
-        //                 break;
-        //     case "D" : break;
-        // }
-        // mu = mu_c*Math.tanh(4*Dv/vt)+16*(mu_s-mu_c)*(Dv/vt)/((Dv/vt)**2+3)**2;
         let f_ep;
 
         if (this.parent.bow.model  == 0){
 
-            f_ep = mu*this.parent.bow["strength"].value;
+            f_ep = mu*this.parent.bow["bow_strength"].value;
 
         } else if (this.parent.bow.model == 1){
         
 
-            let zba =  0.7*mu_c*this.parent.bow["strength"].value/s0;
-            let zss = mu*this.parent.bow["strength"].value/s0;
+            let zba =  0.7*mu_c*this.parent.bow["bow_strength"].value/s0;
+            let zss = mu*this.parent.bow["bow_strength"].value/s0;
             let a = alpha(this.zn, Dv, zba, zss);
             
             // Heun method is used to compude this.zn
@@ -182,17 +175,18 @@ class bowed_string extends string{
         }
 
 
-        let attack = -(dt**2)*f_ep/this.params["density"].value;
+        let attack_friction = -(dt**2)*f_ep/this.params["density_z"].value;
+        let attack_weight = -0*(dt**2)*this.parent.bow["bow_strength"].value/this.params["density_z"].value;
 
         for (var n = 0; n < this.parent.dim; n++){
-            // buffer[n] += this.parent.bow["shape"](t, this.parent.bow["duration"].value)*this.attack_strength*this.attack_coefs[n]/this.mu;
-            buffer[n] += attack*Math.sin((n+1)*x0);
+            buffer_z[n] += (attack_friction*stheta+attack_weight*ctheta)*this.attack_coefs[n];
+            buffer_y[n] += (attack_friction*ctheta+attack_weight*stheta)*this.attack_coefs[n];
         } 
 
-        return(attack)
+        return(attack_friction)
     }
 }
-    
+
 function alpha(z, v, zba, zss){
 
     // printf("Alpha : %f, %f, %f, %f\n", z, v, z_ba, zss);

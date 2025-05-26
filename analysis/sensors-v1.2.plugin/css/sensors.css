@@ -1,0 +1,16 @@
+.sensors{
+  grid-column: span 2; 
+  width: 230px;
+}
+
+.sensors_controls{
+  display: block;
+  padding: 20px;
+  text-align: center;
+  height: 80%;
+  overflow-y: auto;
+}
+
+.sensors input[type="text"]{
+  width: 150px
+}

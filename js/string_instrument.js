@@ -1,6 +1,6 @@
 'use strict';
 
-import { instrument, parameter } from "./instrument.js?version=1.1";
+import { instrument, parameter, sensor } from "./instrument.js?version=1.2";
 
 class string_instrument extends instrument{
     constructor(name, params, strings, dim, limiter, output_impedance){
@@ -12,9 +12,24 @@ class string_instrument extends instrument{
         this.strings = new Array(strings.length);
         this.mics = [];
 
-        this.params["transition_time"] = new parameter(0.02, [0.01, 0.1], 'ms', 1e3, 0, false)
-        this.params["transition_speed"] = new parameter(1000, [100, 10000], '', 1e-3, 2, false)
+        this.params["transition_time"] = new parameter(0.02, [0.01, 0.3], 'ms', 1e3, 0, false)
+        this.params["transition_speed"] = new parameter(1e4, [100, 1e5], '', 1e-3, 2, false)
 
+        this.attack_shape = "triangle";
+    
+        this.polarisation = false;
+        this.nonlinearity  = false;
+
+        this.available_sensors["bridge"] = {}
+        this.available_sensors["displacement"] = {polarisation: "y or z", position: "m"}
+        this.available_sensors["velocity"] = {polarisation: "y or z", position: "m/s"}
+
+        this.sensor_class = microphone
+
+        this.connected_sensors.push(new microphone(this, "bridge"))
+        this.connected_sensors.push(new microphone(this, "bridge"))
+
+        this.geometry_ready = false;
     }
 
     change_dimension(value){
@@ -22,7 +37,6 @@ class string_instrument extends instrument{
             console.log("Pb de dimension")
             this.dim = this.strings[0].dim
         } else {
-            console.log("dim", value)
             this.dim = value;
         }
     }
@@ -33,11 +47,11 @@ class string_instrument extends instrument{
         }
     }
 
-
-    add_microphone(type, position=0){
-        let new_mic = new microphone(this, type, this.dim, position, 1, this.strings)
-        this.mics.push(new_mic)        
-    }
+    // add_microphone(type, position=0){
+    //     let new_mic = new microphone(this, {position:position}, type, 1)
+    //     this.mics.push(new_mic)     
+    //     this.connected_sensors.push(new_mic)   
+    // }
 
     init_audio(buffer_size, dt){
         for (var s = 0; s < this.strings.length; s++){
@@ -76,25 +90,11 @@ class string_instrument extends instrument{
             }
         }
 
-        for (let m=0; m < this.mics.length; m++){
-            this.mics[m].compute_filter();
+        for (let m=0; m < this.connected_sensors.length; m++){
+            this.connected_sensors[m].compute_filter();
         }
 
-    }
-
-    output(outputData){
-        // C'est la somme des outputs de toutes les cordes
-        // Radiate sert de microphones = fonction de transfert
-        for (let n = 0; n < outputData.length; n++){
-            outputData[n] = 0;
-        }
-        for (let m=0; m < this.mics.length; m++){
-            if (this.mics[m].type == "acoustic"){
-                this.mics[m].output(outputData, this.output_impedance.value)
-            } else {
-                this.mics[m].output(outputData, this.output_impedance.value)
-            }
-        }
+        this.geometry_ready = true;
     }
 
     change_fingering(params){
@@ -113,43 +113,65 @@ class string_instrument extends instrument{
         }
     }
 
+    toggle_polarisation(params){
+        this.polarisation = params.value;
+    }
+
+    toggle_nonlinearity(params){
+        this.nonlinearity = params.value;
+    }
+
+    change_attack_shape(params){
+        this.attack_shape = params["shape"];
+        for (var s = 0; s < this.strings.length; s++){
+            this.strings[s]._compute_extra_constants()
+        }
+    }
+
 }
 
-class microphone{
-    constructor(parent, type = "acoustic", dim = 15, position = 0.01, gain = 0.333, strings = []){
+class microphone extends sensor{
+    constructor(parent, type = "bridge", params = {}, gain = 0.333){
+        super(parent, type, params)
 
-        this.parent = parent;
-        this.dim = dim;
-        this.gain = gain;
-        this.non_lin = false;
-        this.type = type;
-        this.strings = strings;
-        if (type == "acoustic") {
-            this.width = new parameter(0, [0, 0.1], 'mm', 1e3, 0);
-            this.output = this.acoustic_output;
-            this.compute_filter = this.compute_filter_acoustic;
-            this.Zc = 1;
-        } else if (type == "single") {
-            this.width = new parameter(0.02, [0.01, 0.03], 'mm', 1e3, 0);
-            this.output = this.electric_output;
-            this.compute_filter = this.compute_filter_electric;
-            this.position = position;
-            this.Zc = 1e-3;
+        // this.parent = parent;
+        // this.gain = gain;
+        // this.non_lin = false;
+        // this.type = type;
+        // console.log(this[type+"_output"])
+        // if (type == "bridge") {
+        //     this.output = this.bridge_output;
+        //     this.compute_filter = this.compute_filter_bridge;
+        //     this.Zc = 1;
+        // } else if (type == "displacement") {
+        //     this.output = this.displacement_output;
+        //     this.polarisation = params['polarisation']
+        //     this.position = params["position"]
+        //     this.compute_filter = this.compute_filter_displacement;
+        //     this.Zc = 1;
+        // } else if (type == "single") {
+        //     this.width = new parameter(0.02, [0.01, 0.03], 'mm', 1e3, 0);
+        //     this.output = this.electric_output;
+        //     this.compute_filter = this.compute_filter_electric;
+        //     this.position = position;
+        //     this.Zc = 1e-3;
 
-        } else if (type == "dual"){
-            this.width = new parameter(0.04, [0.02, 0.06], 'mm', 1e3, 0);
-            this.output = this.electric_output;
-            this.compute_filter = this.compute_filter_electric;
-            this.position = position;
-            this.Zc = 1e-3;
-        }
+        // } else if (type == "dual"){
+        //     this.width = new parameter(0.04, [0.02, 0.06], 'mm', 1e3, 0);
+        //     this.output = this.electric_output;
+        //     this.compute_filter = this.compute_filter_electric;
+        //     this.position = position;
+        //     this.Zc = 1e-3;
+        // }
 
-        this.spatial_filter = new Array(this.strings.length)
-        for (let s = 0; s < this.strings.length; s++){
-            this.spatial_filter[s] = new Float32Array(dim);
+        this.spatial_filter = new Array(this.parent.strings.length)
+        for (let s = 0; s < this.parent.strings.length; s++){
+            this.spatial_filter[s] = new Float32Array(this.parent.dim);
         }
        
-        // this.compute_filter();
+        if (this.parent.geometry_ready){
+            this.compute_filter();
+        }
         
     }
 
@@ -157,15 +179,21 @@ class microphone{
         this.gain = value;
     }
 
-    acoustic_output(output, gain){
+    /* Definition of the bridge sensor*/
+    bridge_output(output, gain){
+
         let x;
         let buffer_string;
         for (let k=0; k < output.length; k++){
             x = 0;
-            for (var s = 0; s < this.strings.length; s++){
+            for (var s = 0; s < this.parent.strings.length; s++){
                 
-                if (!this.strings[s].muted){ 
-                    buffer_string = this.strings[s].buffer[k];
+                if (!this.parent.strings[s].muted){ 
+                    // if (this.parent.polarisation){
+                    //     buffer_string = this.strings[s].buffer_y[k];
+                    // } else {
+                        buffer_string = this.parent.strings[s].buffer_z[k];
+                    // }
                     for (let n = 0; n < this.parent.dim; n++){
                         
                         x += buffer_string[n]*this.spatial_filter[s][n];
@@ -177,15 +205,111 @@ class microphone{
         }        
     }
 
+    bridge_init(params){
+        this.compute_filter = this.bridge_compute_filter
+        this.Zc = 1
+    }
+
+    bridge_compute_filter(){
+
+        for (let s = 0; s < this.parent.strings.length; s++){
+            for (var n =0; n < this.parent.dim; n++){
+                this.spatial_filter[s][n] = this.Zc*(this.parent.strings[s].params["tension_y"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)-this.parent.strings[s].params["stiffness_y"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)**3);
+            }
+        }
+
+    }
+
+    /* Definition of thte displacement filter */
+    displacement_output(output, gain){
+
+        let x;
+        let buffer_string;
+        for (let k=0; k < output.length; k++){
+            x = 0;
+            for (var s = 0; s < this.parent.strings.length; s++){
+                
+                if (!this.parent.strings[s].muted){ 
+                    if (this.polarisation == "y"){
+                        buffer_string = this.parent.strings[s].buffer_y[k];
+                    } else {
+                        buffer_string = this.parent.strings[s].buffer_z[k];
+                    }
+                    for (let n = 0; n < this.parent.dim; n++){  
+                        x += buffer_string[n]*this.spatial_filter[s][n];
+                    }  
+                }         
+            }
+            output[k] += gain*x;
+        }  
+    }
+
+    displacement_init(params){
+        this.compute_filter = this.displacement_compute_filter
+        this.Zc = 1
+        this.polarisation = params['polarisation']
+        this.position = params["position"]
+    }
+
+
+    displacement_compute_filter(){
+        for (let s = 0; s < this.parent.strings.length; s++){
+            for (var n =0; n < this.parent.dim; n++){
+                this.spatial_filter[s][n] = this.Zc*Math.sin((n+1)*Math.PI*this.position/this.parent.strings[s].L);
+            }
+        }
+    }
+
+    /* Definition of thte displacement filter */
+    velocity_output(output, gain){
+
+        let x;
+        let buffer_string;
+        for (let k=0; k < output.length; k++){
+            x = 0;
+            for (var s = 0; s < this.parent.strings.length; s++){
+                
+                if (!this.parent.strings[s].muted){ 
+                    if (this.polarisation == "y"){
+                        buffer_string = this.parent.strings[s].buffer_y[k];
+                    } else {
+                        buffer_string = this.parent.strings[s].buffer_z[k];
+                    }
+                    for (let n = 0; n < this.parent.dim; n++){  
+                        x += buffer_string[n]*this.spatial_filter[s][n];
+                    }  
+                }         
+            }
+            output[k] += gain*x;
+        }  
+    }
+
+    velocity_init(params){
+        this.compute_filter = this.velocity_compute_filter
+        this.Zc = 1
+        this.polarisation = params['polarisation']
+        this.position = params["position"]
+    }
+
+
+    velocity_compute_filter(){
+        for (let s = 0; s < this.parent.strings.length; s++){
+            for (var n =0; n < this.parent.dim; n++){
+                this.spatial_filter[s][n] = this.Zc*Math.cos((n+1)*Math.PI*this.position/this.parent.strings[s].L)*(n+1)*Math.PI/this.parent.strings[s].L;
+            }
+        }
+    }
+
+
     electric_output(output, gain){
         
-        for (var s = 0; s < this.strings.length; s++){
-            if (!this.strings[s].muted){ 
+        for (var s = 0; s < this.parent.strings.length; s++){
+            if (!this.parent.strings[s].muted){ 
                 let x, x1=0;
 
                 // Compute x0
-                for (let n = 0; n < this.dim; n++){
-                    x1 += this.strings[s].buffer[0][n]*this.spatial_filter[s][n];
+                for (let n = 0; n < this.parent.dim; n++){
+                    x1 += this.parent.strings[s].buffer_z[0][n]*this.spatial_filter[s][n];
                 }  
 
                 for (let k=0; k < output.length; k++){
@@ -193,8 +317,8 @@ class microphone{
                     x = x1;
                     x1 = 0;
 
-                    for (let n = 0; n < this.dim; n++){
-                        x1 += this.strings[s].buffer[k+1][n]*this.spatial_filter[s][n];
+                    for (let n = 0; n < this.parent.dim; n++){
+                        x1 += this.parent.strings[s].buffer_z[k+1][n]*this.spatial_filter[s][n];
                     }  
                     
                     if (!this.non_lin){
@@ -239,22 +363,12 @@ class microphone{
     
     compute_filter_electric(){
 
-        for (let s = 0; s < this.strings.length; s++){
+        for (let s = 0; s < this.parent.strings.length; s++){
             for (var n =0; n < this.parent.dim; n++){
-                this.spatial_filter[s][n] = this.strings[s].r**2*this.Zc*Math.sin(2*(n+1)*Math.PI*this.position)*Math.sin((n+1)*Math.PI*this.width.value)/(n+1);
+                this.spatial_filter[s][n] = this.parent.strings[s].r**2*this.Zc*Math.sin(2*(n+1)*Math.PI*this.position)*Math.sin((n+1)*Math.PI*this.width.value)/(n+1);
             }   
         } 
         
-    }
-
-    compute_filter_acoustic(){
-
-        for (let s = 0; s < this.strings.length; s++){
-            for (var n =0; n < this.parent.dim; n++){
-                this.spatial_filter[s][n] = this.Zc*(this.parent.strings[s].params["tension"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)-this.parent.strings[s].params["stiffness"].value*((n+1)*Math.PI/this.parent.strings[s].L)*(-1)**(n+1)**3);
-            }
-        }
-
     }
         
 }
@@ -273,25 +387,34 @@ class string extends instrument{
         let EI = params["young"]*Math.PI*(this.r**4)/4;
         let EA = params["young"]*Math.PI*(this.r**2);
 
-        this.params["density"] = new parameter(mu, [mu*0.5, mu*2], 'g/m', 1e3, 2, true);
-        this.params["tension"] = new parameter(params['T'], [params['T']*0.5, params['T']*2], 'N', 1, 0, true);
-        this.params["stiffness"] = new parameter(EI, [EI*1e-2, EI*1e2], 'N', 1e3, 2, true);
-        this.params["losses_eta"] = new parameter(params['eta'], [params['eta']/4, params['eta']*4], 'νs', 1e9, 1, true);
-        this.params["losses_R"] = new parameter(params['R'], [params['R']/4, params['R']*4], 'Hz', 1, 2, true);
-        this.params["nonlinearity"] = new parameter(EA, [EA*1e-2, EA*1e2], 'N', 1e-3, 0, true);
+        this.params["density_y"] = new parameter(mu, [mu*0.5, mu*2], 'g/m', 1e3, 2, true);
+        this.params["tension_y"] = new parameter(params['T'], [params['T']*0.5, params['T']*2], 'N', 1, 0, true);
+        this.params["stiffness_y"] = new parameter(EI, [EI*1e-2, EI*1e2], 'N', 1e3, 2, true);
+        this.params["losses_eta_y"] = new parameter(params['eta']/10, [params['eta']/4, params['eta']*4], 'νs', 1e9, 1, true);
+        this.params["losses_R_y"] = new parameter(params['R']/10, [params['R']/4, params['R']*4], 'Hz', 1, 2, true);
+        this.params["nonlinearity_y"] = new parameter(EA, [EA*1e-2, EA*1e2], 'N', 1e-3, 0, true);
 
+        this.params["density_z"] = new parameter(mu, [mu*0.5, mu*2], 'g/m', 1e3, 2, true);
+        this.params["tension_z"] = new parameter(params['T'], [params['T']*0.5, params['T']*2], 'N', 1, 0, true);
+        this.params["stiffness_z"] = new parameter(EI, [EI*1e-2, EI*1e2], 'N', 1e3, 2, true);
+        this.params["losses_eta_z"] = new parameter(params['eta'], [params['eta']/40, params['eta']*40], 'νs', 1e9, 1, true);
+        this.params["losses_R_z"] = new parameter(params['R'], [params['R']/40, params['R']*40], 'Hz', 1, 2, true);
+        this.params["nonlinearity_z"] = new parameter(EA, [EA*1e-2, EA*1e2], 'N', 1e-3, 0, true);
 
-
-        console.log("Frequency", params["fundamental"], 1/(2*this.L)*(params['T']/mu)**0.5)
+        // console.log("Frequency", params["fundamental"], 1/(2*this.L)*(params['T']/mu)**0.5)
         this.dim = dim; // Nombre d'harmoniques maximal
 
         this.attack_time_position = 0; //attack_duration0;
         
         // Données pour le théta schéma
-        this.b = new Float32Array(this.dim).fill(0);
-        this.c = new Float32Array(this.dim).fill(0);
+        this.b_y = new Float32Array(this.dim).fill(0);
+        this.c_y = new Float32Array(this.dim).fill(0);
+        this.b_z = new Float32Array(this.dim).fill(0);
+        this.c_z = new Float32Array(this.dim).fill(0);
         
         this.X0 = new Array(this.dim).fill(0);
+        this.Y0 = new Array(this.dim).fill(0);
+
         
         this.theta = 0.5;
         this.muted = false;
@@ -307,9 +430,14 @@ class string extends instrument{
 
         this.dt = dt;
                  
-        this.buffer = new Array((buffer_size+2));   // Tableau contenant les lesdonnées en chaque temps
-        for (let k=0; k < this.buffer.length; k++){
-            this.buffer[k] = new Float32Array(this.parent.dim).fill(0) // Pour chaque temps, on a les composantes 
+        this.buffer_z = new Array((buffer_size+2));   // Tableau contenant les lesdonnées en chaque temps
+        this.buffer_y = new Array((buffer_size+2));   // Tableau contenant les lesdonnées en chaque temps
+        this.KC = new Float32Array((buffer_size+2)); 
+
+
+        for (let k=0; k < this.buffer_z.length; k++){
+            this.buffer_z[k] = new Float32Array(this.parent.dim).fill(0) // Pour chaque temps, on a les composantes 
+            this.buffer_y[k] = new Float32Array(this.parent.dim).fill(0) // Pour chaque temps, on a les composantes 
         }      
         this._scheme_constants();
     }
@@ -321,10 +449,14 @@ class string extends instrument{
         var a;
         for (var n=1; n <= this.parent.dim; n++){
         
-            let Lap = -1*(n*Math.PI/this.L)**2;                  
-            a = this.params["density"].value-this.dt**2*(-this.params["stiffness"].value*this.theta*Lap**2+this.params["tension"].value*this.theta*Lap)-this.dt*(this.params["tension"].value*this.params["losses_eta"].value*Lap-this.params["density"].value*this.params["losses_R"].value);
-            this.b[n-1] = (2*this.params["density"].value+this.dt**2*(-this.params["stiffness"].value*(1-2*this.theta)*Lap**2+this.params["tension"].value*(1-2*this.theta)*Lap))/a;
-            this.c[n-1] = (-this.params["density"].value+this.dt**2*(-this.params["stiffness"].value*this.theta*Lap**2+this.params["tension"].value*this.theta*Lap)-this.dt*(this.params["tension"].value*this.params["losses_eta"].value*Lap-this.params["density"].value*this.params["losses_R"].value))/a
+            let Lap = -1*(n*Math.PI/this.L)**2;         
+            a = this.params["density_y"].value-this.dt**2*(-this.params["stiffness_y"].value*this.theta*Lap**2+this.params["tension_y"].value*this.theta*Lap)-this.dt*(this.params["tension_y"].value*this.params["losses_eta_y"].value*Lap-this.params["density_y"].value*this.params["losses_R_y"].value);
+            this.b_y[n-1] = (2*this.params["density_y"].value+this.dt**2*(-this.params["stiffness_y"].value*(1-2*this.theta)*Lap**2+this.params["tension_y"].value*(1-2*this.theta)*Lap))/a;
+            this.c_y[n-1] = (-this.params["density_y"].value+this.dt**2*(-this.params["stiffness_y"].value*this.theta*Lap**2+this.params["tension_y"].value*this.theta*Lap)-this.dt*(this.params["tension_y"].value*this.params["losses_eta_y"].value*Lap-this.params["density_y"].value*this.params["losses_R_y"].value))/a;
+
+            a = this.params["density_z"].value-this.dt**2*(-this.params["stiffness_z"].value*this.theta*Lap**2+this.params["tension_z"].value*this.theta*Lap)-this.dt*(this.params["tension_z"].value*this.params["losses_eta_z"].value*Lap-this.params["density_z"].value*this.params["losses_R_z"].value);
+            this.b_z[n-1] = (2*this.params["density_z"].value+this.dt**2*(-this.params["stiffness_z"].value*(1-2*this.theta)*Lap**2+this.params["tension_z"].value*(1-2*this.theta)*Lap))/a;
+            this.c_z[n-1] = (-this.params["density_z"].value+this.dt**2*(-this.params["stiffness_z"].value*this.theta*Lap**2+this.params["tension_z"].value*this.theta*Lap)-this.dt*(this.params["tension_z"].value*this.params["losses_eta_z"].value*Lap-this.params["density_z"].value*this.params["losses_R_z"].value))/a
         }      
 
         this._compute_extra_constants()       
@@ -334,15 +466,59 @@ class string extends instrument{
         
     }
 
+    compute_attack_shape_decompostion(position, width){
+
+        if (typeof this.attack_coefs == 'undefined'){
+            this.attack_coefs = new Float32Array(this.dim)
+        }
+
+         
+        let x0 = Math.PI*position/this.L;
+        let delta = Math.PI*width/this.L;
+
+        if (this.parent.attack_shape == "dirac"){
+            for (let n = 0; n < this.parent.dim; n++){
+                this.attack_coefs[n] = Math.sin((n+1)*x0)
+            }
+            return
+        }
+ 
+        if (this.parent.attack_shape == "rectangle"){
+    
+            for (let n = 0; n < this.parent.dim; n++){
+                    this.attack_coefs[n] = Math.sin((n+1)*x0)*sinc((n+1)*delta);  
+            }
+            return
+        }
+
+        if (this.parent.attack_shape == "triangle"){
+    
+            for (let n = 0; n < this.parent.dim; n++){
+                this.attack_coefs[n] = Math.sin((n+1)*x0)*cosc((n+1)*delta);
+            }
+            return
+        }
+
+        if (this.parent.attack_shape == "sine"){
+
+    
+            for (let n = 0; n < this.parent.dim; n++){
+
+                if (Math.abs((n+1)*delta/Math.PI-1) > 1e-6) {
+                    this.attack_coefs[n] = -Math.sin((n+1)*x0)*sinc((n+1)*delta)/(((n+1)*delta/Math.PI)**2-1);
+                } else {
+                    this.attack_coefs[n] = Math.sin((n+1)*x0)/2;
+                }
+            }
+            return
+        }
+
+
+    }
+
 
     add_attack(buffer, buffer2){
-        // if (this.attack_time_position > 0){
-        //     let attack = this.pluck_constants();
-        //     for (var n = 0; n < this.dim; n++){
-        //         buffer[n] += attack.F*Math.sin((n+1)*attack.pos)*sinc((n+1)*attack.width)/this.mu;
-        //     }
-        //     this.attack_time_position -= 1/48000;
-        // }
+
     }
 
     transition_length(dt){
@@ -380,36 +556,106 @@ class string extends instrument{
 
         if (this.muted) return;
         
+        this.KC[1] = 0;
 
         for (var i = 2; i < buffer_size+2; i++){ // Pour chaque pas de temps
             this.transition_length(dt)
-            // Strang splitting
+            for (var n = 0; n < this.parent.dim; n++){
+                this.buffer_z[i][n] = 0;
+                if (this.parent.polarisation){
+                    this.buffer_y[i][n] = 0;
+                }
+            }
 
-            // this.add_attack(dt/2, this.buffer[ip], this.buffer[ipm2]);
+            // First part of Strang splitting on the attack
 
+            // this.add_attack(dt/2, this.buffer_z[i], this.buffer_z[i-1], this.buffer_z[i-2], this.buffer_y[i], this.buffer_y[i-1], this.buffer_y[i-2]);
+                       
+            // Theta-scheme + First part of Strang plitting on Kirchhoff Carrier
+            let kc_y = 0;
+            let kc_z = 0;
+
+            if (this.parent.nonlinearity){
+                kc_y = dt**2/4*this.KC[i-1]/this.params['density_y'].value;
+                kc_z = dt**2/4*this.KC[i-1]/this.params['density_z'].value;
+            }
+
+
+            this.KC[i] = 0;
 
             for (var n = 0; n < this.parent.dim; n++){
-                this.buffer[i][n] = (this.buffer[i-1][n]*this.b[n]+this.c[n]*this.buffer[i-2][n]);
+                this.buffer_z[i][n] += (this.buffer_z[i-1][n]*this.b_z[n]+this.c_z[n]*this.buffer_z[i-2][n])- kc_z*this.buffer_z[i-1][n]*(n+1)**2;
+                this.KC[i] += (this.buffer_z[i][n]*(n+1))**2;
+                if (this.parent.polarisation){
+                    this.buffer_y[i][n] += (this.buffer_y[i-1][n]*this.b_y[n]+this.c_y[n]*this.buffer_y[i-2][n])- kc_y*this.buffer_y[i-1][n]*(n+1)**2;
+                    this.KC[i] += (this.buffer_y[i][n]*(n+1))**2;        
+                }
             }
-            
-            this.add_attack(dt, this.buffer[i], this.buffer[i-1], this.buffer[i-2]);
 
-            // this.add_attack(dt/2, this.buffer[i], this.buffer[ipm1]);
+            // Second part of Strang splitting on Kirchhoff Carrier
+            // this.KC[i] = 0;
+            // for (let n = 0; n < this.parent.dim; n++){
+            //     this.KC[i] += (this.buffer_z[i][n]*(n+1))**2;
+            //     if (this.parent.polarisation){
+            //         this.KC[i] += (this.buffer_y[i][n]*(n+1))**2;        
+            //     }
+            // }
+
+            this.KC[i] *= this.params["nonlinearity_y"].value*(Math.PI/this.L)**4/(4*this.L);
+
+            if (this.parent.nonlinearity){
+                kc_y = dt**2/4*this.KC[i]/this.params['density_y'].value;
+                kc_z = dt**2/4*this.KC[i]/this.params['density_z'].value;
+            
+                for (let n = 0; n < this.parent.dim; n++){
+                    this.buffer_z[i][n] -= kc_z*this.buffer_z[i][n]*(n+1)**2;
+                    if (this.parent.polarisation){
+                        this.buffer_y[i][n] -= kc_y*this.buffer_y[i][n]*(n+1)**2;
+                    }
+                }
+            }
+
+            // Second part of Strang splitting on the attack
+
+            
+            this.add_attack(dt, this.buffer_z[i], this.buffer_z[i-1], this.buffer_z[i-2], this.buffer_y[i], this.buffer_y[i-1], this.buffer_y[i-2]);
+
+            // this.add_attack(dt/2, this.buffer_z[i], this.buffer_z[ipm1]);
         }
     }    
 
     reset_chunk(){
         for (let i=0; i < this.dim; i++){
-            this.buffer[0][i] = 0;
-            this.buffer[1][i] = 0;
+            this.buffer_z[0][i] = 0;
+            this.buffer_z[1][i] = 0;
+            this.buffer_y[0][i] = 0;
+            this.buffer_y[1][i] = 0;
+            
         }
+        this.KC[0] = 0;
+        this.KC[1] = 0;
+        this._reset_chunk()
+    }
+
+    _reset_chunk(){
+
     }
 
     loop_chunk(){
         for (let i=0; i < this.dim; i++){
-            this.buffer[0][i] = this.buffer[this.buffer.length-2][i];
-            this.buffer[1][i] = this.buffer[this.buffer.length-1][i];
-        }
+            this.buffer_z[0][i] = this.buffer_z[this.buffer_z.length-2][i];
+            this.buffer_z[1][i] = this.buffer_z[this.buffer_z.length-1][i];
+            this.buffer_y[0][i] = this.buffer_y[this.buffer_y.length-2][i];
+            this.buffer_y[1][i] = this.buffer_y[this.buffer_y.length-1][i];
+          
+        }  
+        this.KC[0] = this.KC[this.KC.length-2]
+        this.KC[1] = this.KC[this.KC.length-1]
+        this._loop_chunk();
+    }
+
+    _loop_chunk(){
+
     }
 
 
@@ -421,6 +667,18 @@ class string extends instrument{
 
 
 }
+
+
+function sinc(x){
+    if (x <1e-6) return(1)
+    return(Math.sin(x)/x)
+}
+
+function cosc(x){
+    if (x <1e-6) return(1)
+    return(2*(1-Math.cos(x))/x**2)
+}
+
 
 
 async function load_string_details(object, string_name){
@@ -457,4 +715,4 @@ async function init_instrument(params){
     return(object)
 }
 
-export { string_instrument, string, parameter, init_instrument };
+export { string_instrument, string, parameter, sensor, init_instrument };

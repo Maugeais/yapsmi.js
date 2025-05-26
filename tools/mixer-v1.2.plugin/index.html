@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="../../tools/mixer-v1.2.plugin/css/mixer.css" />
+
+<div class="plugin_title">mixer</div>
+
+ <!-- <canvas class="mixer_canvas" id="mixer_canvas{{id}}"></canvas> -->
+
+ <div id="mixer_display{{id}}"></div>
+
+<div class="mixer_controls" id="mixer_controls{{id}}">
+        <fieldset class="mixer_channel" id="mixer_channel_0">
+            <legend>Channel 0</legend>
+
+            <input class="mixer_mute" type="checkbox"  onchange="mixer_mute($(this).is(':checked'), 0)" checked/>
+
+            <div class="mixer_range_wrapper">
+
+            	<input class="mixer_volume" type="range" min="0" max="100" value="100" oninput="mixer_channel_0_level.value=parseInt(-60+3*this.value/5)+'dB'; mixer_change_level(this.value, 0)"><div class="slider_text">Fader</div></input>
+                <output id="mixer_channel_0_level"></output>
+
+            </div>
+
+            <div class="mixer_pan"><input  type="range" min="0" max="100" value="50" oninput="mixer_change_panner(this.value, 0)"/></div>
+
+
+        </fieldset>
+
+        <fieldset class="mixer_channel" id="mixer_channel_1">
+            <legend>Channel 1</legend>
+
+            <input class="mixer_mute" type="checkbox"  onchange="mixer_mute($(this).is(':checked'), 1)"/>
+
+            <div class="mixer_range_wrapper">
+
+            	<input class="mixer_volume" type="range" min="0" max="100" value="100" oninput="mixer_channel_1_level.value=parseInt(-60+3*this.value/5)+'dB'; mixer_change_level(this.value, 1)"mixer_change_level(this.value, 1)"><div class="slider_text">Fader</div></input>
+                <output id="mixer_channel_1_level"></output>
+
+            </div>
+
+            <div class="mixer_pan"><input type="range" min="0" max="100" value="50" oninput="mixer_change_panner(this.value, 1)"/></div>
+
+        </fieldset>
+</div>

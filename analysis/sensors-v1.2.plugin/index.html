@@ -1,0 +1,33 @@
+<link rel="stylesheet" href="../../analysis/sensors-v1.2.plugin/css/sensors.css" />
+
+<div class="plugin_title">Sensors</div>
+
+<div class="sensors_controls" id="sensors_controls{{id}}">
+
+    <fieldset>
+
+        <legend>Channel 0</legend>
+             
+        <select id="sensor_channel_0"  onchange='set_sensors_options($("#sensor_channel_0_params"), this.value, 0)'>
+
+        </select>    
+
+        <div id="sensor_channel_0_params"></div>
+
+    </fieldset>
+    <br>
+    <fieldset>
+
+         <legend>Channel 1</legend>
+             
+        <select id="sensor_channel_1"  onchange='set_sensors_options($("#sensor_channel_1_params"), this.value, 1)'>
+
+        </select>    
+
+        <div id="sensor_channel_1_params"></div>
+  
+          
+    </fieldset>
+    <br>        
+    <button onclick="set_sensors()"> Set </button>
+</div>

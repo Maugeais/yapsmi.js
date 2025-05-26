@@ -2,6 +2,20 @@
 
 import { parameter } from "./parameters.js?version=1.1";
 
+class sensor{
+    constructor(parent, type, params, unit='mm', output_impedance=1){
+        this.parent = parent;
+        this.params = params;
+        this.unit = unit;
+        this.output_impedance = output_impedance;
+        this[type+"_init"](params)
+        this.output = this[type+"_output"]        
+    }
+
+    output(){
+    }
+}
+
 class instrument{
     
     constructor(name, params, dim, limiter, output_impedance){
@@ -14,13 +28,12 @@ class instrument{
         }
         this.output_impedance = new parameter(output_impedance, [output_impedance/2, output_impedance*2], '', 1e-9, 2, true)
         this.params["output_impedance"] = this.output_impedance
-        // this.vars = {};
-        // this.rms = 0;
-        // this.freq= 0;
-        // this.self = this;
         this.X0 = []; // Initial conditions
         this.radiation_on = false;
         this.error_time = new Date()
+        this.available_sensors = {}
+        this.connected_sensors = []
+        this.sensor_class = sensor
     }
 
     init_audio(buffer_size, dt){
@@ -53,7 +66,9 @@ class instrument{
     }
 
     output(outputData){
-        return(0);
+        for (let m=0; m < this.connected_sensors.length; m++){
+            this.connected_sensors[m].output(outputData[m], this.output_impedance.value)
+        }
     }
 
     set_radiation_status(status){
@@ -63,6 +78,29 @@ class instrument{
     update_scheme_constants(){
         // console.log("undefined")
     }
+
+    get_sensors(){
+        let result = {
+            'available_sensors' : this.available_sensors,
+            'connected_sensors' : []
+        }
+        this.connected_sensors.forEach(element=>{
+            result.connected_sensors.push({type:element.type, params:element.params, unit:element.unit})
+        })
+        return(result)
+    }
+
+    set_sensors(data){
+        let sensor;
+        try {
+            sensor =  new this.sensor_class(this, data['sensor'], data['params'])
+        } catch(err) {
+            this.declare_error(err)
+        }
+        this.connected_sensors[data['channel']] = sensor;
+    }
+
+
 
     set_controls(params){
 
@@ -167,4 +205,4 @@ async function init_instrument(params){
 }
 
 
-export { instrument, init_instrument, parameter };
+export { instrument, init_instrument, parameter, sensor };

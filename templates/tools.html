@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="../../css/tools.css?version=1.03" />
+<link rel="stylesheet" href="../../css/tools.css?version=1.1" />
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
@@ -8,16 +8,20 @@
      <div id="tools">
      </div> 
 
-     <div id="model" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+     <div id="model" class = "popup help_window" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
        <div id="model_content"></div>
      </div>  
 
-     <div id="help" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+     <div id="help" class = "popup help_window" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
        <div id="help_content"></div>
      </div>  
 
-     <div id="credits" class = "popup" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+     <div id="credits" class = "popup help_window" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
        <div id="credits_content"></div>
+     </div>  
+
+     <div id="who" class = "popup help_window" style="display:none"><div class="close_button" onclick="$(this).parent().hide()"></div>
+       <div id="who_content"></div>
      </div>  
 
 </header>
@@ -54,6 +58,12 @@
 
      </div>
 
+     <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_tools_list").toggle()' id="tools_tools">
+          Tools
+          <div class = "menu_entry_list pop"  id="tools_tools_list"></div>
+
+     </div>
+
      <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_session_list").toggle()' id="tools_session">
           Session
           <div class = "menu_entry_list pop"  id="tools_session_list">
@@ -73,12 +83,11 @@
      <div class = "menu_entry" onclick='$(".pop").hide(100);$("#tools_help_list").toggle()' id="tools_help">
           Help
           <div class = "menu_entry_list pop"  id="tools_help_list">
-               <div class = "plugin_menu" onclick="$('.pop').hide(100);parameters_to_range();"> Parameters </div>
                <div class = "plugin_menu" onclick="toggle_fullscreen()"> Fullscreen </div>
                <div class = "plugin_menu" onclick="$('#model').show()"> Model </div>
                <div class = "plugin_menu" onclick="$('#credits').show()"> Credits </div>
+               <div class = "plugin_menu" onclick="$('#who').show()"> Who&nbsp;are&nbsp;we </div>
                <div class = "plugin_menu" onclick="$('#help').show()"> Help </div>
-               <!-- <div class = "plugin_menu" onclick="$('.pop').hide();$('#version').show()"> Version </div> -->
           </div>
 
      </div>
@@ -129,7 +138,12 @@
 
 <div id="logo"></div>
 
-<div id="parameters_range" class = "option_window">
+<!-- <div id="waiting">
+     <div class="loader"></div>
+</div> -->
+
+
+<!-- <div id="parameters_range" class = "option_window">
      <div onclick="$(this).parent().hide()" class="close_button"></div>
      <table id="parameters_table">
           <thead>
@@ -151,7 +165,7 @@
 
      <button onclick="parameters_from_range();">Apply</button>
 
-</div>
+</div> -->
 
 <!-- <div id="smoothening_controls" class = "option_window">
      <div onclick="$(this).parent().hide()" class="close_button"></div>
@@ -219,9 +233,9 @@
      }
 
 
-$( function() {
-  $("#parameters_range").draggable({position:'fixed'})
-// $("#midi_automation").draggable()
-});
+// $( function() {
+//   $("#parameters_range").draggable({position:'fixed'})
+// // $("#midi_automation").draggable()
+// });
      
 </script>

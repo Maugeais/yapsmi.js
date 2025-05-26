@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "Displays a keyboard that can change the fingering <div style='color:red'>Completion : 0%</div>",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

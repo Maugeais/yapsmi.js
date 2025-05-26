@@ -106,8 +106,10 @@ $(".stringName").dblclick(function(){
 }); 
 
 window.change_plectrum_position = function(event){
-  let x = (event.clientX-$("#struming").offset().left)/event.target.offsetWidth;
-  instrument_controls["position"].setValue((1-x)*100) 
+  if (is_shiftkey_pressed){
+    let x = (event.clientX-$("#struming").offset().left)/event.target.offsetWidth;
+    instrument_controls["position"].setValue((1-x)*100) 
+  }
 }
 
 var struming = false;
@@ -190,6 +192,20 @@ $('#chords_list').click(function (e) {
   set_chord(chords[e.target.innerText][0].positions);
 });
 
+window.toggle_polarisation = function(e){
+
+  if (e.checked){    
+    $(".polarized").css({"filter": "blur(0px)", "pointer-events": "all"}) 
+  } else {   
+     $(".polarized").css({"filter": "blur(5px)", "pointer-events": "none"}) 
+  }
+  simulationNode.port.postMessage({property:"exec", method:"toggle_polarisation", params: {value : e.checked}});
+}
+
+window.toggle_nonlinearity = function(e){
+  simulationNode.port.postMessage({property:"exec", method:"toggle_nonlinearity", params: {value : e.checked}});
+}
+
 source.addEventListener('input', find_chords);
 
 function find_chords(e){
@@ -210,7 +226,7 @@ function find_chords(e){
 }
 
 $('input[type=radio][name=plectrum_shape_signal]').change(function() {
-    inst.set_plectrum({"shape" : this.value});
+    simulationNode.port.postMessage({property:"exec", method:"change_attack_shape", params:{shape: this.value}});
 });
 
 $('input[type=checkbox][name=nl_microphone]').change(function() {
@@ -271,3 +287,6 @@ window.stop_midi_note = function(note, velocity){
     string_on[s] = -1;
     // set_finger(s+1, -1);    
 }
+
+// Set the buttons, in case reload
+$('input:radio[name=plectrum_shape_signal]').val(['triangle']); 

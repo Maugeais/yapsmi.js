@@ -266,20 +266,6 @@ input[type=range]::-moz-range-thumb {
   display: block;
 }
 
-#model, #help, #credits{
-    width: 90%;
-    position: fixed;
-    z-index: 100;
-    margin: 5%;
-    height: 90vh;
-    top: 0;
-    /* display : none; */
-    text-align: center;
-    overflow-y: auto;
-    border: 0;
-    padding: 0;
-}
-
 .close_button{
     width: 20px;
     position: absolute;
@@ -392,27 +378,37 @@ select{
     font-size: medium;
 }
 
-#model_content, #help_content, #credits_content{
+.help_window{
+    width: 90%;
+    position: fixed;
+    z-index: 100;
+    margin: 5%;
+    height: 80%;
+    top: 0;
+    /* display : none; */
+    border: 0;
+    padding: 0;
+}
+
+#model_content, #help_content, #credits_content, #who_content{
     text-align : justify;
     padding: 30px;
     background-image : url('../css/images/background.jpg');
     border: #acabab outset;
     background-attachment: fixed;
+    overflow-y: auto;
+    height: calc(100% - 20px);
 }
 
-#model_content img{
+.help_window img{
     margin: auto;
     display: block;
-    width: 70%;
+    /* width: 70%; */
 }
 
-#help_content{
-    text-align : center;
-}
-
-#model_content h1{
+.help_window h1{
     text-align :center;
-}
+} 
 
 #load{
     width: 50%;
@@ -517,7 +513,23 @@ select{
 .instrument_controls_window legend{
     position : absolute;
     top : 0px;
+    display: ruby;
 }
+
+fieldset{
+    border: 1px black solid;
+    border-radius: 5px;
+    color: black;
+    margin-top: -20px;
+    width: 120px;
+  }
+  
+:not(.instrument_controls_window) >  legend{
+    position: relative;
+    border: none; 
+    padding: 0.2em 0.8em; 
+    color: black;
+  }
 
 
 .signal_shapes{
@@ -688,40 +700,6 @@ button:active {
 .disabled{
     pointer-events: none;
     filter: grayscale(1) blur(2px);
-}
-
-#parameters_range{
-    z-index: 100;
-    padding: 20px;
-    width: 705px;
-    left: 10px;
-    text-align: center;
-    bottom: 10px;
-    height: 300px;
-}
-  
-#parameters_range button{
-    width:75px;
-}
-  
-#parameters_table{
-    margin-bottom:15px;
-}
-
-#parameters_table tbody {
-    display: block;
-    height: 230px;
-    overflow: auto;
-}
-
-#parameters_table thead, #parameters_table tbody tr {
-    display: table;
-    width: 100%;
-    table-layout: fixed;/* even columns width , fix width of table too*/
-}
-  
-#parameters_table input[type="text"]{
-    width:150px;
 }
 
 .expand_controls{

@@ -1,0 +1,6 @@
+{
+    "multi_threaded" : false,
+    "presentation" : "Displays a formula box to vary parameters with time",
+    "limitations" : "none",
+    "developper" : "Sylvain Maugeais"
+}

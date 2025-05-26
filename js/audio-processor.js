@@ -1,7 +1,7 @@
-import { duduk } from "../instruments/duduk/js/duduk.js?version=1.1";
-import  { violin } from "../instruments/violin/js/violin.js?version=1.1";
-import  { guitar } from "../instruments/guitar/js/guitar.js?version=1.1";
-import  { crumhorn } from "../instruments/crumhorn/js/crumhorn.js?version=1.1";
+import { duduk } from "../instruments/duduk/js/duduk.js?version=1.2";
+import  { violin } from "../instruments/violin/js/violin.js?version=1.2";
+import  { guitar } from "../instruments/guitar/js/guitar.js?version=1.2";
+import  { crumhorn } from "../instruments/crumhorn/js/crumhorn.js?version=1.2";
 
 
 class simulationProcessor extends AudioWorkletProcessor {
@@ -91,33 +91,34 @@ class simulationProcessor extends AudioWorkletProcessor {
 
 
       let t0 = currentTime;
-      let outputData = outputs[0][0];
+      let channel = 1
+      let outputData = outputs[0];
       
       this.inst.next_chunk(this.t, this.buffer_size, this.dt)
       this.inst.output(outputData)
 
       let i = 0, last_finite_value = 0, overflow = false;
-      while (i < outputData.length){
+      while (i < outputData[channel].length){
         
-        if (isNaN(outputData[i])) {
+        if (isNaN(outputData[channel][i])) {
 
           if (i > 0) {
-            last_finite_value = outputData[i-1];
+            last_finite_value = outputData[channel][i-1];
           }
           console.log(i, last_finite_value)
-          while (i < outputData.length){
-            outputData[i] = last_finite_value;
+          while (i < outputData[channel].length){
+            outputData[channel][i] = last_finite_value;
             last_finite_value /= 1.1;
             i++;
           }
           
           this.inst.reset_chunk();
           this.port.postMessage({property:"computation_state", state :"NaN"})
-        } else if (outputData[i] > this.inst.limiter.value){
-          outputData[i] = this.inst.limiter.value;
+        } else if (outputData[channel][i] > this.inst.limiter.value){
+          outputData[channel][i] = this.inst.limiter.value;
           overflow = true;
-        } else if (outputData[i] < -this.inst.limiter.value){
-          outputData[i] = -this.inst.limiter.value;
+        } else if (outputData[channel][i] < -this.inst.limiter.value){
+          outputData[channel][i] = -this.inst.limiter.value;
           overflow = true;
         }
         i++;

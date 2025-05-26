@@ -3,14 +3,15 @@
 let plugins = [];
 let plugins_list = {};
 
-function loadPluginManifest(menu_entry,element){
-    let pre_manifest = {"multi_threaded": false, "presentation":""};
-    $.getJSON(`../../${menu_entry}/${element}.plugin/manifest.json`, function(manifest){
+async function load_plugin_manifest(menu_entry,element, type="plugin"){
+    let pre_manifest = {"multi_threaded": false, "presentation":"", "limitations" : "none"};
+    await $.getJSON(`../../${menu_entry}/${element}.${type}/manifest.json`, function(manifest){
         plugins_list[element] = {"manifest" : Object.assign({}, pre_manifest, manifest)};
-        $(`.plugin_menu:contains("${element.split('-')[0]}")`).find('.manifest').html(manifest.presentation)
+        // $(`.plugin_menu:contains("${element.split('-')[0]}")`).find('.manifest').html(manifest.presentation)
     }).fail(function(){
         plugins_list[element] = {"manifest" : pre_manifest};
     });
+    return(plugins_list[element]["manifest"])
 }
 
 function init_plugins(menu_entry){
@@ -18,16 +19,36 @@ function init_plugins(menu_entry){
     $.ajax({
         url: `../../${menu_entry}/`,
         success: function(data){
-            $(data).find("a:contains(plugin)").each(function(){
+            $(data).find("a:contains(tool)").each(async function(){
+                pluginsName.push($(this).attr("href"));
+
+                let element = $(this).attr("href").slice(0, -6);
+
+                let manifest = await load_plugin_manifest(menu_entry, element, "tool");
+
+                if ((manifest["limitations"] == "none") || (description.includes(manifest["limitations"]))) {
+
+                    if (element[0] != '/'){
+                        let newDiv = `<div class="plugin_menu" onclick="${element.split('-')[0]}_show();">${element.split('-')[0]}<div class="manifest">${manifest.presentation}</div></div>`;
+                        $(`#tools_${menu_entry}_list`).append(newDiv);   
+                        load_tool(menu_entry,element);
+
+                    }
+                }
+            })
+            $(data).find("a:contains(plugin)").each(async function(){
                 pluginsName.push($(this).attr("href"));
 
                 let element = $(this).attr("href").slice(0, -8);
 
-                loadPluginManifest(menu_entry,element);
+                let manifest = await load_plugin_manifest(menu_entry, element);
 
-                if (element[0] != '/'){
-                    let newDiv = `<div class="plugin_menu" onclick="load_plugin('${menu_entry}','${element}');">${element.split('-')[0]}<div class="manifest"></div></div>`;
-                    $(`#tools_${menu_entry}_list`).append(newDiv);
+                if ((manifest["limitations"] == "none") || (description.includes(manifest["limitations"]))) {
+
+                    if (element[0] != '/'){
+                        let newDiv = `<div class="plugin_menu" onclick="load_plugin('${menu_entry}','${element}');">${element.split('-')[0]}<div class="manifest">${manifest.presentation}</div></div>`;
+                        $(`#tools_${menu_entry}_list`).append(newDiv);
+                    }
                 }
             })
         },
@@ -37,15 +58,37 @@ function init_plugins(menu_entry){
     });
 }
 
+let instrument_name = location.pathname.split('/');  
+instrument_name = instrument_name[instrument_name.length-2]
+
 function init_menu(){
     init_plugins("controls");
     init_plugins("effects");
     init_plugins("analysis");
+    init_plugins("tools");
     // register_controls("Audio", {"on/off" : [Boolean, audio_start]});
     rebuild_controls()
+
     $("#model_content").load("model.html", () => MathJax.typeset()); 
-    $("#help_content").load("help.html"); 
-    $("#credits_content").load("credits.html"); 
+
+    $.get('../../templates/help.html', function(data){ 
+        $('#help_content').append(data);     
+        $("#help_content .list").append(`<li ><a href='#help_${instrument_name}'>${instrument_name}</a></li>`)
+    });
+    $.get('help.html', function(data){ $('#help_content').append(data); });
+
+    $.get('../../templates/who.html', function(data){ 
+        $('#who_content').append(data); 
+        $("#whocontent .list").append(`<li ><a href='#who_${instrument_name}'>${instrument_name}</a></li>`)
+
+    });
+    $.get('who.html', function(data){ $('#who_content').append(data); });
+
+    $.get('../../templates/credits.html', function(data){ 
+        $('#credits_content').append(data); 
+        $("#credits_content .list").append(`<li ><a href='#credits_${instrument_name}'>${instrument_name}</a></li>`)
+    });
+    $.get('credits.html', function(data){ $('#credits_content').append(data); });
 
 }
 
@@ -54,8 +97,10 @@ $("#tools").load("../../templates/tools.html?version=1.1", init_menu);
 async function loadJS(filename, uid){
     return new Promise((resolve, reject) => {
        import(filename).then((obj) => {
-            obj["init"](uid);
-            plugins[uid].loaded = true;
+           if (uid >= 0){
+                obj["init"](uid);
+                plugins[uid].loaded = true;
+            }
             resolve("ok")
         }).catch((err) => {
             reject("Error")
@@ -90,6 +135,56 @@ async function load_plugin(menu_entry, element){
                         }
                     })
                 }    
+                
+                $(".pop").hide();
+                resolve("ok");
+            }
+            ).fail(function(){
+                reject("Error")
+        });         
+
+        $.get(
+            `../../${menu_entry}/${element}.plugin/help.html`,
+            {},
+            function (data) {      
+                $("#help_content").append(data)
+                $("#help_content .list").append(`<li ><a href='#help_${element}'>${element}</a></li>`)
+                resolve("ok");
+            }
+            ).fail(function(){
+                reject("Error")
+        });     
+
+
+        $.get(
+            `../../${menu_entry}/${element}.plugin/credits.html`,
+            {},
+            function (data) {      
+                $("#credits_content").append(data)
+                $("#credits_content .list").append(`<li ><a href='#credits_${element}'>${element}</a></li>`)
+                resolve("ok");
+            }
+            ).fail(function(){
+                reject("Error")
+        });         
+    })
+
+}
+
+async function load_tool(menu_entry, element){
+
+    return new Promise((resolve, reject) => {
+
+        $.get(
+            `../../${menu_entry}/${element}.tool/index.html`,
+            {},
+            function (data) {      
+
+                let reduced_element = element.split('-')[0];
+                let a = $("#wrapper").append(`<div class='option_window ${reduced_element}' id=\"${reduced_element}\"></div>`).children().last();
+                a.html(data);
+
+                loadJS(`../${menu_entry}/${element}.tool/js/${reduced_element}.js`, -1);
                 
                 $(".pop").hide();
                 resolve("ok");
@@ -206,7 +301,9 @@ const delay = ms => new Promise(res => setTimeout(res, ms));
 
 async function load_session_elements(session){
 
-    simulationNode.port.postMessage({property:"exec", method:"load_session", params:session['main']});
+    if ('main' in session){
+        simulationNode.port.postMessage({property:"exec", method:"load_session", params:session['main']});
+    }
 
     // And set the knobs
     await update_intrument_controls_details();
@@ -453,56 +550,56 @@ window.update_intrument_controls_details = async function(){
 
 }
 
-async function parameters_to_range(){
+// async function parameters_to_range(){
 
-    $("#parameters_table tbody").empty(); 
+//     $("#parameters_table tbody").empty(); 
 
-    let content = "";
-    await update_intrument_controls_details();
-    // let params = await query_simulator("get_controls_details")
-    // instrument_controls = await query_simulator("get_controls_details");
+//     let content = "";
+//     await update_intrument_controls_details();
+//     // let params = await query_simulator("get_controls_details")
+//     // instrument_controls = await query_simulator("get_controls_details");
 
     
-    for (let control in instrument_controls){
+//     for (let control in instrument_controls){
 
-        console.log(control)
+//         console.log(control)
 
-        content += '<tr><td>'+control+'</td>';
-        content += '<td><input value="'+instrument_controls[control].value+'"></td>';
-        content += '<td><input value="'+instrument_controls[control].range[0]+'"></td>';
-        content += '<td><input value="'+instrument_controls[control].range[1]+'"></td>';
-        content += '<td style="width:5%"><input type="checkbox" value='+instrument_controls[control].log_scale+'"></td>';
-        content += '</tr>'
+//         content += '<tr><td>'+control+'</td>';
+//         content += '<td><input value="'+instrument_controls[control].value+'"></td>';
+//         content += '<td><input value="'+instrument_controls[control].range[0]+'"></td>';
+//         content += '<td><input value="'+instrument_controls[control].range[1]+'"></td>';
+//         content += '<td style="width:5%"><input type="checkbox" value='+instrument_controls[control].log_scale+'"></td>';
+//         content += '</tr>'
 
-    }
+//     }
 
-    $("#parameters_table tbody").html(content) 
-    $('#parameters_range').show()
-}
+//     $("#parameters_table tbody").html(content) 
+//     $('#parameters_range').show()
+// }
 
 
-async function parameters_from_range(){
+// async function parameters_from_range(){
 
-    await update_intrument_controls_details();    
+//     await update_intrument_controls_details();    
 
-    let trs = $("#parameters_table").find("tr")
+//     let trs = $("#parameters_table").find("tr")
 
-    for (let i = 0; i < trs.length; i++){
+//     for (let i = 0; i < trs.length; i++){
 
-        let tds = $(trs[i+1]).find('td');
+//         let tds = $(trs[i+1]).find('td');
 
-        let control = $(tds[0]).text()
+//         let control = $(tds[0]).text()
 
-        if (control in instrument_controls){
-            instrument_controls[control].value = parseFloat($($(tds[1]).find('input')[0]).val())
-            instrument_controls[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
-            instrument_controls[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
-        }
-    }
+//         if (control in instrument_controls){
+//             instrument_controls[control].value = parseFloat($($(tds[1]).find('input')[0]).val())
+//             instrument_controls[control].range[0] = parseFloat($($(tds[2]).find('input')[0]).val())
+//             instrument_controls[control].range[1] = parseFloat($($(tds[3]).find('input')[0]).val())
+//         }
+//     }
 
-    await query_simulator("set_controls_details", instrument_controls);
-    await update_intrument_controls_details();
-}
+//     await query_simulator("set_controls_details", instrument_controls);
+//     await update_intrument_controls_details();
+// }
 
 let fullscreen_on = false;
 function toggle_fullscreen() {
@@ -531,10 +628,17 @@ function toggle_fullscreen() {
 
 let is_shiftkey_pressed = false;
 
-document.addEventListener("keydown", function(evt){
-                            if (evt.key == "Shift"){is_shiftkey_pressed = true}
-                            if (evt.key == " "){toggle_audio()}
-                        }, true); 
-document.addEventListener("keyup", function(evt){if (evt.key == "Shift"){is_shiftkey_pressed = false}}, true); 
+$("body").keydown(function(evt) {
+    if (evt.key == "Shift"){is_shiftkey_pressed = true}
+    if (evt.key == " "){toggle_audio()}
+});
 
+$("body").keyup(function(evt) {
+    if (evt.key == "Shift"){is_shiftkey_pressed = false}
+});
+
+window.audio_ready = function(){
+    $("header, main").css("visibility", "visible")
+    $("#waiting").hide()
+}
 

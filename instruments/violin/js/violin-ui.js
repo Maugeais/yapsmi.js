@@ -13,9 +13,14 @@ function output_impedance_change(a, s){
   set_controls({"output_impedance" : a}, false)
 }
 
+// window.toggle_polarisation = function(){
+//   simulationNode.port.postMessage({property:"exec", method:"toggle_polarisation", params: {}});
+// }
+
+
 function dimension_change(a, s){
-  simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: 1+parseInt(a/3)});
-  $("#dimension_value").html(1+parseInt(a/3))
+  simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: 1+parseInt(a)});
+  $("#dimension_value").html(1+parseInt(a))
 }
 
 function change_friction_model(e){
@@ -29,6 +34,11 @@ function change_friction_model_regularisation(e){
 }
 
 $("#fretboard").click(set_finger_callback);
+
+$('input[type=radio][name=bow_shape_signal]').change(function() {
+  // inst.set_plectrum({"shape" : this.value});
+  simulationNode.port.postMessage({property:"exec", method:"change_attack_shape", params:{shape: this.value}});
+});
 
 // $('input[name=regularisation_choice]').change(function() {
 //   console.log(this.value)
@@ -61,8 +71,7 @@ function set_finger(string, x){
        $('#finger'+(string)).css('left', -100);
     }
     x = 1-x*$("#fretboard").width()/($("#fretboard").width()+$("#bowing_area").width())
-   simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: string-1, position: x}});
-
+    simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: string-1, position: x}});
 }
   
 function set_finger_callback(e){
@@ -132,31 +141,38 @@ let strings_fundamental = [40, 45, 50, 55];
 // Plays only first position
 // Range = G3, D4, A4, E5
 
-window.play_note = function(note, velocity){
-    let string = 4-Math.floor((note-55)/7);
+window.play_midi_note = function(note, velocity){
+    let string = 1+Math.floor((note-55)/7);
 
-    if ((string < 1) || (string > 4)){
+    if ((string < 1)){
         console.log("Bad string")
         return
     }
 
     let position = (note-55) % 7;
 
-    if (inst.strings[string-1].muted) {
-        inst.strings[string-1].muted = false;
+    if (string > 4){
+      string = 4;
+      position = note-76;
     }
-    set_finger(string, 2**(position/12)-1);
+
+    set_finger(string, (1-Math.pow(2, -position/12))*($("#fretboard").width()+$("#bowing_area").width())/$("#fretboard").width())
+    mute_string(string, false)
+
+    // simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:{string: string, position: Math.pow(2, -position/12)}});
 }
 
-window.stop_note = function(note, velocity){
-    let string = 4-Math.floor((note-55)/7);
+window.stop_midi_note = function(note, velocity){
+    let string = 1+Math.floor((note-55)/7);
 
-    if ((string < 1) || (string > 4)){
-        console.log("Bad string")
-        return
-    }
+    // if ((string < 1) || (string > 4)){
+    //     console.log("Bad string")
+    //     return
+    // }
 
-    violin.strings[string-1].muted = true;
+    // violin.strings[string-1].muted = true;
+    // simulationNode.port.postMessage({property:"exec", method:"mute_string", params:[{string: s, state:state}]});
+    mute_string(string, true)
    
 }
 

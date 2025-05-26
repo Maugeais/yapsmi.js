@@ -1,3 +1,30 @@
+header, main { visibility:hidden; }
+
+#waiting{
+  background: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loader {
+  width: 120px;
+  height: 20px;
+  background: 
+    linear-gradient(90deg, #0000 ,orange) left -50px top 0/50px 20px no-repeat 
+    lightblue;
+  animation: l2 1s infinite linear;
+  position: absolute;
+  left: calc(50% - 60px);
+  top: calc(50% - 10px);
+}
+@keyframes l2 {
+100% {background-position: right -50px top 0}
+}
+
+
 #guitar{
 /*   background-image : url('./images/velvet.jpg'); */
 /*  grid-column: 1 / span 7;
@@ -214,9 +241,9 @@
   overflow-x: hidden;
 }
 
-#chords_list{
+/* #chords_list{
 
-}
+} */
 
 #chords_list tr:nth-child(2n+1) {
   background-color: #89c97b;
@@ -245,7 +272,7 @@ position: absolute;
   left: 52%;
 }
 
-#plectrum_shape_signal{
+/* #plectrum_shape_signal{
   border: 1px black solid;
   border-radius: 5px;
   color: white;
@@ -253,9 +280,15 @@ position: absolute;
   width: 120px;
 }
 
-#plectrum_shape_signal legend{
+#plectrum_shape_signal legend, #model_options legend{
   position: relative;
   border: none;
   padding: 0.2em 0.8em;
   width: 45px;
+  color: black;
+} */
+
+.polarized{
+  /* filter: blur(5px);
+  pointer-events: none; */
 }

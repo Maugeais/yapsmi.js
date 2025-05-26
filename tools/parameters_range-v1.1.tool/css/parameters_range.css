@@ -1,0 +1,33 @@
+#parameters_range{
+    z-index: 100;
+    padding: 20px;
+    width: 705px;
+    left: 10px;
+    text-align: center;
+    bottom: 10px;
+    height: 300px;
+}
+
+#parameters_range button{
+    width:75px;
+}
+
+#parameters_table{
+    margin-bottom:15px;
+}
+
+#parameters_table tbody {
+    display: block;
+    height: 230px;
+    overflow: auto;
+}
+
+#parameters_table thead, #parameters_table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;/* even columns width , fix width of table too*/
+}
+
+#parameters_table input[type="text"]{
+    width:150px;
+}

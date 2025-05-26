@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "Add finer controls on the vocal tract parameters. Only used for wind instruments",
+    "limitations" : "wind_instrument",
     "developper" : "Sylvain Maugeais"
 }

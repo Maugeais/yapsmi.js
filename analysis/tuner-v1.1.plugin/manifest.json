@@ -1,5 +1,6 @@
 {
     "multi_threaded" : false,
     "presentation" : "Displays the freqquency and the tuning of the current note in equal temperament",
+    "limitations" : "none",
     "developper" : "Sylvain Maugeais"
 }

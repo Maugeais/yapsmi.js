@@ -1,19 +1,53 @@
 "use strict";
 
 let convolver;
-let reverb_file = "../../effects/reverb-v1.1.plugin/data/Memorial Church.wav";
+let reverb_file = "../../effects/reverb-v1.1.plugin/data/Varoom.wav";
 
 let convolver_uid = -1;
 
 var reverb_knobs;
 function init(uid){
     reverb_knobs = init_knobs("reverb_main", "medium", "LittlePhatty");
+    load_reverb_files()
     add_filter(init_reverb, reverb_callback, uid);
     plugins[uid].save = save;
     plugins[uid].load = load;
     convolver_uid = uid;
 }
 
+async function load_reverb_files(){
+    $.ajax({
+        url: `../../effects/reverb-v1.1.plugin/data/`,
+        success: function(data){
+            $(data).find("a:contains(wav)").each(function(){
+            
+            let element = $(this).attr("href").slice(0, -4).replace(/%20/g, " ");
+
+      
+            $("#reverb_table tbody").append(`<tr><td onclick="select_reverb(this)">${element}</td></tr>`)
+            })
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) { 
+            alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+        }    
+    });
+
+    
+}
+
+ window.select_reverb = async function(element) {
+    $("#reverb_table td").removeClass("selected_reverb");
+    $(element).addClass("selected_reverb")
+    reverb_file = "../../effects/reverb-v1.1.plugin/data/"+$(element).text()+".wav";
+    set_reverb_file()
+};
+
+$('#reverb_table td').click(async function () {
+        $("#reverb_table td").removeClass("selected_reverb");
+        $(this).addClass("selected_reverb")
+        reverb_file = "../../effects/reverb-v1.1.plugin/data/"+$(this).text()+".wav";
+        set_reverb_file()
+    });
 function save(uid){
     let commands = {"reverb_file" : reverb_file};
     return(commands)
@@ -60,12 +94,12 @@ async function set_reverb_file(){
 function reverb_callback(){
 }
 
-$('#reverb_table td').click(async function () {
-    $("#reverb_table td").removeClass("selected_reverb");
-    $(this).addClass("selected_reverb")
-    reverb_file = "../../effects/reverb-v1.1.plugin/data/"+$(this).text()+".wav";
-    set_reverb_file()
-});
+// $('#reverb_table td').click(async function () {
+//     $("#reverb_table td").removeClass("selected_reverb");
+//     $(this).addClass("selected_reverb")
+//     reverb_file = "../../effects/reverb-v1.1.plugin/data/"+$(this).text()+".wav";
+//     set_reverb_file()
+// });
 
 
 

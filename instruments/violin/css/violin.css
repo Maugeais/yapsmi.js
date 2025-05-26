@@ -1,3 +1,29 @@
+header, main { visibility:hidden; }
+
+#waiting{
+  background: black;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loader {
+  width: 120px;
+  height: 20px;
+  background: 
+    linear-gradient(90deg, #0000 ,orange) left -50px top 0/50px 20px no-repeat 
+    lightblue;
+  animation: l2 1s infinite linear;
+  position: absolute;
+  left: calc(50% - 60px);
+  top: calc(50% - 10px);
+}
+@keyframes l2 {
+100% {background-position: right -50px top 0}
+}
+
 #violin{
   grid-column: 1 / span 11;
   background-size: cover;
@@ -76,7 +102,7 @@
 }
 
 #string_controls{
-  width:500px;
+  width:600px;
   height:45%;
 }
 
@@ -139,4 +165,19 @@
 
 #friction_model-select{
   width:60px;
+}
+
+#bow_shape_signal{
+  border: 1px black solid;
+  border-radius: 5px;
+  color: white;
+  margin-top: -20px;
+  width: 120px;
+}
+
+#bow_shape_signal legend{
+  position: relative;
+  border: none;
+  padding: 0.2em 0.8em;
+  width: 45px;
 }

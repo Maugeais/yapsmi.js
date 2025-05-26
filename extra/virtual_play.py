@@ -144,8 +144,8 @@ def print_details(filename) :
 
     for i, track in enumerate(f.tracks) :
         print(f"Track {i}: {track[0].name}", )
-        print(f"   Time signature {track[1].numerator}/{track[1].denominator}")
-        print(f"   Key signature {track[2].key}")
+        # print(f"   Time signature {track[1].numerator}/{track[1].denominator}")
+        # print(f"   Key signature {track[2].key}")
 
         channels = {control.channel for control in track if not control.is_meta}
 
@@ -165,7 +165,6 @@ def play_file(filename, channels, speed = 1.0) :
     input("Waiting for command")
 
     for msg in midi_file:
-        
         time.sleep(msg.time*speed)
         if not msg.is_meta and msg.channel in channels:
             if msg.type == "note_on" : 
@@ -173,16 +172,6 @@ def play_file(filename, channels, speed = 1.0) :
                     midiout.send_message([0x80, msg.note, 0])
                 else :
                     midiout.send_message([0x90, msg.note, msg.velocity])
-                # time.sleep(msg.time)
-                
-
-
-            # try: 
-            #     print(msg.type)
-                
-
-            # except :
-            #     print("")
 
 if __name__ == "__main__" :
 
@@ -193,7 +182,7 @@ if __name__ == "__main__" :
 
     parser.add_argument('filename')           # positional argument
     parser.add_argument('-c', '--channels', nargs='+', help='<Required> Set flag')
-    parser.add_argument('-s', '--speed', type=float)
+    parser.add_argument('-s', '--speed', type=float, default = 1.0)
     parser.add_argument('-v', '--verbose',
                         action='store_true')  # on/off flag
 

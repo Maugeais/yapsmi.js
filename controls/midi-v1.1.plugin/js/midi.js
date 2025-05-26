@@ -61,13 +61,14 @@ function listInputsAndOutputs( midiAccess ) {
   } else {
       midiAccess.inputs.forEach( function(entry) {
         var input = entry[1];
+        let name = entry.name.split(' ')[0]
 
         $('#midi_inputs').append($('<option>', { 
-            value: entry.name,
-            text : entry.name
+            value: name,
+            text : name
         }));
         
-        midi_to_control[entry.name] = {}
+        midi_to_control[name] = {}
 
         entry.onmidimessage = log_midi_input;
         // state = "Play";
@@ -96,7 +97,7 @@ function parse_midi_message(message) {
     command: message.data[0],
     note: message.data[1],
     velocity: 100*message.data[2]/127,
-    controler : message.srcElement.name
+    controler : message.srcElement.name.split(' ')[0]
   }
 }
 

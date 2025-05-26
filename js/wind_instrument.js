@@ -1,6 +1,6 @@
 'use strict';
 
-import { instrument, parameter } from "./instrument.js?version=1.1";
+import { instrument, parameter, sensor } from "./instrument.js?version=1.2";
 import { rungeKutta, midPoint } from "./rk4.js?version=1.02";
 
 class complex{
@@ -28,6 +28,78 @@ class complex{
 
     abs(){
         return((this.re**2+this.im**2)**0.5)
+    }
+}
+
+class microphone extends sensor{
+    // constructor(parent, type = "down_stream", params, output_impedance = 0.333){
+    //     super(parent, type, params)
+
+    //     this.parent = parent;
+    //     this.output_impedance = output_impedance;
+    //     this.type = type;
+    //     // this.params = {}
+    //     if (type == "down_stream") {
+    //         this.output = this.down_stream_output;
+    //         // this.params["x"] = parseFloat(params['x']);
+    //         // if (isNaN(this.params['x'])) {
+    //         //     throw "Incompatible type for x";
+    //         // }
+    //         this.Zc = 1;
+    //     } else if (type == "radiated") {
+    //         this.output = this.radiated_output;
+    //         // this.params["dx/dt"] = parseFloat(12);
+    //         // if (isNaN(this.params['dx/dt'])) {
+    //         //     throw "Incompatible type for dx/dt";
+    //         // }
+    //         this.Zc = 5e-4;
+
+    //     } else if (type == "dual"){
+    //     }
+    // }
+
+    change_output_impedance(value){
+        this.output_impedance = value;
+    }
+
+    down_stream_output(output, gain){         
+
+        let p;
+        for (let i = 0; i < output.length; i++) {
+            p = 0;
+            for (let j = 2; j < this.parent.dim; j+=2) {
+                p += this.parent.buffer[i][j];
+            }
+            output[i] = 2* p * this.Zc * gain;
+        }
+    }
+
+    down_stream_init(){
+        this.Zc = 1;
+    }
+
+     
+    radiated_output(output, gain){
+
+        let signalnp1, signaln;
+
+        signalnp1 = 0;
+        for (let j = 2; j < this.parent.dim; j+=2) {
+            signalnp1 += this.parent.buffer[0][j];
+        }    
+
+        for (let i = 0; i < output.length; i++) {
+            signaln = signalnp1;
+            signalnp1 = 0;
+            for (let j = 2; j < this.parent.dim; j+=2) {
+                signalnp1 += this.parent.buffer[i+1][j];
+            }
+            output[i] = 2*48000* (signalnp1-signaln)* this.Zc * gain;
+        }    
+    }
+
+    radiated_init(){
+        this.Zc =  5e-4;
     }
 }
 
@@ -69,6 +141,14 @@ class wind_instrument extends instrument {
 
         let der = new Float32Array(this.dim);
         this.model = this.model.bind(this)
+
+        this.available_sensors["down_stream"] = {} //{"x": "mm"}
+        this.available_sensors["radiated"] = {} //{"dx/dt" : "mm/s"}
+
+        this.connected_sensors.push(new microphone(this, "down_stream", {}, 1))
+        // this.connected_sensors.push(new microphone(this, "radiated", {}, 100000))
+
+        this.sensor_class = microphone
 
         // console.log(this.model)
 
@@ -224,46 +304,46 @@ class wind_instrument extends instrument {
         }
     }
 
-    pressure_output(outputBuffer){
-        let p;
-        for (let i = 0; i < outputBuffer.length; i++) {
-            p = 0;
-            for (let j = 2; j < this.dim; j+=2) {
-                p += this.buffer[i][j];
-            }
-            outputBuffer[i] = 2* p * this.output_impedance.value;
-        }
-    }
+    // pressure_output(outputBuffer){
+    //     let p;
+    //     for (let i = 0; i < outputBuffer[0].length; i++) {
+    //         p = 0;
+    //         for (let j = 2; j < this.dim; j+=2) {
+    //             p += this.buffer[i][j];
+    //         }
+    //         outputBuffer[0][i] = 2* p * this.output_impedance.value;
+    //     }
+    // }
     
-    pressure_derivative_output(outputBuffer){
+    // pressure_derivative_output(outputBuffer){
     
-        let signalnp1, signaln;
+    //     let signalnp1, signaln;
     
-        signalnp1 = 0;
-        for (let j = 2; j < this.dim; j+=2) {
-            signalnp1 += this.buffer[0][j];
-        }
+    //     signalnp1 = 0;
+    //     for (let j = 2; j < this.dim; j+=2) {
+    //         signalnp1 += this.buffer[0][j];
+    //     }
         
     
-        for (let i = 0; i < outputBuffer.length; i++) {
-            signaln = signalnp1;
-            signalnp1 = 0;
-            for (let j = 2; j < this.dim; j+=2) {
-                signalnp1 += this.buffer[i+1][j];
-            }
-            outputBuffer[i] = 100*(signalnp1-signaln) * this.output_impedance.value;
-        }
+    //     for (let i = 0; i < outputBuffer.length; i++) {
+    //         signaln = signalnp1;
+    //         signalnp1 = 0;
+    //         for (let j = 2; j < this.dim; j+=2) {
+    //             signalnp1 += this.buffer[i+1][j];
+    //         }
+    //         outputBuffer[i] = 100*(signalnp1-signaln) * this.output_impedance.value;
+    //     }
     
     
-    }
+    // }
 
-    output(outputBuffer){
-        if (this.radiation_on){
-             this.pressure_derivative_output(outputBuffer);
-        } else {
-            this.pressure_output(outputBuffer);
-        }
-    }
+    // output(outputBuffer){
+    //     if (this.radiation_on){
+    //          this.pressure_derivative_output(outputBuffer);
+    //     } else {
+    //         this.pressure_output(outputBuffer);
+    //     }
+    // }
 
     // save_session(){
 

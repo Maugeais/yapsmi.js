@@ -1,6 +1,6 @@
 'use strict';
 
-import { string_instrument, string, parameter, init_instrument } from "./string_instrument.js?version=1.1";
+import { string_instrument, string, parameter, sensor, init_instrument } from "./string_instrument.js?version=1.2";
 
 class plucked_instrument extends string_instrument{
     constructor(name, params, strings, dim, max, gain){
@@ -10,16 +10,20 @@ class plucked_instrument extends string_instrument{
         this.plectrum ={"width" : new parameter(0.02, [0, 3e-2], 'mm', 1e3, 1),
                         "position" : new parameter(0.13, [0.001, 0.17], 'cm', 1e2,1),
                         // "shape" : plectrum_square,
-                        "strength" : new parameter(5.0, [0, 20], 'N', 1, 1),
+                        "strength" : new parameter(0.07, [0, 1], 'N', 1, 2),
                         "duration" : new parameter(10e-3, [1e-3, 100e-3], 'ms', 1e3, 1),
                         "increase_duration" : new parameter(0.5, [0, 1], '%', 100, 0),
                         "losses" : new parameter(1e-4, [6e-6, 1e-3], '', 1e6, 3, true),
                         "regularity" : new parameter(2, [0, 4], '', 1, 0),
+                        "theta" : new parameter(10, [0, 90], '°', 1, 0),
                     }        
 
         for (let obj in this.plectrum){
             this.params[obj] = this.plectrum[obj]
         } 
+
+        this.polarisation = true;
+        this.nonlinearity  = true;
     }
 
     compute_attack_coefs(){
@@ -111,46 +115,10 @@ class plucked_string extends string{
 
     _compute_extra_constants(){
 
-        // let m = Math.round(this.parent.plectrum["regularity"].value);
-        // let normalisation = 0;
-        // for (let ell = 0; ell <= m; ell++){
-        //     normalisation += (-1)**ell*binomial(ell, m)/(2*ell+1)
-        // }
-        // // m = 4;
-        // // Compute the alpha
-        // let alpha = new Array(m+1);
-        // for (let ell = 0; ell <= m; ell++){
-        //     alpha[ell] = new Array(this.dim)
-        // }
-    
-        let x0 = Math.PI*this.parent.plectrum["position"].value/this.L;
-        let delta = Math.PI*this.parent.plectrum["width"].value/this.L;
-    
-        // for (let n = 1; n <= this.dim; n++){
-        //     alpha[0][n-1] = 2*this.L/(n*Math.PI)*Math.sin(n*x0)*Math.sin(n*delta)
-        // }
-    
-        // for (let ell = 1; ell <= m; ell++){
-        //     for (let n = 1; n <= this.parent.dim; n++){
-        //         alpha[ell][n-1] = 2*this.L/(n*Math.PI)*Math.sin(n*x0)*Math.sin(n*delta)+
-        //                              4*ell*this.L*Math.sin(n*x0)*Math.cos(n*delta)/(n**2*Math.PI*delta)
-        //                                 -2*ell*(2*ell-1)*alpha[ell-1][n-1]/(n*delta)**2;
-    
-        //     }
-        // }
-    
-        if (typeof this.attack_coefs == 'undefined'){
-            this.attack_coefs = new Float32Array(this.dim)
-        }
-        
-        for (let n = 0; n < this.parent.dim; n++){
-            // for (let ell = 0; ell <= m; ell++){
-                this.attack_coefs[n] = Math.sin(n*x0)*sinc(n*delta/2);
-            // }
-        }
+        this.compute_attack_shape_decompostion(this.parent.params["position"].value, this.parent.params["width"].value)
     }
 
-    add_attack(dt, buffer, bufferm1, bufferm2){
+    add_attack(dt, buffer_z, buffer_zm1, buffer_zm2, buffer_y, buffer_ym1, buffer_ym2){
         
         if (this.attack_time_position > 0){
             // let t = 1-this.attack_time_position/this.parent.plectrum["duration"].value;
@@ -160,28 +128,20 @@ class plucked_string extends string{
             //     attack = Math.sin(Math.PI*t); //tt**2; //(2-tt**2);
             // } 
             let t = this.attack_time_position/this.parent.plectrum["duration"].value;
-            let attack = Math.sin(Math.PI/2*t)**2*this.attack_strength/this.parent.plectrum["duration"].value; 
-    
-            // attack *= this.attack_strength/(this.parent.plectrum["duration"].value*(this.parent.plectrum["increase_duration"].value**2/2+(1-this.parent.plectrum["increase_duration"].value)))
+            let attack = Math.sin(Math.PI/2*t)*this.attack_strength/this.parent.plectrum["duration"].value; 
+
+            let theta = 2*Math.PI*this.parent.plectrum["theta"].value/360;
+
             for (var n = 0; n < this.parent.dim; n++){
-                buffer[n] += dt**2*attack*this.attack_coefs[n]/this.params["density"].value;
-                buffer[n] -= dt*this.params["tension"].value*this.parent.plectrum["losses"].value*(buffer[n]-bufferm1[n])/this.params["density"].value;
+                buffer_z[n] += dt**2*attack*this.attack_coefs[n]/this.params["density_z"].value*Math.sin(theta);
+            }
+
+            if (this.parent.polarisation){
+                for (var n = 0; n < this.parent.dim; n++){
+                    buffer_y[n] += dt**2*attack*this.attack_coefs[n]/this.params["density_y"].value*Math.cos(theta);
+                }  
             }
             this.attack_time_position -= dt;
-        }
-    
-        // Add Kirchhoff-Carrier
-    
-        let KC = 0;
-        for (let n = 0; n < this.parent.dim; n++){
-            KC += (buffer[n]*(n+1))**2;
-        }
-        KC *= dt**2*this.params["nonlinearity"].value*(Math.PI/this.L)**4;
-    
-        for (let n = 0; n < this.parent.dim; n++){
-            buffer[n] -= KC*buffer[n]*(n+1)**2;
-            // buffer[n] -= dt**2*4*KC*this.params["stiffness"].value/(this.r**2)*buffer[n]*((n+1)*Math.PI/this.L)**2;
-    
         }
     }
 }
@@ -192,4 +152,4 @@ function sinc(x){
 }
 
     
-export { plucked_instrument, string_instrument, string, parameter, init_instrument };
+export { plucked_instrument, string_instrument, string, parameter, sensor, init_instrument };
