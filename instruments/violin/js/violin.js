@@ -19,7 +19,7 @@ let violin = new bowed_instrument("violin",
                         "friction_s2" : new parameter(0.01, [0.01, 1], 'kg/s', 1, 2, true),
                         // "normalise" : 1
                     },
-                    100, 10.0, 20);
+                    100, 10.0);
 
 
 // violin.add_microphone("acoustic")

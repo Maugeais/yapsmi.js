@@ -66,7 +66,7 @@ function init_menu(){
     init_plugins("effects");
     init_plugins("analysis");
     init_plugins("tools");
-    // register_controls("Audio", {"on/off" : [Boolean, audio_start]});
+    register_controls("Audio", {"on/off" : $("#audio_start")});
     rebuild_controls()
 
     $("#model_content").load("model.html", () => MathJax.typeset()); 
@@ -546,6 +546,8 @@ window.update_intrument_controls_details = async function(){
         instrument_controls[control].range = details[control].range;
         instrument_controls[control].log_scale = details[control].log_scale;
         instrument_controls[control].value = details[control].value;
+        instrument_controls[control].unit = details[control].unit;
+        instrument_controls[control].normalisation = details[control].normalisation;
     }
 
 }
@@ -628,17 +630,58 @@ function toggle_fullscreen() {
 
 let is_shiftkey_pressed = false;
 
+function load_through_shortcut(menu_entry, element){
+    let name = element.split('-')[0];
+    if (!plugins.map(arrr=>arrr['name']).includes(name)){
+        load_plugin(menu_entry, element);
+    } else {
+        message(name + " plugin already loaded")
+    }
+}
 $("body").keydown(function(evt) {
     if (evt.key == "Shift"){is_shiftkey_pressed = true}
     if (evt.key == " "){toggle_audio()}
+
+    if (evt.altKey  && evt.ctrlKey){
+        switch (evt.key){
+            case 'm' : load_through_shortcut('controls', 'midi-v1.1')
+                       break;
+            case 'w' : load_through_shortcut('analysis','waveform-v1.2');
+                       break; 
+            case 'r' : load_through_shortcut('analysis','record-v1.2');
+                       break; 
+
+            // default : console.log('nothin')
+        }
+    }
+
 });
 
 $("body").keyup(function(evt) {
     if (evt.key == "Shift"){is_shiftkey_pressed = false}
 });
 
-window.audio_ready = function(){
-    $("header, main").css("visibility", "visible")
+window.wait = function(text = ""){
+    $("#waiting_text").html(text)
+    $("#waiting").show()
+}
+
+window.stop_waiting = function(text){
     $("#waiting").hide()
 }
 
+window.audio_ready = function(){
+    $("header, main").css("visibility", "visible")
+    stop_waiting()
+}
+
+window.better_parseFloat = function(text_input){
+    let elt = window[text_input];
+    let value = parseFloat(elt.value)
+    if (isNaN(value)) {
+        message("Error while parsing " + elt.id)
+        return(0)
+    }
+    return(value)
+
+}

@@ -1,7 +1,7 @@
 "use strict";
 
 import { parameter } from "../../../js/parameters.js?version=1.1";
-import { complex } from "../../../js/wind_instrument.js?version=1.1";
+import { complex } from "../../../js/wind_instrument.js?version=1.2";
 
 
 let vocal_tract_knobs;
@@ -64,11 +64,9 @@ function real_to_complex(){
     let A = vocal_tract_buttons[i]['A'].value;
 
     let S = new complex(-omega/Q, omega*Math.sqrt(1-1/Q**2));
-    let C = new complex(A/2, -A/2/Math.sqrt(Q**2-1));
+    let C = new complex(-A/2, A/2/Math.sqrt(Q**2-1));
     vocal_tract_parameters[i] = [S, C];
   }  
-
-  console.log(vocal_tract_parameters)
 }
 
 function update_vocal_tract_impedance(continuous = false){

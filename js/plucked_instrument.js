@@ -3,9 +3,9 @@
 import { string_instrument, string, parameter, sensor, init_instrument } from "./string_instrument.js?version=1.2";
 
 class plucked_instrument extends string_instrument{
-    constructor(name, params, strings, dim, max, gain){
+    constructor(name, params, strings, dim, limiter, gain){
         // No params and no dim but can have mics and strings
-        super(name, params, strings, dim, max, gain)
+        super(name, params, strings, dim, limiter, gain)
 
         this.plectrum ={"width" : new parameter(0.02, [0, 3e-2], 'mm', 1e3, 1),
                         "position" : new parameter(0.13, [0.001, 0.17], 'cm', 1e2,1),
@@ -41,7 +41,7 @@ class plucked_instrument extends string_instrument{
     }
 
     _create_string(data, s){
-        return(new plucked_string(this, data["strings"][this.strings_name[s]], this.dim, this.limiter, this.output_impedance.value))
+        return(new plucked_string(this, data["strings"][this.strings_name[s]], this.dim, this.limiter))
     }
 
     pluck(params){

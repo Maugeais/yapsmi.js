@@ -1,0 +1,93 @@
+.keyboard{
+    grid-column: span 4;
+    font-family: Arial;
+    width: 420px;
+}
+
+#keyboard{
+  height: 240px;
+  width:400px;
+  padding: 0em 0 0 1em;
+  position: absolute;
+  bottom: 0px;
+  /* border:1px solid #160801;
+  border-radius:1em;
+  box-shadow:0 0 50px rgba(0,0,0,0.5) inset,0 1px rgba(212,152,125,0.2) inset,0 5px 15px rgba(0,0,0,0.5);
+  margin:auto;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(5px);*/
+} 
+
+#keyboard ul {
+  left: 0;
+  position: absolute;
+  padding: 5px;
+  top: -14px;
+}
+
+#keyboard li {
+  margin:0;
+  padding:0;
+  list-style:none;
+  position:relative;
+  float:left
+}
+
+#keyboard  ul .white {
+  height:7em;
+  width:1.8em;
+  z-index:1;
+  border-left:1px solid #bbb;
+  border-bottom:1px solid #bbb;
+  border-radius:0 0 5px 5px;
+  box-shadow:-1px 0 0 rgba(255,255,255,0.8) inset,0 0 5px #ccc inset,0 0 3px rgba(0,0,0,0.2);
+  background:linear-gradient(to bottom,#eee 0%,#fff 100%);
+  margin-bottom: 5px;
+}
+
+#keyboard ul .white:active {
+  border-top:1px solid #777;
+  border-left:1px solid #999;
+  border-bottom:1px solid #999;
+  box-shadow:2px 0 3px rgba(0,0,0,0.1) inset,-5px 5px 20px rgba(0,0,0,0.2) inset,0 0 3px rgba(0,0,0,0.2);
+  background:linear-gradient(to bottom,#fff 0%,#e9e9e9 100%);
+  margin-bottom: 3px;
+}
+
+#keyboard .black {
+  height:4em;
+  width:1em;
+  margin:0 0 0 -0.6em;
+  z-index:2;
+  border:1px solid #000;
+  border-radius:0 0 3px 3px;
+  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -5px 2px 3px rgba(0,0,0,0.6) inset,0 2px 4px rgba(0,0,0,0.5);
+  background:linear-gradient(45deg,#222 0%,#555 100%)
+}
+
+#keyboard .black:active {
+  box-shadow:-1px -1px 2px rgba(255,255,255,0.2) inset,0 -2px 2px 3px rgba(0,0,0,0.6) inset,0 1px 2px rgba(0,0,0,0.5);
+  background:linear-gradient(to right,#444 0%,#222 100%)
+}
+
+#keyboard .a,#keyboard .g,#keyboard .e,#keyboard .d,#keyboard .b {
+  margin:0 0 0 -0.6em
+}
+
+#keyboard ul li:first-child {
+  border-radius:5px 0 5px 5px
+}
+
+#keyboard ul li:last-child {
+  border-radius:0 5px 5px 5px
+}
+
+#keyboard span{
+  position: absolute;
+  bottom: 0px;
+  margin-left: 5px;
+}
+
+.octave1, .octave6, .octave7{
+  display:none;
+}

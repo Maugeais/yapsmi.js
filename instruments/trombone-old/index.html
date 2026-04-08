@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>pim-trombone</title>
+    <link rel="stylesheet" href="./css/trombone.css" />
+    <link rel="icon" type="image/x-icon" href="./css/images/favicon.ico">
+    <script src=https://code.jquery.com/jquery-3.1.1.min.js></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <div id="tools">
+      </div> 
+
+      <div id="model"><div class="close_button" onclick="$(this).parent().hide()">x</div>
+        <div id="model_content"></div>
+      </div>  
+    </header>
+    <main>
+
+      <div  id="wrapper">
+      
+        <div class = "plugin" id="trombone">
+          <div id="trombone_menu" class="pop">
+            <div class="plugin_menu">Parameters range</div>
+            <div class="plugin_menu">Test</div>
+            <div class="plugin_menu">Test</div>
+          </div>
+
+          <div id = "trombone_control">
+              <div onclick="click_hole(this)" class="trombone_hole" id = "Gm1"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "A"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "B"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "C"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "D"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "E"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "F"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "G"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "Ap1"></div>
+              <div onclick="click_hole(this)" class="trombone_hole" id = "Bp1"></div>
+          </div>
+
+          <div id="trombone_controls1">
+
+              <div class = "control_knob">
+                  <div class="value_container">Pb=<div class="knob_value" id="pb_value">100</div></div>
+                  <div class="knob" id="pb"></div>
+
+              </div>
+
+              <div class = "control_knob">
+                  <div class="value_container">Fl=<div class="knob_value" id="Fl_value">100</div></div>
+                  <div class="knob" id="Fl"></div>
+              </div>
+
+              <div class = "control_knob">
+                <div class="value_container">mul=<div class="knob_value" id="mul_value">100</div></div>
+                <div class="knob" id="mul"></div>
+              </div>
+              <div class = "control_knob">
+                <div class="value_container">Ql=<div class="knob_value" id="Ql_value">100</div></div>
+                <div class="knob" id="Ql"></div>
+              </div>
+              <div class = "control_knob">
+                <div class="value_container">H=<div class="knob_value" id="H_value">100</div></div>
+                <div class="knob" id="H"></div>
+              </div>
+          </div>
+          <div id="trombone_controls2">
+
+              
+
+              
+
+          </div>
+        </div>
+
+      </div>
+
+
+    </main>
+
+
+    <footer></footer>
+  </body>
+
+  <script src="../../js/knobs.js"></script>
+
+  <script src="../../js/tools.js"></script>
+
+  <script src="../../js/plugins.js"></script>
+
+  <script type="module" src="js/init.js"></script>
+  <script src="./js/trombone-ui.js"></script>
+
+  <script> 
+    $(function(){
+      $("#model_content").load("model.html"); 
+    });
+    </script> 
+
+
+  <script> 
+    
+    $(function(){
+      $("#tools").load("../../templates/tools.html", init_menu); 
+    });
+    
+    trombone_knobs = init_knobs("trombone", "large", "Vintage");
+
+  </script> 
+  <!-- <script>window.addEventListener('load', function () {
+     init_plugins()
+   })</script> -->
+</html>

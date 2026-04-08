@@ -1,0 +1,56 @@
+#saxophone{
+/*   background-image : url('./images/velvet.jpg'); */
+  grid-column: 1 / span 5; 
+  background-size: cover;
+  width : 580px;
+}
+
+#saxophone_menu{
+  background: #f2f2f2;
+  display: none;
+  position: fixed;
+  z-index: 100;
+  width:200px;
+}
+
+.instrument_controls{
+  right: 15px;
+}
+
+#saxophone_control{
+  background-image : url('./images/tenor-saxophone.png');
+  height:250px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: -20px;
+}
+
+#controls2{
+  width:560px;
+  height:160px;
+}
+
+
+
+#constant_mass_container{
+  bottom: 2px;
+  position: absolute;
+  margin-left: 60px;
+}
+
+#saxophone_fingering{
+  top: 80px;
+  position: absolute;
+  left: 170px;
+}
+
+label[for=saxophone_fingering]{
+  position: absolute;
+  top: 80px;
+  left: 82px;
+}
+
+.instrument_controls{
+  width: 65%;
+}

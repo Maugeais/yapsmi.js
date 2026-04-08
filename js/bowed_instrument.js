@@ -3,9 +3,9 @@
 import { string_instrument, string, parameter, init_instrument } from "./string_instrument.js?version=1.2";
 
 class bowed_instrument extends string_instrument{
-    constructor(name, params, strings, bow, dim, limiter, output_impedance){
+    constructor(name, params, strings, bow, dim, limiter){
         // No params but can have mics and strings
-        super(name, params, strings, dim, limiter, output_impedance)
+        super(name, params, strings, dim, limiter)
         this.bow = bow;
         for (const param in this.bow) {
             this.params[param] = this.bow[param];
@@ -41,7 +41,7 @@ class bowed_instrument extends string_instrument{
     }
 
     _create_string(data, s){
-        return(new bowed_string(this, data["strings"][this.strings_name[s]], this.dim, this.limiter, this.output_impedance.value))
+        return(new bowed_string(this, data["strings"][this.strings_name[s]], this.dim, this.limiter))
     }
 
     set_regularisation(value){

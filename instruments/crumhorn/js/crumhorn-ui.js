@@ -30,11 +30,9 @@ function Fr_change(a){
 
 
 
-let holes_opened = [false, false, false, false, false, false, false, false, false, false]
-let holes_names = ['Gm1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ap1', 'Bp1', 'Cp1']
-    // $(elmnt).parent().
+let holes_names = ['F', 'G', 'A♭', 'A', 'B♭', 'B', 'C', 'C♯', 'D', 'E♭', 'E', 'F1', 'F1♯', 'G1', 'G1♯', 'A1', 'B1♭']
 
-let holes  = $("#crumhorn_control").children();
+holes_names.forEach((e) => ($("#crumhorn_fingering").append('<option value='+e+'>'+e+'</option>')))
 
 // function click_hole(elmnt, init=false){
 //     // $(elmnt).parent().
@@ -82,23 +80,28 @@ let holes  = $("#crumhorn_control").children();
 //     return false;
 //  });
 
+window.change_crumhorn_fingering = function(e){
+    console.log(e.value)
+    simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:e.value});
+}
 
-let midi_to_fingering ={55: "Gm1", 57: "A", 59: "B", 60: "C", 62: "D", 64: "E", 65: "F", 67: "G", 69: "Ap1", 71: "Bp1", 72: "Cp1"}
+let midi_to_fingering ={41: 'F', 43: 'G', 44: 'A♭', 45: 'A', 46: 'B♭', 47: 'B', 48: 'C', 49: 'C♯', 50: 'D', 51: 'E♭', 52: 'E', 53: 'F1', 54: 'F1♯', 55: 'G1', 56: 'G1♯', 57: 'A1', 58: 'B1♭'}
 
-// window.play_midi_note = function(note, velocity){
-//     if (note in midi_to_fingering){  
+window.play_midi_note = function(note, velocity){
+    if (note in midi_to_fingering){  
 
-//         let index = holes_names.indexOf(midi_to_fingering[note])
-//         set_hole_states(index)
+        // let index = holes_names.indexOf(midi_to_fingering[note])
+        // console.log(index)
+        crumhorn_fingering.value = midi_to_fingering[note]
 
-//         simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:midi_to_fingering[note]});
-//         change_radiation_file(midi_to_fingering[note])
-//     }
-// }
+        simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:midi_to_fingering[note]});
+        // change_radiation_file(midi_to_fingering[note])
+    }
+}
 
-// window.stop_midi_note = function(note, velocity){
-//     // console.log("stop crumhorn", note, velocity)
-// }
+window.stop_midi_note = function(note, velocity){
+    // console.log("stop crumhorn", note, velocity)
+}
 
 current_menu["crumhorn"] = 0;
 

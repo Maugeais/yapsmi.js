@@ -1,0 +1,58 @@
+<link rel="stylesheet" href="../../effects/equaliser-v1.2.plugin/css/equaliser.css" />
+
+<div class="plugin_title">equaliser</div>
+
+<div id="equaliser_main">
+
+
+    <div id="equaliser_display"></div>
+
+    
+    <div id="equaliser_controls" >
+
+        <fieldset class="equaliser_filter" id="equaliser_filter_0">
+            <legend><button  onclick="change_filter_number(-1)"><</button>Filter <div id="equaliser_filter_id">0</div><button  onclick="change_filter_number(1)">></button></legend>
+
+            <select onchange="change_filter_type(this.value)" id="filter_type">
+                <option value="lowpass">lowpass</option>
+                <option value="highpass">highpass</option>
+                <option value="bandpass">bandpass</option>
+                <option value="notch">notch</option>
+                <option value="lowshelf">lowshelf</option>
+                <option value="highshelf">highshelf</option>
+                <option value="peaking">peaking</option>
+                <option value="allpass">allpass</option>
+            </select>
+
+
+<!--             <input class="equaliser_mute" type="checkbox" onchange="equaliser_mute($(this).is(':checked'), 0)" checked=""> -->
+
+            <div id="equaliser_frequency" class="equaliser_range_wrapper">
+
+            	<input class="equaliser_range" id="equaliser_frequency_range" type="range" min="100" max="1000" value="100" oninput="equaliser_frequency_value.value=this.value; change_equaliser_frequency()">
+                <div class="equaliser_slider_text">Freq (Hz)<input oninput="change_equaliser_frequency()" type="text" id="equaliser_frequency_value"></input></div>
+
+            </div>
+
+            <div id="equaliser_Q" class="equaliser_range_wrapper">
+
+            	<input class="equaliser_range" id="equaliser_Q_range" type="range" step = "0.1" min="0" max="100" value="0" oninput="equaliser_Q_value.value=this.value; change_equaliser_Q()">
+                <div class="equaliser_slider_text">Q<input oninput="change_equaliser_Q()" type="text" id="equaliser_Q_value"></input></div>
+
+            </div>
+
+            <div id="equaliser_gain" class="equaliser_range_wrapper">
+
+            	<input class="equaliser_range" id="equaliser_gain_range" type="range" min="-40" max="40" value="0" oninput="equaliser_gain_value.value=this.value; change_equaliser_gain()">
+                <div class="equaliser_slider_text">Gain (dB)<input oninput="change_equaliser_gain()" type="text" id="equaliser_gain_value"></input></div>
+
+            </div>
+
+        </fieldset>
+        
+        <div onclick = "equaliser_click()" id="equaliser_on"></div>
+
+    </div>
+
+</div> 
+ 

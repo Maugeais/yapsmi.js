@@ -1,7 +1,7 @@
 #parameters_range{
     z-index: 100;
     padding: 20px;
-    width: 705px;
+    width: 1000px;
     left: 10px;
     text-align: center;
     bottom: 10px;
@@ -10,6 +10,7 @@
 
 #parameters_range button{
     width:75px;
+    height: 30px;
 }
 
 #parameters_table{
@@ -28,6 +29,21 @@
     table-layout: fixed;/* even columns width , fix width of table too*/
 }
 
-#parameters_table input[type="text"]{
-    width:150px;
+#parameters_range td{
+    white-space: nowrap;
+}
+
+#parameters_range input[type="text"]{
+    width: 130px;
+    background: white;
+    border: 1px solid black;
+}
+
+
+#parameters_range input[type="checkbox"]{
+    border:1px solid black;
+}
+
+#parameters_range select{
+    width: 100px;
 }

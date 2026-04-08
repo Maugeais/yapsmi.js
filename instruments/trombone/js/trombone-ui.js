@@ -1,95 +1,64 @@
+// let value_Fr = -1;
 
-let inst_controls = {};
+// function Fr_change(a){
+    
+//     if ((value_Fr > 0) && ($("#constant_mass").is( ":checked"))){
+        
+//         let Kr = global_controls['instrument']["Kr"].currentValue/100*(instrument_controls["Kr"].range[1]-instrument_controls["Kr"].range[0])+instrument_controls["Kr"].range[0];
+//         let Fnew = a/100*(instrument_controls["Fr"].range[1]-instrument_controls["Fr"].range[0])+instrument_controls["Fr"].range[0];
 
-window.addEventListener('load', function () {
-    inst_controls = inst.get_controls();
+//         let Knew = (Fnew/value_Fr)**2*Kr;
+//         let b = 100*(Knew-instrument_controls["Kr"].range[0])/(instrument_controls["Kr"].range[1]-instrument_controls["Kr"].range[0])
 
-    for (let i = 0; i < trombone_knobs.length; i++){
-
-        let p = inst.params[trombone_knobs[i].id]
-        console.log(trombone_knobs[i].id, (p.value-p.range[0])/(p.range[1]-p.range[0]))
-        trombone_knobs[i].setValue(100*(p.value-p.range[0])/(p.range[1]-p.range[0]))
-    }
-})
-
-function pb_change(a){
-    let c = inst_controls["pb"];
-    inst.set_controls({"pb": a}, false)
-}
-
-function Fl_change(a){
-    let c = inst_controls["Fl"];
-    inst.set_controls({"Fl": a}, false)
-}
-
-function mul_change(a){
-    let c = inst_controls["mul"];
-    inst.set_controls({"mul": a}, false)
-}
-
-function Ql_change(a){
-    let c = inst_controls["Ql"];
-    inst.set_controls({"Ql": a}, false)
-}
-
-function H_change(a){
-    let c = inst_controls["H"];
-    inst.set_controls({"H": a}, false)
-}
-
-
-
-let holes_opened = [false, false, false, false, false, false, false, false, false, false]
-let holes_names = ['Gm1', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Ap1', 'Bp1', 'Cp1']
-    // $(elmnt).parent().
-
-let holes  = $("#trombone_control").children();
-
-function click_hole(elmnt){
-    // $(elmnt).parent().
-    let index = $(elmnt).index();
-
-    for (let i = 0; i < index; i++){
-        holes_opened[i] = true;
-        $(holes[i]).css("background-color", "black")
-    }
-
-    for (let i = index+1; i < holes_opened.length; i++){
-        holes_opened[i] = false;
-        $(holes[i]).css("background-color", "red")
-
-    }
-
-    if (holes_opened[index]){
-        $(holes[index]).css("background-color", "red")
-        holes_opened[index] = false;
-        inst.change_fingering(holes_names[index])
-    } else {
-        $(holes[index]).css("background-color", "black")
-        holes_opened[index] = true;
-        inst.change_fingering(holes_names[index+1])
-    }
-}
-
-// $('#trombone').mousedown(function(event) {
-//     switch (event.which) {
-//         case 1:
-//             alert('Left Mouse button pressed.');
-//             break;
-//         case 2:
-//             alert('Middle Mouse button pressed.');
-//             break;
-//         case 3:
-//             alert('Right Mouse button pressed.');
-//             break;
-//         default:
-//             alert('You have a strange Mouse!');
+//         if ((b > 100) || (b < 0)){
+//             message("Warning, stiffness extreme value has been reached")
+//         } else {
+//             global_controls['instrument']["Kr"].setValue(b)
+//         }
+        
 //     }
-// });
+    
+//     try{
+//         value_Fr = a/100*(instrument_controls["Fr"].range[1]-instrument_controls["Fr"].range[0])+instrument_controls["Fr"].range[0];
+//         if (value_Fr < 0){
+//             value_Fr = instrument_controls["Fr"].value
+//         }
+//     } catch{}
+
+//     set_controls({"Fr": a}, false)
+// }
+
+slide_position_names = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14'],
+
+window.change_slide_position = function(e){
+    let position = 14*$(e).position().left/356;
+    simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:slide_position_names[Math.round(position)]});
+}
+
+// $(document).on("contextmenu", "#trombone", function(e){
+//     // $(".pop").hide()
+//     $("#trombone_menu").toggle().css('top', e.pageY).css('left', e.pageX);
+//     return false;
+//  });
 
 
-$(document).on("contextmenu", "#trombone", function(e){
-    $(".pop").hide()
-    $("#trombone_menu").toggle();
-    return false;
- });
+let midi_to_fingering ={55: "Gm1", 57: "A", 59: "B", 60: "C", 62: "D", 64: "E", 65: "F", 67: "G", 69: "Ap1", 71: "Bp1", 72: "Cp1"}
+
+window.play_midi_note = function(note, velocity){
+    if (note in midi_to_fingering){  
+
+        let index = holes_names.indexOf(midi_to_fingering[note])
+        set_hole_states(index)
+
+        simulationNode.port.postMessage({property:"exec", method:"change_fingering", params:midi_to_fingering[note]});
+        change_radiation_file(midi_to_fingering[note])
+    }
+}
+
+window.stop_midi_note = function(note, velocity){
+    // console.log("stop trombone", note, velocity)
+}
+
+current_menu["trombone"] = 0;
+
+

@@ -1,0 +1,110 @@
+<h1>
+Thin plate model
+</h1>
+
+For more details, see
+
+<h2>Pertes Thermoelastiques</h2>
+Cf. Chaigne-Kergo, page 196. Source de perte en basse fréquences
+
+<h2> Physical model </h2>
+
+Suppose uniform thickness
+
+\begin{equation}
+	\label{eq:model}
+		\mu \frac{\partial^2 u}{\partial t^2} = D1 \frac{\partial^4 u}{\partial x^4}+D3 \frac{\partial^4 u}{\partial x^4}+(D2+D4) \frac{\partial^4 u}{\partial x^2\partial y^2}+ T_x \frac{\partial^2 u}{\partial x^2}+T_y \frac{\partial^2 u}{\partial y^2} - 2R \mu \frac{\partial u}{\partial t}
+\end{equation}
+
+Plate dimension are \(L_x, L_y\) and thickness \(h\).
+
+Tension parameters \(T_x, T_y\) can serve as prestressing conditions, or encoding a curvature as for shells.
+
+<h2> Automatic values </h2>
+
+cf. https://help.solidworks.com/2021/english/solidworks/cworks/c_Linear_Elastic_Orthotropic.htm
+
+Sources for the macanical properties : engeneering toolbox
+
+<h2> Losses </h2>
+
+ \(R \in [0.25, 4]\)
+
+ <h3> Thermo-elastic losses </h3>
+
+ \(\alpha\) Thermal expansion
+
+ \(C\) Specific heat capacity
+
+ \(\kappa\) Thermal conductivity
+
+ <h3> Visco-elastic losses </h3>
+
+ Ref théorique "Fractional	Calculus and Waves in Linear Viscoelasticity"
+ 
+ 
+ Following the fractional Zener model (cf ???), we suppose a strain-stress relationship of the form
+
+	\begin{equation}
+	\displaystyle
+	E (I_3 + \tau_\epsilon^\beta \frac{\partial^\beta }{\partial t^\beta}) \varepsilon = ( I_3 + \tau_\sigma^\beta \frac{\partial^\beta }{\partial t^\beta}) \sigma
+	\end{equation}
+
+  Les valeurs de \(\tau_\epsilon\) et \(\tau_\sigma\) sont deduite de 
+  "A New Dissipation Model Based on Memory Mechanism" pour les métaux et 
+  "FRACTIONAL ORDER DERIVATIVE APPROACH OF VISCOELASTIC BEHAVIOR OF TROPICAL WOOD" pour un bois tropical, dans une seule direction !
+
+  Rem : Fractional Voigt = \(a_1 = 0\)
+
+	with \(v\) the fractional visosity of the material
+  \begin{equation} \displaystyle 
+  \mathcal E ={\cfrac {1}{(1-\nu _{12}\nu _{21})}}{\begin{pmatrix}E_{1}&\nu _{12}E_{2}&0\\\nu _{21}E_{1}&E_{2}&0\\0&0&2G_{12}(1-\nu _{12}\nu _{21})\end{pmatrix}}
+  \end{equation}
+
+  on néglige \(b\) devant \(a\) et on suppose 
+  \begin{equation} \displaystyle 
+  a = diag(1/E_1, 1/E_2, 1/G_1)
+  \end{equation}
+  (inspiré de "Transient vibration of thin viscoelastic orthotropic plates")
+
+  et de "FRACTIONAL ORDER DERIVATIVE APPROACH OF VISCOELASTIC BEHAVIOR OF TROPICAL WOOD" (table 1 et 2 montre que E1 >> E0)
+
+  Therefore the visco-elastic rigidity is 
+
+  Tout calcul fait (les E_x se simplifie), on trouve qqchose de la forme 
+
+\begin{equation} 
+v \frac{\partial^\beta }{\partial t^\beta} \Delta w (???)
+\end{equation}
+qu'on ajoute à l'EDP
+
+Pour l'identification des paramètres de Zener, cf. 
+"Identification of the Fractional Zener Model Parameters for a Viscoelastic Material over a Wide Range of Frequencies and Temp"
+
+<h3>Radiation losses</h3>
+Assumes an othotropic plate!
+
+<h2> Numerical scheme </h2>
+Modal decomposition in space
+
+Order 2 implicit scheme in time
+
+<h2> Radiation model </h2>
+
+Convolution with measrured impulse responses
+
+<h2> Attack </h2>
+
+
+
+The attack is modeled by an ouside force of the form \[F(t, x) = F_0 f(t) p(x)\]
+
+
+
+<br>
+
+Concerning \(f\), we must ensure that \(\int_0^{\delta t} f(t)^2 dt\) is constant because this ensure the amount of energy given to the string is constant
+
+
+<br>
+

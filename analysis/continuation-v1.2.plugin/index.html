@@ -13,34 +13,45 @@
 
     <br>
 
-    <label for="continuation_x">x:</label>
+    <div id="continuation_parameters">
 
-    <select class="select" id="continuation_x" onchange="continuation_change_axis('x', this)">
+        <label for="continuation_x">x:</label>
 
-        <option value="time" selected>time</option>
-        <option value="rms">rms</option>
-        <option value="frequency">frequency</option>
-        <option value="amplitude">amplitude</option>
+        <select class="select" id="continuation_x" onchange="continuation_change_axis('x', this)">
 
-    </select>
+            <option value="time" selected>time</option>
+            <option value="rms">rms</option>
+            <option value="frequency">frequency</option>
+            <option value="amplitude">amplitude</option>
 
+        </select>
+        <br>
+
+        <label for="continuation_y">y:</label>
+
+        <select id="continuation_y" onchange="continuation_change_axis('y', this)">
+
+            <option value="rms" selected>rms</option>
+            <option value="frequency">frequency</option>
+            <option value="amplitude">amplitude</option>
+
+        </select>
+
+    </div>
     <br>
 
-    <label for="continuation_y">y:</label>
+    <fieldset><legend>Channel</legend>
+        <input type="radio" name="continuation_channel" checked onclick="change_continuation_channel('0')"><label>0</label></input>
+        <input type="radio" name="continuation_channel" onclick="change_continuation_channel('1')"><label >1</label></input>
+        <input type="radio" name="continuation_channel" onclick="change_continuation_channel('0+1')"><label >0+1</label></input>
+    </fieldset>
 
-    <select id="continuation_y" onchange="continuation_change_axis('y', this)">
-
-        <option value="rms" selected>rms</option>
-        <option value="frequency">frequency</option>
-        <option value="amplitude">amplitude</option>
-
-    </select>
-
+    
     <br>
 
     <fieldset><legend>Scale</legend>
-        <input type="checkbox" onchange="change_axis_scale($(this).is(':checked'), 'x')"><label>x-log</label></input><br>
-        <input type="checkbox" onchange="change_axis_scale($(this).is(':checked'), 'y')"><label >y-log</label><br>
+        <input type="checkbox" onchange="change_axis_scale($(this).is(':checked'), 'x')"><label>x-log</label></input>
+        <input type="checkbox" onchange="change_axis_scale($(this).is(':checked'), 'y')"><label >y-log</label></input>
     </fieldset>
 
 </div>

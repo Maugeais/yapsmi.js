@@ -32,6 +32,8 @@ window.set_sensors = function(){
       sensor: $("#sensor_channel_1").val(),
       params: get_sensor_params("#sensor_channel_1_params")
   }) //.then(function(data){
+
+  set_channels_gain()
 }
 
 window.set_sensors_options = function(div, sensor_type, id){
@@ -70,7 +72,7 @@ function init(uid){
               value: item,
               text : item,
               selected: selected
-          }));
+            }));
 
           selected = false
           if ((data['connected_sensors'].length > 1) && (data["connected_sensors"][1].type == item)){
@@ -81,11 +83,44 @@ function init(uid){
               value: item,
               text : item,
               selected: selected
-          }));
+            }));
           });
         
   })
 
+  plugins[uid].save = save;
+  plugins[uid].load = load;
+
 }
+
+function save(){
+  let commands = {};
+  for (let i = 0; i < 2; i++){
+
+      commands[i] = {}
+
+      commands[i].sensor = window["sensor_channel_"+i].value
+
+      commands[i].values = []
+
+      $("#sensor_channel_"+i+"_params").find("input").each(function( index ) {
+        commands[i].values.push(this.value);
+      });
+  }
+  return(commands)
+}
+
+async function load(uid, commands){
+    for (let key in commands){
+      window["sensor_channel_"+key].value = commands[key].sensor;
+      window["sensor_channel_"+key].dispatchEvent(new Event('change'))
+      await delay(500);
+      $("#sensor_channel_"+key+"_params").find("input").each(function( index ) {
+        this.value = commands[key].values[index];
+      });
+  }
+  set_sensors()
+}
+
 
 export { init }

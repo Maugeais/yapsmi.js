@@ -3,12 +3,12 @@
 import { parameter } from "./parameters.js?version=1.1";
 
 class sensor{
-    constructor(parent, type, params, unit='mm', output_impedance=1){
+    constructor(parent, type, params){
         this.parent = parent;
         this.params = params;
-        this.unit = unit;
-        this.output_impedance = output_impedance;
-        this[type+"_init"](params)
+        this.type = type;
+        this.output_impedance = 1;
+        this[type+"_init"](params) // C'est probablement trop tôt !!!
         this.output = this[type+"_output"]        
     }
 
@@ -18,7 +18,7 @@ class sensor{
 
 class instrument{
     
-    constructor(name, params, dim, limiter, output_impedance){
+    constructor(name, params, dim, limiter){
         this.name = name;
         this.params = params;
         this.dim = dim;
@@ -26,8 +26,6 @@ class instrument{
             this.limiter = new parameter(limiter, [0, limiter], '', 1, 1);
             this.params['limiter'] = this.limiter
         }
-        this.output_impedance = new parameter(output_impedance, [output_impedance/2, output_impedance*2], '', 1e-9, 2, true)
-        this.params["output_impedance"] = this.output_impedance
         this.X0 = []; // Initial conditions
         this.radiation_on = false;
         this.error_time = new Date()
@@ -67,7 +65,7 @@ class instrument{
 
     output(outputData){
         for (let m=0; m < this.connected_sensors.length; m++){
-            this.connected_sensors[m].output(outputData[m], this.output_impedance.value)
+            this.connected_sensors[m].output(outputData[m])
         }
     }
 
@@ -76,7 +74,7 @@ class instrument{
     }
 
     update_scheme_constants(){
-        // console.log("undefined")
+        console.log("undefined")
     }
 
     get_sensors(){
@@ -85,7 +83,7 @@ class instrument{
             'connected_sensors' : []
         }
         this.connected_sensors.forEach(element=>{
-            result.connected_sensors.push({type:element.type, params:element.params, unit:element.unit})
+            result.connected_sensors.push({type:element.type, params:element.params, unit:element.unit, output_impedance: element.output_impedance})
         })
         return(result)
     }
@@ -102,21 +100,24 @@ class instrument{
 
 
 
-    set_controls(params){
+    set_controls(params, from_percentage = true){
 
         // Take value between 0 and 100
         let inst = this;
     
         Object.keys(params).forEach(function (key) {
             try {
-            inst.params[key].set_from_percentage(params[key]);   
+                if (from_percentage) {
+                    inst.params[key].set_from_percentage(params[key]);   
+                } else {
+                    inst.params[key].value = params[key];
+                }
             } catch(err) {
                 console.log(key, err)
             }
         });
 
         this.update_scheme_constants();
-
     }
 
     get_controls_details(){
@@ -128,6 +129,8 @@ class instrument{
             controls[key].value = this.params[key].value;
             controls[key].range = this.params[key].range;
             controls[key].log_scale = this.params[key].log_scale;
+            controls[key].unit = this.params[key].unit;
+            controls[key].normalisation = this.params[key].normalisation;
         }
 
         return(controls)

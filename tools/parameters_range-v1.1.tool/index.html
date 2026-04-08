@@ -2,14 +2,17 @@
 
 
 	<div onclick="$(this).parent().hide()" class="close_button"></div>
+	<div class="plugin_title" id="parameters_handle">Parameters setting</div>
 	<table id="parameters_table">
 		 <thead>
 			  <tr>
-				   <th style="width:20%">control</th>
-				   <th style="width:20%"> Default </th>
-				   <th style="width:20%"> Min </th>
-				   <th style="width:20%"> Max </th>
-				   <th style="width:5%"> Log </th>
+				   <th style="width:15%" title="Control name"> Control</th>
+				   <th style="width:15%" title="Database of possible values"> Database</th>
+				   <th style="width:15%" title="Current value of the knob"> Current </th>
+				   <th style="width:15%" title="Minimum value of the knob"> Min </th>
+				   <th style="width:15%" title="Maximum value of teh knob"> Max </th>
+				   <th style="width:6%" title="Is the knob in a logarithmic scale?"> Log </th>		
+				   <th style="width:15%"> </th>
 			  </tr>
 		 </thead>
 
@@ -20,5 +23,13 @@
 	 
 	</table> 
 
-	<button onclick="parameters_from_range();">Apply</button>
+	<button onclick="parameters_from_range();">Apply</button>	
+	<button onclick="parameters_to_range();">Reload</button>
+
+	<div id="waiting_db"></div>
+
+	<div class="help_button" onclick="$('#model').toggle(); console.log('test'); " title="Details on the different parameters can be found in the model page"> test</div>
+
+
+
 

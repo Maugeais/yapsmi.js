@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="130mm"
+   height="130mm"
+   viewBox="0 0 130 130"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
+   sodipodi:docname="help.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.5813942"
+     inkscape:cx="245.66929"
+     inkscape:cy="245.66929"
+     inkscape:window-width="1680"
+     inkscape:window-height="986"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <title
+     id="title843">Wikibooks Community DE Icon Hilfe</title>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Wikibooks Community DE Icon Hilfe</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>HirnSpuk</dc:title>
+          </cc:Agent>
+        </dc:creator>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by-sa/4.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-97)">
+    <circle
+       style="opacity:1;fill:#c1af56;fill-opacity:1;stroke:none"
+       id="path817"
+       cx="65"
+       cy="162"
+       r="65"
+       inkscape:label="BG-circle" />
+    <g
+       aria-label="?"
+       style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#be5410;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="text836">
+      <path
+         d="m 66.753616,110.07402 c -20.884445,0 -34.431112,11.85333 -34.995556,31.18556 h 19.755556 c 0.564444,-11.14778 5.785556,-16.65112 13.97,-16.65112 8.325556,0 12.841112,4.93889 12.841112,13.26445 0,6.49111 -3.104445,11.43 -11.712223,21.02556 -6.914445,7.62 -9.595556,12.7 -10.16,22.71888 h 16.792222 c 0.564445,-7.19666 3.104445,-10.72444 10.865556,-17.78 10.018889,-9.03111 14.816667,-16.51 14.816667,-27.23444 0,-16.08667 -11.712222,-26.52889 -32.173334,-26.52889 z m -1.834444,79.30445 c -6.35,0 -11.006667,4.51555 -11.006667,11.00666 0,6.49111 4.656667,11.00667 11.006667,11.00667 6.491111,0 11.147778,-4.51556 11.147778,-11.00667 0,-6.49111 -4.656667,-11.00666 -11.147778,-11.00666 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:141.1111145px;font-family:Aileron;-inkscape-font-specification:'Aileron Bold';fill:#be5410;fill-opacity:1;stroke:none;stroke-width:3;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="path819"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>

@@ -1,16 +1,13 @@
 'use strict';
 
-import { trombone } from "./trombone.js";
+import { init_instrument } from "../../../js/wind_instrument.js?version=1.2";
 
-import { audio_start, audio_stop, add_filter, remove_filter } from "../../../js/audio.js";// , add_post_processor, remove_post_processor
+window.init_instrument = init_instrument;
 
+import { initialise_audio } from "../../../js/audio.js?version=1.2";
 
-window.audio_start = audio_start;
-window.audio_stop = audio_stop;
+window.instrument_name = "trombone"
 
-window.add_filter = add_filter;
-window.remove_filter = remove_filter;
-
-window.inst=trombone;
+initialise_audio()
 
 

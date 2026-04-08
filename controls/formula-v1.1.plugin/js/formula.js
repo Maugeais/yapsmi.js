@@ -167,7 +167,6 @@ window.stop_formula = function(id){
 
 $(".formula").keydown(function(e) {
     // e.preventDefault();
-    console.log(e)
     e.stopPropagation()
 });
 export { init }

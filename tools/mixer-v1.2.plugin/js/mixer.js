@@ -16,7 +16,7 @@ for (let e of document.querySelectorAll('input[type="range"]')) {
 window.mixer_change_level = function(value, channel){
   let now = audioCtx.currentTime
   channel_level[channel].gain.setValueAtTime(channel_level[channel].gain.value, now);
-  channel_level[channel].gain.exponentialRampToValueAtTime(10**(3*(-1+value/100)), now + 0.25)
+  channel_level[channel].gain.exponentialRampToValueAtTime(connected_sensors[channel].output_impedance*10**(3*(-1+value/100)), now + 0.25)
 }
 
 
@@ -33,8 +33,8 @@ window.mixer_mute = function(value, channel){
   if (value){
       channel_panner[channel].connect(main_level)
       channel_level[channel].gain.setValueAtTime(Number.EPSILON, now);
-      let gain = parseFloat($("#mixer_channel_0 .mixer_volume").val())
-      channel_level[channel].gain.linearRampToValueAtTime(10**(3*(-1+gain/100)), now + 0.25)
+      let gain = parseFloat($("#mixer_channel_"+channel+" .mixer_volume").val())
+      channel_level[channel].gain.linearRampToValueAtTime(connected_sensors[channel].output_impedance*10**(3*(-1+gain/100)), now + 0.25)
       // setTimeout(function(){
       // } , 250);
   } else {

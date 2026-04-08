@@ -10,6 +10,7 @@ function init_continuation_analyser(audioCtx, uid){
 
     splitter = audioCtx.createChannelSplitter(2);
     analysers[uid] = {};
+    analysers[uid].channel = "0"
     analysers[uid]["0"] = audioCtx.createAnalyser();
     analysers[uid]["1"] = audioCtx.createAnalyser();
     analysers[uid]["0"].fftSize = 2048*16;
@@ -25,17 +26,33 @@ function init_continuation_analyser(audioCtx, uid){
 
 function continuation_analyser(uid){
 
-    analysers[uid]["0"].getFloatTimeDomainData(analysers[uid]["0"].wavArray);
-    let freq = get_frequency(analysers[uid]["0"].wavArray);
-    var update = {
-            x: [[compute_value(key_x, analysers[uid]["0"].wavArray, freq)]],
-            y: [[compute_value(key_y, analysers[uid]["0"].wavArray, freq)]],
-            'marker.color': [[time]],
-    }
+  let channel = "0", update_indeces;
+  if ((analysers[uid].channel == "0") || (analysers[uid].channel == "1")){
+    channel = analysers[uid].channel;
+    update_indeces = [0];
+  } 
 
-    ++time;
+  analysers[uid][channel].getFloatTimeDomainData(analysers[uid][channel].wavArray);
+  let freq = get_frequency(analysers[uid][channel].wavArray);
+  var update = {
+          x: [[compute_value(key_x, analysers[uid][channel].wavArray, freq)]],
+          y: [[compute_value(key_y, analysers[uid][channel].wavArray, freq)]],
+          'marker.color': [[time]],
+  }
 
-    Plotly.extendTraces('continuation_display', update, [0], tail_size)
+  if (analysers[uid].channel == "0+1"){
+    update_indeces = [0, 1];
+
+    analysers[uid]["1"].getFloatTimeDomainData(analysers[uid]["1"].wavArray);
+
+    update["x"].push([compute_value(key_x, analysers[uid]["1"].wavArray, freq)])
+    update["y"].push([compute_value(key_y, analysers[uid]["1"].wavArray, freq)])
+    update['marker.color'].push([0])
+  }
+
+  ++time;
+
+  Plotly.extendTraces('continuation_display', update, update_indeces, tail_size)
 }
 
 var time = 0;
@@ -88,12 +105,19 @@ window.change_color = function(){
     Plotly.restyle('continuation_display', update);
 }
 
-function draw(){
-    var x = [];
-    var y = [];
-    var data = [{
-      x: x,
-      y: y,
+var data = [{
+      x: [],
+      y: [],
+      mode: 'markers',
+      marker: {
+        size: 10,
+        color: [0],
+        colorscale: 'Jet',
+      },
+      type: 'scatter'
+    },{
+      x: [],
+      y: [],
       mode: 'markers',
       marker: {
         size: 10,
@@ -102,11 +126,15 @@ function draw(){
       },
       type: 'scatter'
     }];
+    
+function draw(){
+    
     var layout = {
             autosize: false,
             width: 450,
             height: 300,
             uirevision :true,
+            legend: {x: 0., y: 0.},
             margin: {
               l: 30,
               r: 0,
@@ -139,10 +167,10 @@ function compute_value(key, output){
       let rms = -0.5*output[0]**2;
       for (j = 0; j < fs/freq; j++) rms += output[j]**2;
       rms -= 0.5*output[j]**2;
-      return(Math.sqrt(rms*freq/fs)/instrument_controls['output_impedance'].value);
+      return(Math.sqrt(rms*freq/fs));
     case "amplitude" :
       let amplitude = Math.max(...output)-Math.min(...output);
-      return(amplitude/instrument_controls['output_impedance'].value);
+      return(amplitude);
     case "frequency" :
       return(freq);
     default :
@@ -152,7 +180,7 @@ function compute_value(key, output){
 
 let continuation_knobs;
 function init(uid){
-  continuation_knobs = init_knobs("continuation_controls", "large", "Vintage");
+  continuation_knobs = init_knobs("continuation_controls", "medium", "Vintage");
   
   key_x = Object.keys(instrument_controls)[0];
   
@@ -198,6 +226,11 @@ function load(uid, commands){
   $("#continuation_y").val(key_y);
   continuation_knobs["continuation_tail"].setValue(commands["tail_size"])
 
+}
+
+window.change_continuation_channel = function(value){
+  let uid = Object.keys(analysers)[0];
+  analysers[uid].channel = value;
 }
 
 

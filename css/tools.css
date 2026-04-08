@@ -31,6 +31,26 @@ header{
     overflow : hidden;
 }
 
+#waiting{
+    background: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+}
+
+#waiting_text{
+    color: white;
+    position: absolute;
+    bottom: 25%;
+    height: 100px;
+    text-align: center;
+    width: 100%;
+    font-size: 25px;
+}
+
 #logo{
     background-image: url('../css/images/logo_LMU.svg');
     width: 166px;
@@ -267,15 +287,16 @@ input[type=range]::-moz-range-thumb {
 }
 
 .close_button{
-    width: 20px;
+    width: 25px;
     position: absolute;
-    height: 20px;
-    left: 5px;
-    font-size: 15px;
+    height: 25px;
+    right: 10px;
+    font-size: 20px;
     font-weight: bold;
     top: 5px;
     /* border: 1px solid black; */
     border-radius: 10px;
+    z-index: 100;
 }
 
 .close_button:hover{
@@ -394,10 +415,12 @@ select{
     text-align : justify;
     padding: 30px;
     background-image : url('../css/images/background.jpg');
-    border: #acabab outset;
+    border: 5px solid black;
     background-attachment: fixed;
     overflow-y: auto;
     height: calc(100% - 20px);
+    filter: brightness(150%);
+    font-size: 20px;
 }
 
 .help_window img{
@@ -476,9 +499,11 @@ select{
     border: 1px solid black;
     margin: 20px 20px;
     border-radius: 20px;
-    position:relative;
+    /* position:relative; */
     height : 160px;
     backdrop-filter: blur(3px);
+    position: absolute;
+    bottom: -5px; 
 }
 
 .next_controls{
@@ -522,7 +547,7 @@ fieldset{
     color: black;
     margin-top: -20px;
     width: 120px;
-  }
+}
   
 :not(.instrument_controls_window) >  legend{
     position: relative;
@@ -740,6 +765,23 @@ button:active {
     animation: blink 1s infinite;
 }
 
+.help_button{
+    background-image: url('../css/images/help.svg');
+    width: 35px;
+    height: 35px;
+    background-size: cover;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    border: 2px #7d754c outset;
+    border-radius: 20px;
+}
+
+.help:hover {
+    box-shadow: #ff0000 0px 0px 3px 3px inset;
+    background: #aa5252;
+  }
+
 @keyframes blink{
     0% {
         background: #824040;
@@ -779,3 +821,67 @@ button:active {
         right: 100px;
     }
 }
+
+.loader {
+  color: #fff;
+  font-size: 10px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  animation: mulShdSpin 1.3s infinite linear;
+  transform: translateZ(0);
+  left: 50%;
+  top: 50%;
+}
+
+@keyframes mulShdSpin {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em,
+    2em -2em 0 0em, 3em 0 0 -1em,
+    2em 2em 0 -1em, 0 3em 0 -1em,
+    -2em 2em 0 -1em, -3em 0 0 -1em,
+    -2em -2em 0 0;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em,
+    3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em,
+    -2em 2em 0 -1em, -3em 0 0 -1em,
+    -2em -2em 0 -1em;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em,
+    2em -2em 0 0, 3em 0 0 0.2em,
+    2em 2em 0 0, 0 3em 0 -1em,
+    -2em 2em 0 -1em, -3em 0 0 -1em,
+    -2em -2em 0 -1em;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
+     3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em,
+     -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
+     3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em,
+     -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
+     3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0,
+     -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em,
+    3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em,
+    -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em,
+    3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em,
+    -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
+  }
+}
+

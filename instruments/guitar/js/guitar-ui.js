@@ -35,8 +35,8 @@ function strength_change(a, s){
 // }
 
 function dimension_change(a, s){
-  simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: 1+parseInt(a/2)});
-  $("#dimension_value").html(1+parseInt(a/2))
+  simulationNode.port.postMessage({property:"exec", method:"change_dimension", params: Math.min(50, 1+parseInt(a/2))});
+  $("#dimension_value").html(Math.min(50, 1+parseInt(a/2)))
 }
 
 $("#fretboard").click(set_finger_callback);
@@ -196,8 +196,10 @@ window.toggle_polarisation = function(e){
 
   if (e.checked){    
     $(".polarized").css({"filter": "blur(0px)", "pointer-events": "all"}) 
+    // instrument_controls.theta.setValue(11)
   } else {   
      $(".polarized").css({"filter": "blur(5px)", "pointer-events": "none"}) 
+     // instrument_controls.theta.setValue(89);
   }
   simulationNode.port.postMessage({property:"exec", method:"toggle_polarisation", params: {value : e.checked}});
 }

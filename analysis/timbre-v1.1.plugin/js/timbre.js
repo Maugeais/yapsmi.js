@@ -200,7 +200,6 @@ function update_drawing(real, imag, freq, uid){
                           cgs += (i+1)*values[i]**0.5;
                       } 
                       y[0] = [freq*cgs/energy**0.5];
-                      console.log(cgs, energy**0.5)
           break;
         case "tristimulus" :
           break;

@@ -119,7 +119,7 @@ class Knob {
     this.setImage();
   }
 
-  setValue(val) {
+  setValue(val, state = true) {
     //check the new value is within the acceptable range
     if (val > this.highVal) {
       this.currentValue = this.highVal;
@@ -141,7 +141,7 @@ class Knob {
     //set the image
     this.setImage();
     //call the users function
-    if (typeof knobChanged == "function") {
+    if (state && (typeof knobChanged == "function")) {
       knobChanged(this.id, this.currentValue);
     }
   }

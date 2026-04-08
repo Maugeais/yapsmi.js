@@ -36,7 +36,7 @@ function disconnect_filters(){
         next = data[1]    
         simulationNode.disconnect(next)
         if (data[2] != null){
-            current = next
+            current = data[2]
         }
         while(k < filters.length){
             let data = next_filter_on(k+1)
@@ -44,7 +44,7 @@ function disconnect_filters(){
             next = data[1]
             current.disconnect(next)
             if (data[2] != null){
-                current = next
+                current = data[2]
             }
         }
     }
@@ -214,7 +214,13 @@ async function inmessage(event) {
                 $("#"+key+"_value").html(event.knobs[key]["string"]);
                 if ((event.knobs[key]["percentage"] >= 0) && (key in instrument_controls)){  
                         instrument_controls[key].setValue(event.knobs[key]["percentage"])
+                        
                 }
+                if (key in instrument_controls){
+                    instrument_controls[key].value = event.knobs[key]["value"];
+                } //else {
+                //     console.log("???", key)
+                // }
             }
             break;
         case "get_controls_value": 
@@ -245,6 +251,12 @@ async function inmessage(event) {
             }
             break;
 
+        case "recording_done" :
+            if ("recording_callback" in window){
+                recording_callback(event.buffer)
+            }
+            break;
+
         default : 
           console.log("oups")
       }
@@ -252,13 +264,18 @@ async function inmessage(event) {
 
 
 
-window.set_controls = async function(params, knob = true){
-    simulationNode.port.postMessage({property:"set_controls", params : params});
-
+window.set_controls = async function(params, knob = true, from_percentage = true){
+    simulationNode.port.postMessage({property:"set_controls", params : params, from_percentage : from_percentage});
     if (knob){
-        console.log("knob = true", params)
-        let index = instrument_controls.findIndex(element => element.id == key);
-        inst.knobs[index].setValue(params[key]);
+        // console.log("knob = true", params)
+        Object.keys(params).forEach(function (key) {  
+            // console.log(key)                
+            instrument_controls[key].setValue(params[key], false)
+            // console.log(instrument_controls[key].value)
+          });
+          
+        // let index = instrument_controls.findIndex(element => element.id == key);
+        // inst.knobs[index].setValue(params[key]);
     }
 }
 
@@ -329,7 +346,7 @@ window.toggle_audio = function(){
 }
 
 window.audioCtx = new AudioContext();
-await audioCtx.audioWorklet.addModule("../../js/audio-processor.js");
+await audioCtx.audioWorklet.addModule("../../js/audio-processor.js?version=1.1");
 
 window.fs = audioCtx.sampleRate;
 let dt = 1 / fs;
@@ -344,6 +361,15 @@ channel_level[1].gain.value = 1;
 window.channel_panner = [audioCtx.createStereoPanner(), audioCtx.createStereoPanner()]
 channel_panner[0].pan.value = 0;
 channel_panner[1].pan.value = 0;
+
+window.set_channels_gain = function(){
+    query_simulator("get_sensors").then(function(data){
+        window.connected_sensors = structuredClone(data["connected_sensors"]);
+        channel_level[0].gain.value = connected_sensors[0].output_impedance;
+        channel_level[1].gain.value = connected_sensors[1].output_impedance;
+    });
+}
+
 
 async function initialise_audio() {
  
@@ -366,17 +392,13 @@ async function initialise_audio() {
     channel_level[0].connect(channel_panner[0])
     channel_level[1].connect(channel_panner[1])
     channel_panner[0].connect(main_level)
-    // channel_panner[1].connect(main_level)
+    // channel_panner[1].connect(main_level) // Channel 1 begins muted, hence not connected
     main_level.connect(audioCtx.destination);
-
-
-    // simulationNode.connect(window.main_level)
-    // main_level.connect(audioCtx.destination);
 
     audioCtx.suspend()
 
-    // get_controls_value()
-    // window.instrument_controls_details = await query_simulator("get_controls_details");
+    set_channels_gain()
+ 
     await update_intrument_controls_details();
 
     audio_ready()

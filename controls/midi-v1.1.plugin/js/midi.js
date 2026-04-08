@@ -102,7 +102,7 @@ function parse_midi_message(message) {
 }
 
 function play_midi(command, note, velocity, controler){
-  // If 128 then play_note, otherwise see commands
+  // If 128 or 144 then play_note, otherwise see commands
     if (command == 144){
       play_midi_note(note, velocity)
     } else if (command == 128){
@@ -119,7 +119,7 @@ function play_midi(command, note, velocity, controler){
 
           if ( global_controls[plugin][contr] instanceof Knob){   
             global_controls[plugin][contr].setValue(100*auto.eval(velocity/100))
-          } else {
+          } else if (velocity > 0){
             global_controls[plugin][contr].click(); 
           }
         }

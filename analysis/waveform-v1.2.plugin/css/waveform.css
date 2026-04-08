@@ -26,3 +26,23 @@
   top: 20px;
   right: 2px;
 }
+
+.waveform_ranges{
+  bottom: 90px;
+  position: absolute;
+  right: 1px;
+  width: 50px;
+  white-space: nowrap;
+  padding: 2px;
+
+  & input[type="text"]{
+    width: 40px;
+    border: 1px solid black;
+    right: 0px;
+    position: absolute;
+  }
+}
+
+#waveform_range_y{
+  bottom: 5px;
+}

@@ -13,19 +13,22 @@
         <!-- <div class = "control_knob">
             <div class="knob" id="record_duration{{id}}"></div>
            <div class="value_container">Duration=<div id="record_duration{{id}}_value">50</div>s</div>
-        </div> -->
+        </div>  -->
 <!-- 
         <div class="record_max"> Current max
             <div  id="record_max{{id}}"></div>
         </div> -->
 
         <button id="toggle_recording" onclick="toggle_recording('{{id}}'.substring(1))">Rec</button> 
+
+        <label id="record_duratin_label" title="Maximum duration of the recording">Duration <input id="record_duration" value="2">(s)</label> 
+
         
         <div id="recording_proof"></div>
         
-        <label title="Use a trigger">Trigger<input type="checkbox" id="record_trigger_checkbox" onclick="set_record_trigger(this)"></label>
+        <!-- <label title="Use a trigger">Trigger<input type="checkbox" id="record_trigger_checkbox" onclick="set_record_trigger(this)"></label>
 
-        <label id="record_trigger_value" class="disabled" title="Threshold amplitude of the signal triggering the recording">Threshold<input id="record_trigger_value_input" onchange="trigger_threshold=parseFloat(this.value)" value="1"></label>
+        <label id="record_trigger_value" class="disabled" title="Threshold amplitude of the signal triggering the recording">Threshold<input id="record_trigger_value_input" onchange="trigger_threshold=parseFloat(this.value)" value="1"></label> -->
 
         <label id="record_normalise" title="Normalise the signal before saving">Normalise<input type="checkbox" id="record_normalise_checkbox"></label>
 

@@ -1,10 +1,12 @@
 "use strict";
 
 let analysers = {};
-const chunk_size = 2048*2;
+// const chunk_size = 2048*2;
 
-const nbchunks_max = 2;
+// const nbchunks_max = 20;
 window.trigger_threshold = 1;
+
+let recording_buffer = []
 
 
 import {audioBufferToWav} from './audiobuffer-to-wav.js';
@@ -12,8 +14,10 @@ import {audioBufferToWav} from './audiobuffer-to-wav.js';
 
 function init(uid){
     analysers[uid] = {}
-    analysers[uid].recorded_chunks = 0;
-    add_filter(init_record_analyser, -1, uid);
+    // analysers[uid].recorded_chunks = 0;
+    register_controls("Record", {"record" : $("#toggle_recording")});
+
+    // add_filter(init_record_analyser, -1, uid);
     init_knobs("record_controls€"+uid, "medium", "LittlePhatty");
     initial_draw(uid)
     
@@ -21,26 +25,26 @@ function init(uid){
     // record_duration_change(50, uid)
 }
 
-function init_record_analyser(audioCtx, uid){
-    console.log(analysers, uid)
-    analysers[uid].analyser = audioCtx.createAnalyser();
-    analysers[uid].analyser.smoothingTimeConstant = 0.0;
-    analysers[uid].analyser.fftSize = chunk_size;
+// function init_record_analyser(audioCtx, uid){
+//     console.log(analysers, uid)
+//     analysers[uid].analyser = audioCtx.createAnalyser();
+//     analysers[uid].analyser.smoothingTimeConstant = 0.0;
+//     analysers[uid].analyser.fftSize = chunk_size;
 
-    analysers[uid].analyser.wavArray = new Float32Array(chunk_size);
-    analysers[uid].storing_chunk = 0;
-    analysers[uid].threshold = 0.5;
+//     analysers[uid].analyser.wavArray = new Float32Array(chunk_size);
+//     analysers[uid].storing_chunk = 0;
+//     analysers[uid].threshold = 0.5;
 
-    analysers[uid].x = new Float32Array(chunk_size*nbchunks_max);
-    analysers[uid].y = new Float32Array(chunk_size*nbchunks_max);
-    analysers[uid].recording = false;
+//     analysers[uid].x = new Float32Array(chunk_size*nbchunks_max);
+//     analysers[uid].y = [new Float32Array(chunk_size*nbchunks_max), new Float32Array(chunk_size*nbchunks_max)];
+//     analysers[uid].recording = false;
 
-    for (let i = 0; i < analysers[uid].x.length; i++){
-        analysers[uid].x[i] = i/fs;
-    }
+//     for (let i = 0; i < analysers[uid].x.length; i++){
+//         analysers[uid].x[i] = i/fs;
+//     }
 
-    return({'input': analysers[uid].analyser, 'output': null, 'is_on': true, 'callback': function(){}})
-}
+//     return({'input': analysers[uid].analyser, 'output': null, 'is_on': true, 'callback': function(){}})
+// }
 
 // let view_record ={};
 
@@ -52,48 +56,79 @@ function dynamics(buffer, uid){
 }
 
 function stop_recording(uid){
+    simulationNode.port.postMessage({property:"record", method: "stop"});
+}
+
+// function record_chunk(uid){
+
+//     analysers[uid].analyser.getFloatTimeDomainData(analysers[uid].analyser.wavArray);    
+
+//     if (use_trigger){
+//         let amplitude = dynamics(analysers[uid].analyser.wavArray, uid)/instrument_controls["output_impedance"].real_value;
+//         if (amplitude < trigger_threshold) return;
+//     }
+
+//     let ref = chunk_size*(analysers[uid].recorded_chunks);
+//     for (let i = 0; i < chunk_size; i++){
+//         analysers[uid].y[ref+i] = analysers[uid].analyser.wavArray[i];
+//     }      
+//     analysers[uid].recorded_chunks++;
+//     draw(uid, analysers[uid].x, analysers[uid].y)
+// }
+
+
+let start;
+let duration;
+
+window.recording_callback = function(buffer){
+    duration  = parseInt(audioCtx.sampleRate*(performance.now()-start)/1000)
+    duration = Math.min(duration, buffer[0].length)
+    let uid = Object.keys(analysers)[0];
+    recording_buffer = []
+    // analysers[uid].recorded_chunks = nbchunks_max
+    for (let c = 0; c < buffer.length; c++){
+        // recording_buffer = [buffer[0].slice(0, duration), buffer[1].slice(0, duration)];
+        recording_buffer.push(buffer[c].slice(0, duration));
+    }
+
+    let x = new Float32Array(duration)
+    for (let i = 0; i < x.length; i++){
+        x[i] = i/fs;
+    }
+
+    draw(uid, x, buffer)
+
+    x = null;
     analysers[uid].recording = false;
     $("#recording_proof").css("backgroundColor", "#680f0f")
 }
-
-function record_chunk(uid){
-
-    analysers[uid].analyser.getFloatTimeDomainData(analysers[uid].analyser.wavArray);    
-
-    if (use_trigger){
-        let amplitude = dynamics(analysers[uid].analyser.wavArray, uid)/instrument_controls["output_impedance"].real_value;
-        if (amplitude < trigger_threshold) return;
-    }
-
-    let ref = chunk_size*(analysers[uid].recorded_chunks);
-    for (let i = 0; i < chunk_size; i++){
-        analysers[uid].y[ref+i] = analysers[uid].analyser.wavArray[i];
-    }      
-    analysers[uid].recorded_chunks++;
-    draw(uid, analysers[uid].x, analysers[uid].y)
-}
-
-
-let start = performance.now() ;
-let duration  = parseInt(1000*chunk_size/audioCtx.sampleRate)
 
 function record_analyser(uid){
 
     if (!analysers[uid].recording) return;
 
+    let nb_sample = Math.ceil(audioCtx.sampleRate*parseFloat($("#record_duration").val()));
+    let buffer = []
+    for (let c = 0; c < audioCtx.destination.maxChannelCount; c++){
+        // recording_buffer = [buffer[0].slice(0, duration), buffer[1].slice(0, duration)];
+        buffer.push(new Float32Array(nb_sample));
+    }
+    // let buffer = [new Float32Array(nb_sample), new Float32Array(nb_sample)]
 
     initial_draw(uid)
+    start = performance.now() ;
+    simulationNode.port.postMessage({property:"record", buffer:buffer, method: "start"});
 
-    start = performance.now();
+    // start = performance.now();
 
-    let interval = setInterval(function(){
-        record_chunk(uid)
-        if (analysers[uid].recorded_chunks >  nbchunks_max){
-            clearInterval(interval)
-            stop_recording(uid)     
-            // draw(uid, analysers[uid].x, analysers[uid].y)
-        } 
-    }, duration); 
+    // let interval = setInterval(function(){
+    //     record_chunk(uid)
+    //     if (analysers[uid].recorded_chunks >  nbchunks_max){
+    //         clearInterval(interval)
+    //         stop_recording(uid)     
+    //         // draw(uid, analysers[uid].x, analysers[uid].y)
+    //     } 
+    // }, duration); 
 
 
 }
@@ -142,6 +177,13 @@ function initial_draw(uid){
         color: 'rgb(55, 128, 191)',
         width: 3},
       type: 'scatter'
+    },{
+      x: [],
+      y: [],
+      line: {
+        color: 'rgb(191, 55, 55)',
+        width: 3},
+      type: 'scatter'
     }];
        
     time = 0
@@ -156,17 +198,25 @@ function draw(uid, x, y){
     // data[uid][0]['y'] = y;
     
     // Plotly.redraw('record_display€'+uid);
-    let beginning = Math.max(0, (analysers[uid].recorded_chunks-1)*chunk_size, -1)
-    let end = analysers[uid].recorded_chunks*chunk_size
+    let beginning = 0; //Math.max(0, (analysers[uid].recorded_chunks-1)*chunk_size, -1)
+    let end = duration; //analysers[uid].recorded_chunks*chunk_size
     data[uid].push({
             x: x.slice(beginning, end),
-            y : y.slice(beginning, end),
+            y : y[0].slice(beginning, end),
             line: {
                 color: 'rgb('+time*10+', 0, '+256-time*10+')',
                 width: 3
             }
         })
 
+    data[uid].push({
+            x: x.slice(beginning, end),
+            y : y[1].slice(beginning, end),
+            line: {
+                color: 'rgb('+time*10+', 0, '+256-time*10+')',
+                width: 3
+            }
+        })
     Plotly.newPlot('record_display€'+uid, data[uid], layout);
 
 
@@ -176,7 +226,6 @@ function draw(uid, x, y){
     //         y: [[y.slice((analysers[uid].recorded_chunks-1)*chunk_size, analysers[uid].recorded_chunks*chunk_size)]],
     // }
 
-    console.log("Chunk number : ", time)
     ++time;
 
     // Plotly.extendTraces('record_display€'+uid, update, [0])
@@ -201,7 +250,7 @@ window.toggle_recording = function(uid){
     if (analysers[uid].recording) {
         stop_recording(uid)
     } else {
-        analysers[uid].recorded_chunks = 0;
+        // analysers[uid].recorded_chunks = 0;
         analysers[uid].recording = true;
         $("#recording_proof").css("backgroundColor", "red")
         record_analyser(uid)
@@ -210,23 +259,26 @@ window.toggle_recording = function(uid){
 
 window.save_recording = function(uid){
 
-    let data = analysers[uid].y.subarray(0, chunk_size*analysers[uid].recorded_chunks)
+    // let data = analysers[uid].y.subarray(0, chunk_size*analysers[uid].recorded_chunks)
 
     if ($("#record_normalise_checkbox").is(":checked") ){
-        let mx = Math.max(...data);
-        let mn = Math.min(...data);
 
-        let normalisation_factor = Math.max(Math.abs(mx), Math.abs(mn));
+        for (let c = 0; c < recording_buffer.length; c++){
+            let mx = Math.max(...recording_buffer[c]);
+            let mn = Math.min(...recording_buffer[c]);
 
-        for (let i=0; i < data.length; i++){
-            data[i] = data[i]/normalisation_factor;
+            let normalisation_factor = Math.max(Math.abs(mx), Math.abs(mn));
+
+            for (let i=0; i < recording_buffer[c].length; i++){
+                recording_buffer[c][i] = recording_buffer[c][i]/normalisation_factor;
+            }
         }
     }
 
     // $("#record_normalise_checkbox")
-    let buffer = {'numberOfChannels' : 1,
-        "sampleRate" : 48000,
-        "data" : [data]
+    let buffer = {'numberOfChannels' : recording_buffer.length,
+        "sampleRate" : audioCtx.sampleRate,
+        "data" : recording_buffer
     }
 
     var anchor = document.createElement('a')
